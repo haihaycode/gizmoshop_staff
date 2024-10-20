@@ -8,12 +8,14 @@ const publicRoutes = [
 
             {
                 path: '',
+                name : 'login',
                 meta: {
-                    title: "Tên routes ",
-                    description: " Mô tả "
+                    title: "Quản Lý Cửa Hàng",
+                    description: "Đăng nhập"
                 },
                 components: {
-                    default: useComponent('test'),
+                    default: useComponent('login'),
+
                 }
 
             },
@@ -22,4 +24,4 @@ const publicRoutes = [
     },
 ];
 
-export default publicRoutes;
+export default publicRoutes;  
