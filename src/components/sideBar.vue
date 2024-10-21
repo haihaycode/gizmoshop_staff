@@ -8,7 +8,7 @@
                 <h2 class="hidden md:block lg:block font-bold text-2xl pb-4 text-white"> <span
                         class="bg-blue-500 rounded-sm">&nbsp; GIZMO
                         &nbsp;</span>
-                    QUẢN TRỊ
+                    QUẢN LÝ CỬA HÀNG
                 </h2>
             </a>
             <ul class="mt-28 md:mt-4 lg:mt-4 ">
@@ -51,25 +51,27 @@
                         <span class="text-sm">Chi tiết</span>
                     </a>
                 </li>
-                <span class="text-white font-bold">QUẢN LÝ Brand</span>
+                <span class="text-white font-bold">QUẢN LÝ CỬA HÀNG</span>
                 <li class="mb-1 group">
                     <RouterLink :to="{ name: 'brand' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Danh sách Brand</span>
-                        <span
-                            class="md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-600 bg-red-200 rounded-full">5</span>
+                        <span class="text-sm">Quản lý Thương Hiệu</span>
                     </RouterLink>
                 </li>
                 <li class="mb-1 group">
-                    <a href=""
+                    <RouterLink :to="{ name: 'brand' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-envelope mr-3 text-lg'></i>
-                        <span class="text-sm">SẢN PHẨM</span>
-                        <span
-                            class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-600 bg-green-200 rounded-full">2
-                            New</span>
-                    </a>
+                        <i class='bx bx-bell mr-3 text-lg'></i>
+                        <span class="text-sm">Quản lý Danh Mục</span>
+                    </RouterLink>
+                </li>
+                <li class="mb-1 group">
+                    <RouterLink :to="{ name: 'voucher' }"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                        <i class='bx bx-bell mr-3 text-lg'></i>
+                        <span class="text-sm">Phiếu Giảm Giá & Giảm Giá</span>
+                    </RouterLink>
                 </li>
                 <span class="text-white font-bold">THỐNG KÊ & BÁO CÁO</span>
                 <li class="mb-1 group">

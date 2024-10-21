@@ -11,8 +11,8 @@ const dashboardRoutes = [
             {
                 path: '',
                 meta: {
-                    title: "...",
-                    description: " Mô tả "
+                    title: "QUẢN LÝ CHUNG",
+                    description: "GIZMO"
                 },
                 components: {
                     default: useComponent('dashboard'),
@@ -24,7 +24,7 @@ const dashboardRoutes = [
             }
         ]
 
-    },{
+    }, {
         path: '/brand',
         component: useComponent('admin'),
         children: [
@@ -33,11 +33,34 @@ const dashboardRoutes = [
                 path: '',
                 name: 'brand',
                 meta: {
-                    title: "Quản lý kho",
-                    description: "Gizmo"
+                    title: "THƯƠNG HIỆU",
+                    description: "GIZMO"
                 },
                 components: {
                     default: useComponent('brand'),
+                    header: Header,
+                    footer: Footer,
+                    sideBar: sideBar
+                }
+
+            },
+
+        ]
+    },
+    {
+        path: '/voucher',
+        component: useComponent('admin'),
+        children: [
+
+            {
+                path: '',
+                name: 'voucher',
+                meta: {
+                    title: "PHIẾU GIẢM GIÁ",
+                    description: "GIZMO"
+                },
+                components: {
+                    default: useComponent('voucher'),
                     header: Header,
                     footer: Footer,
                     sideBar: sideBar

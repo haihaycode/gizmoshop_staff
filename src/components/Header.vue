@@ -201,7 +201,7 @@
                         <div class="p-2 md:block text-left">
                             <h2 class=" font-semibold text-white text-xs">Xin chào, {{ name }}
                             </h2>
-                            <p class="text-xs text-white opacity-45">Quản Trị Viên</p>
+                            <p class="text-xs text-white opacity-45">Nhân viên quản lý</p>
                         </div>
                     </button>
                     <ul
