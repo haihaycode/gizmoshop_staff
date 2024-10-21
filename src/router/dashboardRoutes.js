@@ -46,6 +46,28 @@ const dashboardRoutes = [
             },
 
         ]
+    }, {
+        path: '/categories',
+        component: useComponent('admin'),
+        children: [
+
+            {
+                path: '',
+                name: 'categories',
+                meta: {
+                    title: "Quản lý danh mục",
+                    description: "Gizmo"
+                },
+                components: {
+                    default: useComponent('categories'),
+                    header: Header,
+                    footer: Footer,
+                    sideBar: sideBar
+                }
+
+            },
+
+        ]
     },
     {
         path: '/voucher',

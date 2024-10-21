@@ -60,19 +60,23 @@
                     </RouterLink>
                 </li>
                 <li class="mb-1 group">
-                    <RouterLink :to="{ name: 'brand' }"
+                    <RouterLink :to="{ name: 'categories' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Quản lý Danh Mục</span>
+                        <i class='bx bx-envelope mr-3 text-lg'></i>
+                        <span class="text-sm">Danh sách Categories</span>
+                        <!-- <span
+                            class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-600 bg-green-200 rounded-full">2
+                            New</span> -->
                     </RouterLink>
                 </li>
-                <li class="mb-1 group">
-                    <RouterLink :to="{ name: 'voucher' }"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Phiếu Giảm Giá & Giảm Giá</span>
-                    </RouterLink>
-                </li>
+              <li class="mb-1 group">
+                <RouterLink :to="{ name: 'voucher' }"
+                            class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                  <i class='bx bx-bell mr-3 text-lg'></i>
+                  <span class="text-sm">Phiếu Giảm Giá & Giảm Giá</span>
+                </RouterLink>
+              </li>
+
                 <span class="text-white font-bold">THỐNG KÊ & BÁO CÁO</span>
                 <li class="mb-1 group">
                     <a href=""
