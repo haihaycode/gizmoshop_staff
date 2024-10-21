@@ -24,7 +24,7 @@ const dashboardRoutes = [
             }
         ]
 
-    },{
+    }, {
         path: '/brand',
         component: useComponent('admin'),
         children: [
@@ -38,6 +38,28 @@ const dashboardRoutes = [
                 },
                 components: {
                     default: useComponent('brand'),
+                    header: Header,
+                    footer: Footer,
+                    sideBar: sideBar
+                }
+
+            },
+
+        ]
+    }, {
+        path: '/categories',
+        component: useComponent('admin'),
+        children: [
+
+            {
+                path: '',
+                name: 'categories',
+                meta: {
+                    title: "Quản lý danh mục",
+                    description: "Gizmo"
+                },
+                components: {
+                    default: useComponent('categories'),
                     header: Header,
                     footer: Footer,
                     sideBar: sideBar
