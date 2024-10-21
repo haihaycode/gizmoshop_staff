@@ -3,11 +3,11 @@
       <label class="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" class="sr-only" v-model="localToggled" @change="emitToggle" />
         <div class="w-12 h-6  rounded-full transition-colors duration-300" 
-            :class="localToggled ? 'bg-blue-500' : 'bg-gray-300'"></div>
+            :class="localToggled ? 'bg-[#1c4b7a]' : 'bg-gray-300'"></div>
         <span class="absolute left-0 w-6 h-6 bg-white rounded-full shadow transform transition-transform duration-300" 
               :class="{'translate-x-full': localToggled}"></span>
       </label>
-      <span class="ml-2 font-medium" :class="{'text-blue-500': localToggled, 'text-red-500': !localToggled}">
+      <span class="ml-2 font-medium" :class="{'text-[#1c4b7a]': localToggled, 'text-red-500': !localToggled}">
         {{ localToggled ? 'Đang hoạt động' : 'Không hoạt động' }}
       </span>
     </div>

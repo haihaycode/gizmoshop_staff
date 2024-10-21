@@ -142,7 +142,7 @@
 
                 <div class="flex justify-end">
                     <Button :isLoading="isLoading" :text="'Lưu'" type="submit"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600">
+                        class="px-4 py-2 text-white rounded-sm hover:bg-[#271a1a]">
                     </Button>
                 </div>
             </form>

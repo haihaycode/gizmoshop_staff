@@ -6,7 +6,7 @@
         <SearchVoucherComponent @search="handleSearch"></SearchVoucherComponent>
         <!-- btn add New  -->
         <div class="flex justify-end">
-            <Button :color="'bg-blue-500'" :text="'Thêm Phiếu Giảm Giá Mới'"
+            <Button :color="'bg-[#494242]'" :text="'Thêm Phiếu Giảm Giá Mới'"
                 :icon="`<i class= 'bx bx-add-to-queue' > </i>`" class="mb-2 "
                 @click="handleChangeStatusModalAddNew"></Button>
         </div>

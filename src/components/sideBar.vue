@@ -3,12 +3,12 @@
 
         <!--sidenav -->
         <div v-if="isLeftMenuOpen"
-            class="fixed left-0 top-0 w-64 h-full bg-[#404e68] p-4 z-30 sidebar-menu transition-transform custom-scrollbar  md:block overflow-y-auto ">
+            class="fixed left-0 top-0 w-64 h-full bg-[#1c4b7a] p-4 z-30 sidebar-menu transition-transform custom-scrollbar  md:block overflow-y-auto ">
             <a href="/" class="flex items-center  border-opacity-60  ">
                 <h2 class="hidden md:block lg:block font-bold text-2xl pb-4 text-white"> <span
-                        class="bg-blue-500 rounded-sm">&nbsp; GIZMO
+                        class="bg-slate-600 rounded-sm">&nbsp; GIZMO
                         &nbsp;</span>
-                    QUẢN LÝ CỬA HÀNG
+                    QUẢN LÝ
                 </h2>
             </a>
             <ul class="mt-28 md:mt-4 lg:mt-4 ">

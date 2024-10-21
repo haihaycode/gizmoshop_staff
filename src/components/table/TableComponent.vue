@@ -4,7 +4,7 @@
             <table class="min-w-full border-collapse table-auto">
                 <!-- Table Header -->
                 <thead>
-                    <tr class="bg-blue-500">
+                    <tr class="bg-[#1c4b7a]">
                         <slot name="header"></slot>
                     </tr>
                 </thead>
@@ -38,4 +38,5 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
