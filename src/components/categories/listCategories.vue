@@ -24,7 +24,8 @@
             </template>
             <!-- Body Slot -->
             <template #body>
-                <tr v-for="(item, index) in listCategories" :key="index" class="hover:bg-gray-300">
+                <tr @click="handleModalIsOpen(item.id)" v-for="(item, index) in listCategories" :key="index"
+                    class="hover:bg-gray-300">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.id }}
                     </td>
@@ -32,10 +33,11 @@
                         {{ item.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ item.image }}
+                        <img v-if="item?.image" :src="loadImageCategory(item?.image)" alt="Profile Image"
+                            class="w-12 h-12 rounded-full object-cover" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <toggleButton :is-toggled="!item.active" @update:isToggled="handleActive(item.id)">
+                        <toggleButton :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
                         </toggleButton>
 
                     </td>
@@ -55,22 +57,26 @@
             </template>
         </TableComponent>
         <!-- update -->
-        <!-- <updateInventory v-if="idInventorySelected" :id="idInventorySelected" :isOpen="ModalUpdateInventoryIsOpen"
-            @close="updateInventoryModal" @update-success="loadInventory">
-        </updateInventory> -->
+        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen"
+            @close="isOpen = false" @update-success="handlesListCategories">
+        </updataCategories>
     </div>
 </template>
 
 <script>
 import TableComponent from '../table/TableComponent.vue';
 import searchComponent from '@/components/categories/searchComponent.vue';
+import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
+import { loadImageCategory } from '@/services/categoriesService.js';
 import Pagination from '../pagination/Pagination.vue';
 export default {
     name: 'lisCategoriesComponent',
     data() {
         return {
+            idSelected: null,
+            isOpen: false,
             pagination: null,
             listCategories: [],
             page: 0,
@@ -84,12 +90,14 @@ export default {
         TableComponent,
         toggleButton,
         Pagination,
-        searchComponent
+        searchComponent,
+        updataCategories
     },
     mounted() {
         this.handlesListCategories()
     },
     methods: {
+        loadImageCategory,
         async handlesListCategories(keyword) {
             try {
                 const param = {
@@ -140,6 +148,10 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        },
+        handleModalIsOpen(id) {
+            this.isOpen = !this.isOpen
+            this.idSelected = id;
         }
     }
 }

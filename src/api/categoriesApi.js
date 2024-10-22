@@ -10,7 +10,15 @@ export const getCategories = async (params) => {
     } catch (error) {
         throw new Error(`${error}`);
     }
-}; export const changeActive = async (idCategory) => {
+}; export const getCategoriesID = async (idCategory) => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/categories/get/${idCategory}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+export const changeActive = async (idCategory) => {
     try {
         const response = await Axios.put(`${HOST}/api/public/changeactive/${idCategory}`);
         return response.data;
@@ -20,9 +28,23 @@ export const getCategories = async (params) => {
 };
 export const createCategory = async (dataCategory) => {
     try {
-        const response = await Axios.post(`${HOST}/api/public/categories/create`, {
-            params: dataCategory
-        });
+        const response = await Axios.post(`${HOST}/api/public/categories/create`, dataCategory);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+export const updateInfoCategory = async (idCategory, formData) => {
+    try {
+        const response = await Axios.put(`${HOST}/api/public/categories/update/${idCategory}`, formData);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+export const updateImageCategory = async (idCategory, formData) => {
+    try {
+        const response = await Axios.put(`${HOST}/api/public/categories/${idCategory}/updateimage`, formData);
         return response.data;
     } catch (error) {
         throw new Error(`${error}`);
