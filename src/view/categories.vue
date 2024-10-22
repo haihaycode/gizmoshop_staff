@@ -1,18 +1,19 @@
 <template>
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5  lg:m-2 md:m-0">
         <div class="flex justify-end">
-            <Button @click="handleModelCreateCategory" :text="'Thêm danh mục mới'"></Button>
+            <Button @click="handleModelCreateCategory" :icon="`<i class= 'bx bx-add-to-queue' > </i>`"
+                :text="'Thêm danh mục mới'"></Button>
         </div>
         <listCategories ref="listCategories"></listCategories>
     </div>
-    <createCategory :isOpen="modalAddNewIsOpen" @create-success="loadCategories" @close="handleModelCreateCategory">
-    </createCategory>
+    <newCategory :isOpen="modalAddNewIsOpen" @create-success="loadCategories" @close="handleModelCreateCategory">
+    </newCategory>
 </template>
 
 <script>
 import listCategories from '@/components/categories/listCategories.vue';
 import Button from '@/components/buttons/button.vue';
-import createCategory from '@/components/categories/createCategory.vue';
+import newCategory from '@/components/categories/newCategory.vue';
 
 export default {
     name: 'categoriesView',
@@ -25,7 +26,7 @@ export default {
     components: {
         listCategories,
         Button,
-        createCategory
+        newCategory
     },
     methods: {
         handleModelCreateCategory() {
