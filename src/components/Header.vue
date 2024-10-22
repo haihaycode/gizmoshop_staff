@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="py-2 px-6 bg-[#494242] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+        <div class="py-2 px-6 bg-[#09081f] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
             <button @click="toggleLeftMenu" type="button"
                 class="text-lg text-white font-semibold sidebar-toggle block md:hidden ">
                 <i class='bx bx-menu'></i>

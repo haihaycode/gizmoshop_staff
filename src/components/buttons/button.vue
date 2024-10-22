@@ -19,7 +19,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'bg-[#494242]', // Màu nút thường
+      default: 'bg-[#0e0b36]', // Màu nút thường
     },
     disabledColor: {
       type: String,

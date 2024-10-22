@@ -4,7 +4,7 @@
             <table class="min-w-full border-collapse table-auto">
                 <!-- Table Header -->
                 <thead>
-                    <tr class="bg-[#1c4b7a]">
+                    <tr class="bg-[#113254]">
                         <slot name="header"></slot>
                     </tr>
                 </thead>
