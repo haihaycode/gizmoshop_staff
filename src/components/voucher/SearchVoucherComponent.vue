@@ -23,7 +23,7 @@
             <!-- Search Button -->
             <div class="w-full lg:w-auto flex justify-end items-end">
                 <button type="submit"
-                    class="bg-[#494242] hover:bg-[#271a1a] text-white font-bold py-2 px-4 rounded w-full lg:w-auto transition-all duration-300">
+                    class="bg-[#0e0b36] hover:bg-[#2a2eaed7] text-white font-bold py-2 px-4 rounded w-full lg:w-auto transition-all duration-300">
                     Tìm kiếm
                 </button>
             </div>
