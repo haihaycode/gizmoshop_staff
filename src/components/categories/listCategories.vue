@@ -33,7 +33,7 @@
                         {{ item.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <img v-if="item?.image" :src="loadImageCategory(item?.image)" alt="Profile Image"
+                        <img v-if="item?.image" :src="loadImage(item?.image, `category`)" alt="Profile Image"
                             class="w-12 h-12 rounded-full object-cover" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -57,8 +57,8 @@
             </template>
         </TableComponent>
         <!-- update -->
-        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen"
-            @close="isOpen = false" @update-success="handlesListCategories">
+        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen" @close="isOpen = false"
+            @update-success="handlesListCategories">
         </updataCategories>
     </div>
 </template>
@@ -69,7 +69,7 @@ import searchComponent from '@/components/categories/searchComponent.vue';
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
-import { loadImageCategory } from '@/services/categoriesService.js';
+import { loadImage } from '@/services/imageService.js';
 import Pagination from '../pagination/Pagination.vue';
 export default {
     name: 'lisCategoriesComponent',
@@ -97,7 +97,7 @@ export default {
         this.handlesListCategories()
     },
     methods: {
-        loadImageCategory,
+        loadImage,
         async handlesListCategories(keyword) {
             try {
                 const param = {

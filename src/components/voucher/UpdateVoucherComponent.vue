@@ -122,6 +122,20 @@
                     <p class="lg:text-sm text-red-500">{{ errors.status }}</p>
                 </div>
 
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Hình ảnh *</label>
+                    <input type="file" @change="handleFileUpload" id="image" accept="image/*"
+                        class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
+                        :class="form.image ? 'border-red-500' : ''" />
+                </div>
+                <div v-if="previewImage" class="mt-4 w-full">
+                    <img :src="previewImage" alt="Image Preview" class=" object-cover rounded-sm">
+                </div>
+
+                <!-- <img v-if="item?.image" :src="loadImageCategory(item?.image)" alt="Profile Image"
+                    class="w-12 h-12 rounded-full object-cover" /> -->
+
+
                 <div class="flex justify-end">
                     <Button :isLoading="isLoading" :text="'Cập Nhật'" type="submit"
                         class="px-4 py-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600">
@@ -137,9 +151,10 @@
 
 <script>
 import ModalBox from '../modal/ModalBox.vue';
+import { loadImage } from '@/services/imageService'
 import { mapGetters } from 'vuex';
 import * as Yup from "yup";
-import { updateVoucher } from '@/api/voucherApi'; // API for updating voucher
+import { updateVoucher, changeImageVoucher } from '@/api/voucherApi'; // API for updating voucher
 import NotificationModal from '../modal/NotificationModal.vue';
 import Button from '../buttons/button.vue';
 
@@ -165,6 +180,7 @@ export default {
             NotificationModalIsOpen: false,
             messageType: '',
             message: '',
+            previewImage: null,
             form: {
                 ...this.voucher,  // Load voucher data into the form
             },
@@ -184,11 +200,24 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('loading', ['isLoading'])
+        ...mapGetters('loading', ['isLoading']),
+    },
+    mounted() {
+        this.previewImage =  loadImage(this.form.image, `voucher`);
     },
     methods: {
+        loadImage,
         closeModal() {
             this.$emit('close');
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.imageUpdate = file;
+                this.previewImage = URL.createObjectURL(file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+            }
         },
         validateForm() {
 
@@ -264,6 +293,8 @@ export default {
                 const data = { ...this.form }; // Spread form data into object
                 console.log(data);  // Should correctly log the form data
                 const res = await updateVoucher(data); // Call API for updating voucher
+                this.form = res.data
+                await this.handleUpdateImageVoucher(this.form.id)
                 this.message = res.message;
                 this.messageType = 'success';
                 this.NotificationModalIsOpen = true;
@@ -274,7 +305,18 @@ export default {
                 this.messageType = 'error';
                 this.NotificationModalIsOpen = true;
             }
-        }
+        },
+        async handleUpdateImageVoucher(id) {
+            try {
+                const formData = new FormData();
+                if (this.imageUpdate) {
+                    formData.append('file', this.imageUpdate);
+                }
+                await changeImageVoucher(id, formData);
+            } catch (error) {
+                console.log(error)
+            }
+        },
     }
 }
 </script>

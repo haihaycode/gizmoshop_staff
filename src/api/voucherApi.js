@@ -44,3 +44,14 @@ export const changeStatusVoucher = async (idVoucher) => {
         throw new Error(`${error}`);
     }
 };
+
+
+// updateImageVoucher
+export const changeImageVoucher = async (idVoucher, image) => {
+    try {
+        const response = await Axios.put(`${HOST}/api/public/voucher/${idVoucher}/updateimage`, image);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};

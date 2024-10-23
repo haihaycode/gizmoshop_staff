@@ -140,6 +140,15 @@
                     <p class="lg:text-sm text-red-500">{{ errors.status }}</p>
                 </div>
 
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Hình ảnh *</label>
+                    <input type="file" @change="handleFileUpload" id="image" accept="image/*"
+                        class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
+                        :class="form.image ? 'border-red-500' : ''" />
+                    <p class="lg:text-sm text-red-500">{{ errors.image }}</p>
+                </div>
+
                 <div class="flex justify-end">
                     <Button :isLoading="isLoading" :text="'Lưu'" type="submit"
                         class="px-4 py-2 text-white rounded-sm hover:bg-[#2a2eaed7]">
@@ -158,7 +167,7 @@
 import ModalBox from '../modal/ModalBox.vue';
 import { mapGetters } from 'vuex';
 import * as Yup from "yup";
-import { createVoucher } from '@/api/voucherApi';
+import { createVoucher, changeImageVoucher } from '@/api/voucherApi';
 import NotificationModal from '../modal/NotificationModal.vue';
 import Button from '../buttons/button.vue';
 
@@ -174,6 +183,7 @@ export default {
             NotificationModalIsOpen: false,
             messageType: '',
             message: '',
+            imageUpdate: '',
             form: {
                 code: '',               // Mã giảm giá
                 description: '',        // Mô tả
@@ -217,6 +227,14 @@ export default {
     methods: {
         closeModal() {
             this.$emit('close');
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.imageUpdate = file;
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+            }
         },
         validateForm() {
 
@@ -289,9 +307,12 @@ export default {
 
         async submitForm() {
             try {
-                const data = { ...this.form }; // Spread form data into object
-                console.log(data);  // Should correctly log the form data
+                const data = { ...this.form };
+                console.log(data);
                 const res = await createVoucher(data);
+                this.form = res.data
+                await this.handleUpdateImageVoucher(this.form.id)
+
                 this.message = res.message;
                 this.messageType = 'success';
                 this.NotificationModalIsOpen = true;
@@ -302,7 +323,18 @@ export default {
                 this.messageType = 'error';
                 this.NotificationModalIsOpen = true;
             }
-        }
+        },
+        async handleUpdateImageVoucher(id) {
+            try {
+                const formData = new FormData();
+                if (this.imageUpdate) {
+                    formData.append('file', this.imageUpdate);
+                }
+                await changeImageVoucher(id, formData);
+            } catch (error) {
+                console.log(error)
+            }
+        },
     }
 }
 </script>
