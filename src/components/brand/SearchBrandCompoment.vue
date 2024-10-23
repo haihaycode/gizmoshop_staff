@@ -28,7 +28,7 @@
           id="status"
           class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
-          <option value="">Tất cả</option>
+          <option :value="null">Tất cả</option>
           <option :value="true">Đã xóa</option>
           <option :value="false">Chưa xóa</option>
         </select>
