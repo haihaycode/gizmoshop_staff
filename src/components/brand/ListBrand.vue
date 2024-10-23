@@ -84,13 +84,14 @@
       @close="modalUpdateBrand"
       @update-success="loadBrand"
     />
-     <NotificationModal
-    :isOpen="NotificationModalIsOpen"
-    :message="message"
-    :type="messageType"
-    @close="NotificationModalIsOpen = false"
-    :title="'Thông báo'"
-  ></NotificationModal>
+
+    <NotificationModal
+      :isOpen="NotificationModalIsOpen"
+      :message="message"
+      :type="messageType"
+      @close="NotificationModalIsOpen = false"
+      :title="'Thông báo'"
+    />
   </div>
 </template>
 
@@ -101,35 +102,65 @@ import Pagination from "../pagination/Pagination.vue";
 import UpdateBrandComponent from "./UpdateBrandComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import NotificationModal from "../modal/NotificationModal.vue";
+
 export default {
   name: "listBrand",
   data() {
     return {
-     NotificationModalIsOpen: false,
+      NotificationModalIsOpen: false,
       listBrandData: [],
       pagination: null,
       sortField: "id",
       sortDirection: "desc",
+      name: "",
+      deleted: null,
       limit: 5,
       page: 0,
       idBrandSelected: null,
       modalUpdateBrandIsOpen: false,
+      message: "",
+      messageType: "",
     };
+  },
+  props: {
+    nameProp: {
+      type: String,
+      default: "",
+    },
+    deletedProp: {
+      type: Boolean,
+      default: null,
+    },
+  },
+  watch: {
+    nameProp(newName) {
+      console.log("nameProp changed:", newName);
+      this.name = newName;
+      this.handleGetBrand();
+    },
+    deletedProp(newDeleted) {
+      console.log("deletedProp changed:", newDeleted);
+      this.deleted = newDeleted;
+      this.handleGetBrand();
+    },
   },
   components: {
     UpdateBrandComponent,
     TableComponent,
     toggleButton,
     Pagination,
-    NotificationModal
+    NotificationModal,
   },
   mounted() {
     this.handleGetBrand();
   },
+
   methods: {
     async handleGetBrand() {
       try {
         const param = {
+          name: this.name,
+          deleted: this.deleted,
           page: this.page,
           limit: this.limit,
           sort: `${this.sortField},${this.sortDirection}`,
@@ -138,7 +169,10 @@ export default {
         this.pagination = response.data;
         this.listBrandData = response.data.content;
       } catch (error) {
-        console.error(error);
+        console.error("Lỗi khi lấy dữ liệu thương hiệu:", error);
+        this.message = "Có lỗi xảy ra khi tải dữ liệu thương hiệu.";
+        this.messageType = "error";
+        this.NotificationModalIsOpen = true;
       }
     },
     handlePageChange(newPage) {
@@ -179,26 +213,24 @@ export default {
       this.handleGetBrand();
     },
     async handleActive(id) {
-    try {
-      const res =  await changeActive(id);
-      if (res && res.data && res.data.message) {
-          this.message = res.data.message;
-        } else {
-          this.message = "Thương hiệu đã được cập nhật"; // Nếu không có message, sử dụng thông báo mặc định
-        } 
-        this.message = res.message; 
+      try {
+        const res = await changeActive(id);
+        this.message = res.data?.message || "Thương hiệu đã được cập nhật"; // Thông báo mặc định
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
         this.$emit("create-success");
-      this.handleGetBrand();
-    } catch (error) {
-      console.log(error);
-    }
-  },
+        this.handleGetBrand();
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái thương hiệu:", error);
+        this.message = "Có lỗi xảy ra khi cập nhật trạng thái thương hiệu.";
+        this.messageType = "error";
+        this.NotificationModalIsOpen = true;
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Add your styles here if needed */
+/* Thêm các style nếu cần */
 </style>
