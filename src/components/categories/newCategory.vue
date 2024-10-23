@@ -28,8 +28,6 @@
                     <p class="lg:text-sm text-red-500">{{ errors.active }}</p>
                 </div>
 
-
-
                 <div class="mb-4    ">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Hình ảnh *</label>
                     <input type="file" @change="handleFileUpload" id="image" accept="image/*"

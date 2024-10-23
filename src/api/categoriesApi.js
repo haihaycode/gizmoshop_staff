@@ -12,7 +12,7 @@ export const getCategories = async (params) => {
     }
 }; export const getCategoriesID = async (idCategory) => {
     try {
-        const response = await Axios.get(`${HOST}/api/public/categories/get/${idCategory}`);
+        const response = await Axios.get(`${HOST}/api/public/categories/${idCategory}`);
         return response.data;
     } catch (error) {
         throw new Error(`${error}`);
