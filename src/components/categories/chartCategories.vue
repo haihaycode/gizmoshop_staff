@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center bg-white shadow-lg rounded-lg p-6">
+    <div class="flex flex-col items-center bg-white shadow-lg rounded-lg p-6 ">
         <h2 class="text-xl font-bold mb-4 text-gray-800">Thống kê số lượng sản phẩm từng danh mục</h2>
 
         <div class="overflow-x-auto w-full mb-6">
@@ -9,14 +9,12 @@
         <div class="flex items-center justify-between w-full mb-4">
             <div class="flex items-center space-x-4">
                 <Button :text="''" :icon="`<i class='bx bxs-chevron-right bx-rotate-180'></i>`" @click="prevPage"
-                    :disabled="currentPage === 0"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:text-gray-500">
+                    :disabled="currentPage === 0" class="px-4 py-2   ">
                     Trang trước
                 </Button>
 
                 <Button :text="''" :icon="`<i class='bx bxs-chevron-right'></i>`" @click="nextPage"
-                    :disabled="currentPage >= totalPages - 1"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:text-gray-500">
+                    :disabled="currentPage >= totalPages - 1" class="px-4 py-2">
                     Trang sau
                 </Button>
             </div>
@@ -29,7 +27,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { fetchCategoryProductCounts } from '@/api/categoriesApi';
 import Button from '../buttons/button.vue';
@@ -45,24 +43,43 @@ export default {
         const barChart = ref(null);
         const data = ref([]);
         const currentPage = ref(0);
-        const itemsPerPage = 6;
+        const itemsPerPage = ref(3);
         let myChart = null;
 
+
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) { // Màn hình máy tính để bàn
+                itemsPerPage.value = 9; // Hiển thị 9 mục
+            } else if (window.innerWidth >= 768) { // Màn hình máy tính bảng
+                itemsPerPage.value = 6; // Hiển thị 6 mục
+            } else { // Màn hình di động
+                itemsPerPage.value = 3; // Hiển thị 3 mục
+            }
+        };
+        onMounted(() => {
+            handleResize();
+            window.addEventListener('resize', handleResize);
+            loadChartData();
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('resize', handleResize);
+        });
+
         const paginatedData = computed(() => {
-            const start = currentPage.value * itemsPerPage;
-            const end = start + itemsPerPage;
+            const start = currentPage.value * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
             return data.value.slice(start, end);
         });
 
         const totalPages = computed(() => {
-            return Math.ceil(data.value.length / itemsPerPage);
+            return Math.ceil(data.value.length / itemsPerPage.value);
         });
 
         const loadChartData = async () => {
             try {
                 const res = await fetchCategoryProductCounts();
                 data.value = res.data;
-
                 createChart();
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -78,7 +95,7 @@ export default {
                     datasets: [{
                         label: 'Tổng sản phẩm',
                         data: paginatedData.value.map(item => item.quantity),
-                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        backgroundColor: 'rgb(29, 78, 216)',
                         borderColor: 'rgba(100, 192, 192, 1)',
                         borderWidth: 0.5,
                     }],
@@ -107,10 +124,27 @@ export default {
                     plugins: {
                         legend: {
                             labels: {
-                                color: '#333',
+                                color: '#555',
                                 font: { size: 14 },
                             },
                         },
+                        tooltip: {
+                            callbacks: {
+                                title: () => 'Thông tin chi tiết sản phẩm',
+                                label: (tooltipItem) => {
+                                    const category = paginatedData.value[tooltipItem.dataIndex];
+                                    const total = category.quantity;
+                                    const active = category.quantityActive;
+                                    const inactive = total - active;
+
+                                    return [
+                                        `Tổng số lượng: ${total}`,
+                                        `Số lượng đang kích hoạt: ${active}`,
+                                        `Số lượng bị ẩn: ${inactive}`
+                                    ];
+                                }
+                            }
+                        }
                     },
                 },
             });
@@ -124,11 +158,7 @@ export default {
             }
         };
 
-        onMounted(loadChartData);
-
-        watch([data, currentPage], () => {
-            updateChart();
-        });
+        watch([data, currentPage], updateChart);
 
         return {
             barChart,
@@ -143,6 +173,7 @@ export default {
         };
     },
 };
+
 </script>
 
 <style scoped>
