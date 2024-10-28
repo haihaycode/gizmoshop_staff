@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { fetchBrandProductCounts } from '@/api/brandApi';
 import Button from '../buttons/button.vue';
@@ -48,23 +48,42 @@ export default {
         const barChart = ref(null);
         const data = ref([]);
         const currentPage = ref(0);
-        const itemsPerPage = 6;
+        const itemsPerPage = ref(3);
         const loading = ref(true);
         let myChart = null;
+
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                itemsPerPage.value = 9;
+            } else if (window.innerWidth >= 768) {
+                itemsPerPage.value = 6;
+            } else { // Màn hình di động
+                itemsPerPage.value = 3;
+            }
+        };
+        onMounted(() => {
+            handleResize();
+            window.addEventListener('resize', handleResize);
+            loadChartData();
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('resize', handleResize);
+        });
+
         const paginatedData = computed(() => {
-            const start = currentPage.value * itemsPerPage;
-            const end = start + itemsPerPage;
+            const start = currentPage.value * itemsPerPage.value;
+            const end = start + itemsPerPage.value;
             return data.value.slice(start, end);
         });
         const totalPages = computed(() => {
-            return Math.ceil(data.value.length / itemsPerPage);
+            return Math.ceil(data.value.length / itemsPerPage.value);
         });
 
         const loadChartData = async () => {
             try {
                 const res = await fetchBrandProductCounts();
                 data.value = res.data;
-
                 createChart();
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -82,9 +101,8 @@ export default {
                     datasets: [{
                         label: 'Tổng sản phẩm',
                         data: paginatedData.value.map(item => item.quantity),
-                        backgroundColor: 'rgba(128, 128, 128, 0.5)',
-                        borderColor: 'rgba(128, 128, 128, 1)',
-
+                        backgroundColor: 'rgba(255, 165, 0, 0.5)',  // Màu cam mờ
+                        borderColor: 'rgba(255, 165, 0, 1)',        // Màu cam đậm cho đường viền,
                         borderWidth: 0.5,
                     }],
                 },
@@ -116,6 +134,23 @@ export default {
                                 font: { size: 14 },
                             },
                         },
+                        tooltip: {
+                            callbacks: {
+                                title: () => 'Thông tin chi tiết sản phẩm',
+                                label: (tooltipItem) => {
+                                    const category = paginatedData.value[tooltipItem.dataIndex];
+                                    const total = category.quantity;
+                                    const active = category.quantityActive;
+                                    const inactive = total - active;
+
+                                    return [
+                                        `Tổng số lượng: ${total}`,
+                                        `Số lượng đang kích hoạt: ${active}`,
+                                        `Số lượng bị ẩn: ${inactive}`
+                                    ];
+                                }
+                            }
+                        }
                     },
                 },
             });
@@ -154,10 +189,10 @@ export default {
 
 <style scoped>
 canvas {
+
     height: 200px;
 }
 
-/* Thêm CSS cho biểu tượng loading */
 .loader {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-left-color: #4a90e2;
@@ -171,6 +206,5 @@ canvas {
     to {
         transform: rotate(360deg);
     }
-
 }
 </style>

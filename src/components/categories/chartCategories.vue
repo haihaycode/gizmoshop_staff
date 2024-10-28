@@ -2,11 +2,15 @@
     <div class="flex flex-col items-center bg-white shadow-lg rounded-lg p-6 ">
         <h2 class="text-xl font-bold mb-4 text-gray-800">Thống kê số lượng sản phẩm từng danh mục</h2>
 
-        <div class="overflow-x-auto w-full mb-6">
+        <div v-if="loading" class="flex justify-center items-center h-60 w-full">
+            <span class="loader"></span>
+        </div>
+
+        <div class="overflow-x-auto w-full mb-6" :class="loading ? 'hidden' : 'block'">
             <canvas ref="barChart" class="w-full h-60"></canvas>
         </div>
 
-        <div class="flex items-center justify-between w-full mb-4">
+        <div class="flex items-center justify-between w-full mb-4" :class="loading ? 'hidden' : 'block'">
             <div class="flex items-center space-x-4">
                 <Button :text="''" :icon="`<i class='bx bxs-chevron-right bx-rotate-180'></i>`" @click="prevPage"
                     :disabled="currentPage === 0" class="px-4 py-2   ">
@@ -32,6 +36,7 @@ import { Chart, registerables } from 'chart.js';
 import { fetchCategoryProductCounts } from '@/api/categoriesApi';
 import Button from '../buttons/button.vue';
 
+
 Chart.register(...registerables);
 
 export default {
@@ -44,16 +49,16 @@ export default {
         const data = ref([]);
         const currentPage = ref(0);
         const itemsPerPage = ref(3);
+        const loading = ref(true);
         let myChart = null;
 
-
         const handleResize = () => {
-            if (window.innerWidth >= 1024) { // Màn hình máy tính để bàn
-                itemsPerPage.value = 9; // Hiển thị 9 mục
-            } else if (window.innerWidth >= 768) { // Màn hình máy tính bảng
-                itemsPerPage.value = 6; // Hiển thị 6 mục
+            if (window.innerWidth >= 1024) {
+                itemsPerPage.value = 9;
+            } else if (window.innerWidth >= 768) {
+                itemsPerPage.value = 6;
             } else { // Màn hình di động
-                itemsPerPage.value = 3; // Hiển thị 3 mục
+                itemsPerPage.value = 3;
             }
         };
         onMounted(() => {
@@ -83,6 +88,8 @@ export default {
                 createChart();
             } catch (error) {
                 console.error('Error fetching data:', error);
+            } finally {
+                loading.value = false;
             }
         };
 
@@ -95,8 +102,8 @@ export default {
                     datasets: [{
                         label: 'Tổng sản phẩm',
                         data: paginatedData.value.map(item => item.quantity),
-                        backgroundColor: 'rgb(29, 78, 216)',
-                        borderColor: 'rgba(100, 192, 192, 1)',
+                        backgroundColor: 'rgba(255, 165, 0, 0.5)',  // Màu cam mờ
+                        borderColor: 'rgba(255, 165, 0, 1)',        // Màu cam đậm cho đường viền
                         borderWidth: 0.5,
                     }],
                 },
@@ -164,6 +171,7 @@ export default {
             barChart,
             currentPage,
             totalPages,
+            loading,
             nextPage() {
                 if (currentPage.value < totalPages.value - 1) currentPage.value++;
             },
@@ -179,5 +187,20 @@ export default {
 <style scoped>
 canvas {
     height: 200px;
+}
+
+.loader {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #4a90e2;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>
