@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center bg-white  shadow-lg rounded-sm p-6 mb-3">
+    <div class="flex flex-col items-center bg-white  rounded-sm p-6 mb-3 mt-4">
         <h2 class="text-xl font-bold mb-4 text-gray-800">Thống kê số lượng sản phẩm từng thương hiệu</h2>
 
         <div v-if="loading" class="flex justify-center items-center h-60 w-full">

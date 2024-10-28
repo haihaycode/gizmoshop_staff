@@ -1,15 +1,17 @@
 <template>
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5  lg:m-2 md:m-0">
         <StatisticsCardsCategory ref="StatisticsCardsCategory"></StatisticsCardsCategory>
-        <chartCategories></chartCategories>
+
         <div class="flex justify-end mt-3">
             <Button @click="handleModelCreateCategory" :icon="`<i class= 'bx bx-add-to-queue' > </i>`"
                 :text="'Thêm danh mục mới'"></Button>
         </div>
         <listCategories ref="listCategories" @handleStatus="loadCardsCategory"></listCategories>
+        <chartCategories></chartCategories>
     </div>
     <newCategory :isOpen="modalAddNewIsOpen" @create-success="loadCategories" @close="handleModelCreateCategory">
     </newCategory>
+
 </template>
 
 <script>

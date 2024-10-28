@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 bg-gray-100 shadow-md rounded mb-4">
+    <div class="p-4 bg-white shadow-md rounded mb-4">
         <form @submit.prevent="handleSearch" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
             <!-- Search by Code -->
             <div class="w-full lg:w-1/3">

@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0">
     <SearchBrandCompoment @search="handleSearch"></SearchBrandCompoment>
-    <ChartBrandProductComponent></ChartBrandProductComponent>
+
     <div class="flex justify-end">
       <Button @click="handleModelCreate" :text="'Thêm Thương Hiệu Mới'" :icon="`<i class='bx bx-add-to-queue'></i>`"
         class="mb-2"></Button>
@@ -13,6 +13,8 @@
     <!-- Component Thêm thương hiệu mới -->
     <NewBrandComponent :isOpen="modalAddNewIsOpen" @close="handleModelCreate" @create-success="refreshBrandList">
     </NewBrandComponent>
+
+    <ChartBrandProductComponent></ChartBrandProductComponent>
   </div>
 </template>
 

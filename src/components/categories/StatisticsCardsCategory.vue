@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-2 ">
 
         <div class="p-4 bg-white bg-opacity-70 rounded-sm shadow-md flex flex-col justify-between hover:bg-gray-300">
             <div class="flex justify-between items-center">

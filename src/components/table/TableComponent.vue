@@ -10,7 +10,7 @@
                 </thead>
 
                 <!-- Table Body -->
-                <tbody>
+                <tbody class="bg-white ">
                     <slot name="body"></slot>
                 </tbody>
 
@@ -26,7 +26,7 @@
 
         </div>
 
-        <div class="bg-white p-2 bg-opacity-20">
+        <div class="bg-white p-2 ">
             <slot name="pagination"></slot>
         </div>
     </div>
@@ -38,5 +38,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
