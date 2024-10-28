@@ -91,6 +91,28 @@ const dashboardRoutes = [
             },
 
         ]
+    }, {
+        path: '/product',
+        component: useComponent('admin'),
+        children: [
+
+            {
+                path: '',
+                name: 'product',
+                meta: {
+                    title: "DANH SÁCH SẢN PHẨM",
+                    description: "GIZMO"
+                },
+                components: {
+                    default: useComponent('product'),
+                    header: Header,
+                    footer: Footer,
+                    sideBar: sideBar
+                }
+
+            },
+
+        ]
     },
 ]
 export default dashboardRoutes;

@@ -50,8 +50,8 @@
 
             <template #pagination>
                 <div>
-                    <Pagination :total-items="pagination?.totalElements" :items-per-page="size" :current-page="page + 1"
-                        @page-changed="handlePageChange" @limit-changed="handleLimitChange">
+                    <Pagination :total-items="pagination?.totalElements || 0" :items-per-page="size"
+                        :current-page="page + 1" @page-changed="handlePageChange" @limit-changed="handleLimitChange">
                     </Pagination>
                 </div>
             </template>
@@ -86,6 +86,7 @@ export default {
             sortDirection: "desc",
         }
     },
+    emits: ['handleStatus'],
     components: {
         TableComponent,
         toggleButton,
@@ -145,6 +146,7 @@ export default {
             try {
                 await changeActive(id)
                 this.handlesListCategories
+                this.$emit('handleStatus')
             } catch (error) {
                 console.log(error)
             }

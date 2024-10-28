@@ -10,7 +10,16 @@ export const getCategories = async (params) => {
     } catch (error) {
         throw new Error(`${error}`);
     }
-}; export const getCategoriesID = async (idCategory) => {
+};
+export const listCategories = async () => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/list/categories`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+export const getCategoriesID = async (idCategory) => {
     try {
         const response = await Axios.get(`${HOST}/api/public/categories/${idCategory}`);
         return response.data;
@@ -48,5 +57,14 @@ export const updateImageCategory = async (idCategory, formData) => {
         return response.data;
     } catch (error) {
         throw new Error(`${error}`);
+    }
+};
+// lấy số lượng sản phẩm của từng danh mục
+export const fetchCategoryProductCounts = async () => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/category-stats`);
+        return response.data;
+    } catch (error) {
+        throw new Error(` ${error}`);
     }
 };
