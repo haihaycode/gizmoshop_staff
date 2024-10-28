@@ -1,26 +1,18 @@
 <template>
-  <div
-    class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0"
-  >
+  <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0">
     <SearchBrandCompoment @search="handleSearch"></SearchBrandCompoment>
+    <ChartBrandProductComponent></ChartBrandProductComponent>
     <div class="flex justify-end">
-      <Button
-        @click="handleModelCreate"
-        :text="'Thêm Thương Hiệu Mới'"
-        :icon="`<i class='bx bx-add-to-queue'></i>`"
-        class="mb-2"
-      ></Button>
+      <Button @click="handleModelCreate" :text="'Thêm Thương Hiệu Mới'" :icon="`<i class='bx bx-add-to-queue'></i>`"
+        class="mb-2"></Button>
     </div>
 
     <!-- Danh sách thương hiệu -->
     <ListBrand :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent"></ListBrand>
 
     <!-- Component Thêm thương hiệu mới -->
-    <NewBrandComponent
-      :isOpen="modalAddNewIsOpen"
-      @close="handleModelCreate"
-      @create-success="refreshBrandList"
-    ></NewBrandComponent>
+    <NewBrandComponent :isOpen="modalAddNewIsOpen" @close="handleModelCreate" @create-success="refreshBrandList">
+    </NewBrandComponent>
   </div>
 </template>
 
@@ -29,7 +21,7 @@ import ListBrand from "@/components/brand/ListBrand.vue";
 import Button from "@/components/buttons/button.vue";
 import NewBrandComponent from "@/components/brand/NewBrandComponent.vue";
 import SearchBrandCompoment from "@/components/brand/SearchBrandCompoment.vue";
-
+import ChartBrandProductComponent from "@/components/brand/ChartBrandProductComponent.vue";
 export default {
   name: "brandView",
   data() {
@@ -44,6 +36,7 @@ export default {
     Button,
     NewBrandComponent,
     SearchBrandCompoment,
+    ChartBrandProductComponent
   },
   methods: {
     handleModelCreate() {

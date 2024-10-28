@@ -44,3 +44,13 @@ export const changeActive = async (idBrand) => {
     throw new Error(`${error}`);
   }
 };
+
+// lấy số lượng sản phẩm của từng thương hiệu
+export const fetchBrandProductCounts = async () => {
+  try {
+    const response = await Axios.get(`${HOST}/api/public/brand/stats`);
+    return response.data;
+  } catch (error) {
+    throw new Error(` ${error}`);
+  }
+};
