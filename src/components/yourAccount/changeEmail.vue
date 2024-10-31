@@ -18,9 +18,10 @@
 
                 <div class="mb-4 flex items-center justify-between">
                     <Button :isLoading="isLoading" :text="isOtpSending ? `Gửi lại sau ${countdown}s` : 'Gửi OTP'"
-                        type="submit" @click="sendOtp" :disabled="emailError || isOtpSending"
+                        type="submit" @click="sendOtp" :disabled="!email || emailError || isOtpSending"
                         class="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 hover:bg-blue-600 disabled:opacity-50">
                     </Button>
+
                 </div>
 
                 <div class="mb-4">

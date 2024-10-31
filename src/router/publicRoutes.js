@@ -8,7 +8,7 @@ const publicRoutes = [
 
             {
                 path: '',
-                name : 'login',
+                name: 'login',
                 meta: {
                     title: "Quản Lý Cửa Hàng",
                     description: "Đăng nhập"
@@ -21,6 +21,26 @@ const publicRoutes = [
             },
 
         ]
+    }, {
+        path: '/test',
+        component: useComponent('test'),
+        // children: [
+
+        //     {
+        //         path: '',
+        //         name: 'login',
+        //         meta: {
+        //             title: "Biểu Đồ Hệ Thống",
+        //             description: "Biểu"
+        //         },
+        //         components: {
+        //             default: useComponent('test'),
+
+        //         }
+
+        //     },
+
+        // ]
     },
 ];
 

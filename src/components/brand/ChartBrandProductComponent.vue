@@ -94,6 +94,7 @@ export default {
 
         const createChart = () => {
             const ctx = barChart.value.getContext('2d');
+            const maxYValue = Math.max(...paginatedData.value.map(item => item.quantity)) +5;
             myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -101,8 +102,8 @@ export default {
                     datasets: [{
                         label: 'Tổng sản phẩm',
                         data: paginatedData.value.map(item => item.quantity),
-                        backgroundColor: 'rgba(255, 165, 0, 0.5)',  // Màu cam mờ
-                        borderColor: 'rgba(255, 165, 0, 1)',        // Màu cam đậm cho đường viền,
+                        backgroundColor: 'rgba(255, 165, 0, 0.5)',
+                        borderColor: 'rgba(255, 165, 0, 1)',
                         borderWidth: 0.5,
                     }],
                 },
@@ -111,6 +112,7 @@ export default {
                     scales: {
                         y: {
                             beginAtZero: true,
+                            max: maxYValue,
                             title: {
                                 display: true,
                                 text: 'Số lượng sản phẩm',
