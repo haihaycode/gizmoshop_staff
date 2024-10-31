@@ -1,8 +1,8 @@
 <template>
     <div>
-        <TableComponent>
+        <TableComponent :items="products">
             <template #header>
-                <th @click="changeSort('id')"
+                <th @click=" changeSort('id')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     STT <span v-html="getSortIcon('id')"></span>
                 </th>
@@ -112,8 +112,10 @@
 </template>
 
 <script>
+
 import TableComponent from '../table/TableComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
+
 export default {
     name: 'ListVoucherComponent',
     components: {

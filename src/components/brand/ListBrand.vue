@@ -1,61 +1,41 @@
 <template>
   <div>
-    <TableComponent>
+    <TableComponent :items="listBrandData" :loading="isLoading">
       <!-- Header Slot -->
       <template #header>
-        <th
-          @click="changeSort('id')"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider"
-        >
+        <th @click="changeSort('id')"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           STT <span v-html="getSortIcon('id')"></span>
         </th>
-        <th
-          @click="changeSort('name')"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider"
-        >
+        <th @click="changeSort('name')"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           THƯƠNG HIỆU <span v-html="getSortIcon('name')"></span>
         </th>
-        <th
-          @click="changeSort('description')"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider"
-        >
+        <th @click="changeSort('description')"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           MÔ TẢ <span v-html="getSortIcon('description')"></span>
         </th>
-        <th
-          @click="changeSort('deleted')"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider"
-        >
+        <th @click="changeSort('deleted')"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           TRẠNG THÁI <span v-html="getSortIcon('deleted')"></span>
         </th>
       </template>
 
       <!-- Body Slot -->
       <template #body>
-        <tr
-          v-for="(item, index) in listBrandData"
-          :key="index"
-          @click="handleUpdateBrandSelected(item)"
-          class="hover:bg-gray-300 cursor-pointer"
-        >
-          <td
-            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-          >
+        <tr v-for="(item, index) in listBrandData" :key="index" @click="handleUpdateBrandSelected(item)"
+          class="hover:bg-gray-300 cursor-pointer">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
             {{ item.id }}
           </td>
-          <td
-            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-          >
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
             {{ item.name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {{ item.description }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <toggleButton
-              :is-toggled="!item.deleted"
-              @update:isToggled="handleActive(item.id)"
-              @click.stop
-            />
+            <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
           </td>
         </tr>
       </template>
@@ -66,32 +46,17 @@
 
       <template #pagination>
         <div>
-          <Pagination
-            :total-items="pagination?.totalElements"
-            :items-per-page="limit"
-            :current-page="page + 1"
-            @page-changed="handlePageChange"
-            @limit-changed="handleLimitChange"
-          />
+          <Pagination :total-items="pagination?.totalElements" :items-per-page="limit" :current-page="page + 1"
+            @page-changed="handlePageChange" @limit-changed="handleLimitChange" />
         </div>
       </template>
     </TableComponent>
 
-    <UpdateBrandComponent
-      v-if="idBrandSelected"
-      :brand="listBrandData.find((item) => item.id === idBrandSelected)"
-      :isOpen="modalUpdateBrandIsOpen"
-      @close="modalUpdateBrand"
-      @update-success="loadBrand"
-    />
+    <UpdateBrandComponent v-if="idBrandSelected" :brand="listBrandData.find((item) => item.id === idBrandSelected)"
+      :isOpen="modalUpdateBrandIsOpen" @close="modalUpdateBrand" @update-success="loadBrand" />
 
-    <NotificationModal
-      :isOpen="NotificationModalIsOpen"
-      :message="message"
-      :type="messageType"
-      @close="NotificationModalIsOpen = false"
-      :title="'Thông báo'"
-    />
+    <NotificationModal :isOpen="NotificationModalIsOpen" :message="message" :type="messageType"
+      @close="NotificationModalIsOpen = false" :title="'Thông báo'" />
   </div>
 </template>
 
@@ -102,6 +67,7 @@ import Pagination from "../pagination/Pagination.vue";
 import UpdateBrandComponent from "./UpdateBrandComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import NotificationModal from "../modal/NotificationModal.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "listBrand",
@@ -154,7 +120,9 @@ export default {
   mounted() {
     this.handleGetBrand();
   },
-
+  computed: {
+    ...mapGetters("loading", ["isLoading"]),
+  },
   methods: {
     async handleGetBrand() {
       try {

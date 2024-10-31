@@ -1,7 +1,7 @@
 <template>
     <div>
         <searchComponent @search="handlesListCategories"></searchComponent>
-        <TableComponent>
+        <TableComponent :items="listCategories" :loading="isLoading">
             <!-- Header Slot -->
             <template #header>
                 <th @click="changeSort('id')"
@@ -69,6 +69,7 @@ import searchComponent from '@/components/categories/searchComponent.vue';
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
+import { mapGetters } from 'vuex';
 import { loadImage } from '@/services/imageService.js';
 import Pagination from '../pagination/Pagination.vue';
 export default {
@@ -96,6 +97,9 @@ export default {
     },
     mounted() {
         this.handlesListCategories()
+    },
+    computed: {
+        ...mapGetters("loading", ["isLoading"]),
     },
     methods: {
         loadImage,
