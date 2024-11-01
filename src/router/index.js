@@ -20,8 +20,8 @@ export const routes = [
 const router = createRouter({
     history: !DEV ? createWebHashHistory() : createWebHistory(),
     routes,
-    linkActiveClass: 'my-custom-active-class',
-    linkExactActiveClass: 'my-custom-exact-active-class',
+    linkActiveClass: 'bg-gray-100 bg-opacity-5',
+    linkExactActiveClass: 'bg-gray-100 bg-opacity-5',
 });
 
 

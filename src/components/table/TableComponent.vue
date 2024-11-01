@@ -10,8 +10,16 @@
                 </thead>
 
                 <!-- Table Body -->
-                <tbody>
-                    <slot name="body"></slot>
+                <tbody class="bg-white ">
+                    <tr v-if="loading">
+                        <td colspan="100%" class="text-center py-4">Đang tải ...</td>
+                    </tr>
+                    <tr v-else-if="!items || items.length === 0">
+                        <td colspan="100%" class="text-center py-4">Không có dữ liệu</td>
+                    </tr>
+                    <template v-else>
+                        <slot name="body"></slot>
+                    </template>
                 </tbody>
 
                 <!-- Table Footer -->
@@ -26,7 +34,7 @@
 
         </div>
 
-        <div class="bg-white p-2 bg-opacity-20">
+        <div class="bg-white p-2 ">
             <slot name="pagination"></slot>
         </div>
     </div>
@@ -35,8 +43,17 @@
 <script>
 export default {
     name: "TableComponent",
+    props: {
+        items: {
+            type: Array,
+            default: () => []
+        },
+        loading: {
+            type: Boolean,
+            default: false
+        }
+    }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

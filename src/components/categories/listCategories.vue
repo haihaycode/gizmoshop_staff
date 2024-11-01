@@ -1,7 +1,7 @@
 <template>
     <div>
         <searchComponent @search="handlesListCategories"></searchComponent>
-        <TableComponent>
+        <TableComponent :items="listCategories" :loading="isLoading">
             <!-- Header Slot -->
             <template #header>
                 <th @click="changeSort('id')"
@@ -50,8 +50,8 @@
 
             <template #pagination>
                 <div>
-                    <Pagination :total-items="pagination?.totalElements" :items-per-page="size" :current-page="page + 1"
-                        @page-changed="handlePageChange" @limit-changed="handleLimitChange">
+                    <Pagination :total-items="pagination?.totalElements || 0" :items-per-page="size"
+                        :current-page="page + 1" @page-changed="handlePageChange" @limit-changed="handleLimitChange">
                     </Pagination>
                 </div>
             </template>
@@ -69,6 +69,7 @@ import searchComponent from '@/components/categories/searchComponent.vue';
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
+import { mapGetters } from 'vuex';
 import { loadImage } from '@/services/imageService.js';
 import Pagination from '../pagination/Pagination.vue';
 export default {
@@ -86,6 +87,7 @@ export default {
             sortDirection: "desc",
         }
     },
+    emits: ['handleStatus'],
     components: {
         TableComponent,
         toggleButton,
@@ -95,6 +97,9 @@ export default {
     },
     mounted() {
         this.handlesListCategories()
+    },
+    computed: {
+        ...mapGetters("loading", ["isLoading"]),
     },
     methods: {
         loadImage,
@@ -145,6 +150,7 @@ export default {
             try {
                 await changeActive(id)
                 this.handlesListCategories
+                this.$emit('handleStatus')
             } catch (error) {
                 console.log(error)
             }

@@ -5,8 +5,11 @@ import 'boxicons/css/boxicons.min.css';
 import '@/assets/css/hoverCursorpointer.css'
 import router from './router'
 import store from './store'
+import FloatingVue from 'floating-vue';
+import 'floating-vue/dist/style.css';
 const app = createApp(App)
 
 app.use(store)
 app.use(router)
+app.use(FloatingVue);
 app.mount('#app')

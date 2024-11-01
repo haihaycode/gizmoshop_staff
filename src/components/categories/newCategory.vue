@@ -68,6 +68,7 @@ export default {
         NotificationModal,
         Button
     },
+    emits: ['create-success', 'close'],
     data() {
         return {
             NotificationModalIsOpen: false,
