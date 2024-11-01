@@ -1,6 +1,6 @@
 <template>
     <div>
-        <searchComponent @search="getDataProduct"></searchComponent>
+        <SearchProductCompoment @search="getDataProduct"></SearchProductCompoment>
         <TableComponent :items="products" :loading="isLoading">
             <template #header>
                 <th @click="changeSort('id')"
@@ -60,8 +60,15 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                         item.productCreationDate }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
-                        item.productStatusResponse.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"> <select
+                            v-model="item.productStatusResponse.id"
+                            @change="handleStatusChange(item.id, item.productStatusResponse.id)"
+                            class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option v-for="statusItem in status" :key="statusItem.id" :value="statusItem.id">
+                                {{ statusItem.name }}
+                            </option>
+                        </select>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         <Button :icon="`<i class='bx bxs-edit text-xl'></i>`" :text="''"></Button>
                     </td>
@@ -94,12 +101,13 @@
 <script>
 import TableComponent from '../table/TableComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
-import { getProduct } from '@/api/productApi';
+import { getProduct, getStatusProduct } from '@/api/productApi';
 import Button from '../buttons/button.vue';
 import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import { formatDay } from '@/utils/currencyUtils'
-import searchComponent from '../search/searchComponent.vue';
+// import searchComponent from '../search/searchComponent.vue';
+import SearchProductCompoment from './SearchProductCompoment.vue';
 import { loadImage } from '@/services/imageService.js';
 export default {
     name: 'ListVoucherComponent',
@@ -108,11 +116,14 @@ export default {
         Button,
         Pagination,
         TooltipBox,
-        searchComponent
+        SearchProductCompoment
     },
     data() {
         return {
+            idStatusSelected: null,
+            status: [],
             products: [],
+            selectedStatus: null,
             tooltipVisible: false,
             tooltipContent: {
                 title: '',
@@ -151,22 +162,29 @@ export default {
             }
         };
     },
-    mounted() {
+    async mounted() {
+        await this.getListStatusProduct();
         this.getDataProduct();
     },
+
     computed: {
         ...mapGetters("loading", ["isLoading"]),
         formatData() {
             return this.products.map(item => {
+                console.log(item.productStatusResponse.id);
                 return {
                     ...item,
-                    productCreationDate: formatDay(item.productCreationDate) // sử dụng formatDay để định dạng ngày
+                    productCreationDate: formatDay(item.productCreationDate)
                 }
             });
-        }
+        },
     },
     methods: {
         loadImage,
+        handleStatusChange(productId, selectedStatusId) {
+            console.log('Product ID:', productId);
+            console.log('Selected Status ID:', selectedStatusId);
+        },
         async getDataProduct(keyWord) {
             try {
                 const reqData = {
@@ -181,6 +199,16 @@ export default {
                 this.pagination = res.data;
             } catch (error) {
                 console.error(error);
+            }
+        },
+
+        async getListStatusProduct() {
+            try {
+                const res = await getStatusProduct()
+                this.status = res.data
+                console.log(this.status)
+            } catch (error) {
+                console.error(error)
             }
         },
 
