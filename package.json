@@ -23,6 +23,7 @@
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.0.13",
     "vuex": "^4.0.2",
+    "xlsx": "^0.18.5",
     "yup": "^1.4.0"
   },
   "devDependencies": {

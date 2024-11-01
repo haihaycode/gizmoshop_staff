@@ -2,34 +2,25 @@
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
-// Khởi tạo Notyf với các tùy chọn thiết kế
 const notyf = new Notyf({
     duration: 3000,
     position: { x: 'right', y: 'top' },
     dismissible: true,
     ripple: true,
     types: [
-        { type: 'success', background: '#d1e7dd' },
-        { type: 'error', background: '#ffcccc' },
-        { type: 'info', background: '#dbeafe' },
-        { type: 'warning', background: '#fff4cd' }
+        { type: 'success', background: '#00A36C' },
+        { type: 'error', background: '#FA5F55' },
+        { type: 'info', background: '#6495ED' },
+        { type: 'warning', background: '#E4D00A' }
     ]
 });
 
-
-function createNotification({ type, message, background, iconClass }) {
-    const notification = notyf.open({
+// Hàm tạo thông báo có icon
+function createNotification({ type, message, iconClass }) {
+    notyf.open({
         type,
-        message,
-        background,
+        message: `<i class="${iconClass} mr-2"></i> ${message}`,
     });
-
-    const icon = document.createElement('i');
-    icon.className = iconClass;
-    icon.style.marginRight = '10px';
-    icon.style.fontSize = '20px';
-    icon.style.verticalAlign = 'middle';
-    notification.target.prepend(icon);
 }
 
 export default {
@@ -37,35 +28,28 @@ export default {
         createNotification({
             type: 'success',
             message,
-            background: '#10b981',
-            iconClass: 'bx bxs-check-circle'
+            iconClass: 'bx bxs-check-circle' // Icon thành công
         });
     },
-
     error(message = 'Có lỗi xảy ra!') {
         createNotification({
             type: 'error',
             message,
-            background: '#ff4c4c',
-            iconClass: 'bx bxs-error'
+            iconClass: 'bx bxs-error' // Icon lỗi
         });
     },
-
     info(message = 'Thông tin!') {
         createNotification({
             type: 'info',
             message,
-            background: '#3b82f6',
-            iconClass: 'bx bxs-info-circle'
+            iconClass: 'bx bxs-info-circle' // Icon thông tin
         });
     },
-
     warning(message = 'Cảnh báo!') {
         createNotification({
             type: 'warning',
             message,
-            background: '#f59e0b',
-            iconClass: 'bx bxs-bug'
+            iconClass: 'bx bxs-bug' // Icon cảnh báo
         });
     }
 };

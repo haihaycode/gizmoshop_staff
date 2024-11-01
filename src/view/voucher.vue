@@ -10,6 +10,9 @@
                 :icon="`<i class= 'bx bx-add-to-queue' > </i>`" class="mb-2 "
                 @click="handleChangeStatusModalAddNew"></Button>
         </div>
+        <div>
+            <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
+        </div>
         <!-- list  -->
         <ListVoucherComponent :codeProp="code" :statusProp="status" ref="ListVoucherComponent"></ListVoucherComponent>
 
@@ -27,6 +30,7 @@
 import ListVoucherComponent from '@/components/voucher/ListVoucherComponent.vue';
 import NewVoucherComponent from '@/components/voucher/NewVoucherComponent.vue';
 import SearchVoucherComponent from '@/components/voucher/SearchVoucherComponent.vue';
+import ImportAndExportFromExcelComponent from '@/components/fileTransfer/ImportAndExportFromExcelComponent.vue';
 import Button from '@/components/buttons/button.vue';
 export default {
     name: `VoucherViewComponent`,
@@ -41,7 +45,8 @@ export default {
         ListVoucherComponent,
         NewVoucherComponent,
         SearchVoucherComponent,
-        Button
+        Button,
+        ImportAndExportFromExcelComponent
     },
     methods: {
         handleChangeStatusModalAddNew() {

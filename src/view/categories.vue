@@ -6,6 +6,7 @@
             <Button @click="handleModelCreateCategory" :icon="`<i class= 'bx bx-add-to-queue' > </i>`"
                 :text="'Thêm danh mục mới'"></Button>
         </div>
+        <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
         <listCategories ref="listCategories" @handleStatus="loadCardsCategory"></listCategories>
         <chartCategories></chartCategories>
     </div>
@@ -20,6 +21,7 @@ import Button from '@/components/buttons/button.vue';
 import newCategory from '@/components/categories/newCategory.vue';
 import StatisticsCardsCategory from '@/components/categories/StatisticsCardsCategory.vue';
 import chartCategories from '@/components/categories/chartCategories.vue';
+import ImportAndExportFromExcelComponent from '@/components/fileTransfer/ImportAndExportFromExcelComponent.vue';
 export default {
     name: 'categoriesView',
     data() {
@@ -33,7 +35,8 @@ export default {
         Button,
         newCategory,
         StatisticsCardsCategory,
-        chartCategories
+        chartCategories,
+        ImportAndExportFromExcelComponent
     },
     methods: {
         handleModelCreateCategory() {

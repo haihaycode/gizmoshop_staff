@@ -19,6 +19,9 @@
           class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           TRẠNG THÁI <span v-html="getSortIcon('deleted')"></span>
         </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+          XUẤT
+        </th>
       </template>
 
       <!-- Body Slot -->
@@ -36,6 +39,10 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
+          </td>
+          <td>
+            <ExportButtonComponent>
+            </ExportButtonComponent>
           </td>
         </tr>
       </template>
@@ -68,7 +75,7 @@ import UpdateBrandComponent from "./UpdateBrandComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import NotificationModal from "../modal/NotificationModal.vue";
 import { mapGetters } from "vuex";
-
+import ExportButtonComponent from "../fileTransfer/ExportButtonComponent.vue";
 export default {
   name: "listBrand",
   data() {
@@ -116,6 +123,7 @@ export default {
     toggleButton,
     Pagination,
     NotificationModal,
+    ExportButtonComponent
   },
   mounted() {
     this.handleGetBrand();

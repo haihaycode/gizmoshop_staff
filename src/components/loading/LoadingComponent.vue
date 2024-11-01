@@ -1,13 +1,9 @@
 <template>
-    <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-10">
-        <div class="loader flex items-center space-x-2">
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
-            <div class="loader-square"></div>
+    <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-40 z-10">
+        <div class="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
     </div>
 </template>
@@ -25,145 +21,48 @@ export default {
 </script>
 
 <style scoped>
-/* From Uiverse.io by ZacharyCrespin */
-@keyframes square-animation {
-    0% {
-        left: 0;
-        top: 0;
-    }
+.loader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60px;
+    /* Width of the loader */
+}
 
-    10.5% {
-        left: 0;
-        top: 0;
-    }
+.dot {
+    width: 15px;
+    /* Size of each dot */
+    height: 15px;
+    border-radius: 50%;
+    background-color: #1026349d;
+    /* Color of the dots */
+    animation: bounce 0.6s infinite alternate;
+}
 
-    12.5% {
-        left: 32px;
-        top: 0;
-    }
+/* Animation for bouncing effect */
+@keyframes bounce {
 
-    23% {
-        left: 32px;
-        top: 0;
-    }
-
-    25% {
-        left: 64px;
-        top: 0;
-    }
-
-    35.5% {
-        left: 64px;
-        top: 0;
-    }
-
-    37.5% {
-        left: 64px;
-        top: 32px;
-    }
-
-    48% {
-        left: 64px;
-        top: 32px;
+    0%,
+    100% {
+        transform: translateY(0);
     }
 
     50% {
-        left: 32px;
-        top: 32px;
-    }
-
-    60.5% {
-        left: 32px;
-        top: 32px;
-    }
-
-    62.5% {
-        left: 32px;
-        top: 64px;
-    }
-
-    73% {
-        left: 32px;
-        top: 64px;
-    }
-
-    75% {
-        left: 0;
-        top: 64px;
-    }
-
-    85.5% {
-        left: 0;
-        top: 64px;
-    }
-
-    87.5% {
-        left: 0;
-        top: 32px;
-    }
-
-    98% {
-        left: 0;
-        top: 32px;
-    }
-
-    100% {
-        left: 0;
-        top: 0;
+        transform: translateY(-15px);
+        /* How high the dots bounce */
     }
 }
 
-.loader {
-    position: relative;
-    width: 96px;
-    height: 96px;
-    transform: rotate(45deg);
-}
-
-.loader-square {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 28px;
-    height: 28px;
-    margin: 2px;
-    border-radius: 0px;
-    background: rgba(0, 0, 0, 0.5);
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    animation: square-animation 10s ease-in-out infinite both;
-}
-
-.loader-square:nth-of-type(0) {
+/* Animation delay for each dot to create a sequential bounce effect */
+.dot:nth-child(1) {
     animation-delay: 0s;
 }
 
-.loader-square:nth-of-type(1) {
-    animation-delay: -1.4285714286s;
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
 }
 
-.loader-square:nth-of-type(2) {
-    animation-delay: -2.8571428571s;
-}
-
-.loader-square:nth-of-type(3) {
-    animation-delay: -4.2857142857s;
-}
-
-.loader-square:nth-of-type(4) {
-    animation-delay: -5.7142857143s;
-}
-
-.loader-square:nth-of-type(5) {
-    animation-delay: -7.1428571429s;
-}
-
-.loader-square:nth-of-type(6) {
-    animation-delay: -8.5714285714s;
-}
-
-.loader-square:nth-of-type(7) {
-    animation-delay: -10s;
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
 }
 </style>

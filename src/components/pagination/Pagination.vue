@@ -53,8 +53,11 @@
     <!-- Pagination -->
 
     <div>
-      <div class="px-2">
-        Trang {{ currentPage }} / {{ totalPages }}
+      <div class="px-2 flex items-center">
+        Trang
+        <input type="number" v-model.number="editablePage" @input="updatePageInstant" min="1" :max="totalPages"
+          class="w-16 border mx-1 rounded-sm text-center no-spinner focus:outline-none focus:border-none border-none bg-gray-50" />
+        / {{ totalPages }}
       </div>
     </div>
   </div>
@@ -66,21 +69,25 @@ export default {
   props: {
     totalItems: {
       type: Number,
-      required: true
+      required: true,
+      default: 0
     },
     itemsPerPage: {
       type: Number,
-      required: true
+      required: true,
+      default: 10
     },
     currentPage: {
       type: Number,
-      required: true
+      required: true,
+      default: 0
     }
   },
   data() {
     return {
-      localItemsPerPage: this.itemsPerPage, // Tạo biến local để giữ giá trị
-      limitOptions: [5, 10, 15, 20] // Các lựa chọn số mục mỗi trang
+      localItemsPerPage: this.itemsPerPage,
+      limitOptions: [5, 10, 15, 20],
+      editablePage: this.currentPage,
     };
   },
   computed: {
@@ -112,12 +119,26 @@ export default {
       }
     },
     updateLimit() {
-      this.$emit('limit-changed', this.localItemsPerPage); // Phát ra sự kiện với giá trị mới
+      this.$emit('limit-changed', this.localItemsPerPage);
+    },
+    updatePageInstant() {
+      if (this.editablePage >= 1 && this.editablePage <= this.totalPages) {
+        this.goToPage(this.editablePage);
+      } else if (this.editablePage > this.totalPages) {
+        this.editablePage = this.totalPages;
+        this.goToPage(this.totalPages);
+      } else if (this.editablePage < 1) {
+        this.editablePage = 1;
+        this.goToPage(1);
+      }
     }
   },
   watch: {
     itemsPerPage(newVal) {
-      this.localItemsPerPage = newVal; // Cập nhật giá trị local khi prop thay đổi
+      this.localItemsPerPage = newVal;
+    },
+    currentPage(newVal) {
+      this.editablePage = newVal;
     }
   }
 };

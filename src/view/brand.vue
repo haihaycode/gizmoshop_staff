@@ -6,6 +6,7 @@
       <Button @click="handleModelCreate" :text="'Thêm Thương Hiệu Mới'" :icon="`<i class='bx bx-add-to-queue'></i>`"
         class="mb-2"></Button>
     </div>
+    <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
 
     <!-- Danh sách thương hiệu -->
     <ListBrand :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent"></ListBrand>
@@ -15,6 +16,8 @@
     </NewBrandComponent>
 
     <ChartBrandProductComponent></ChartBrandProductComponent>
+
+    <InventoryNewProductComponent></InventoryNewProductComponent>
   </div>
 </template>
 
@@ -24,6 +27,8 @@ import Button from "@/components/buttons/button.vue";
 import NewBrandComponent from "@/components/brand/NewBrandComponent.vue";
 import SearchBrandCompoment from "@/components/brand/SearchBrandCompoment.vue";
 import ChartBrandProductComponent from "@/components/brand/ChartBrandProductComponent.vue";
+import ImportAndExportFromExcelComponent from "@/components/fileTransfer/ImportAndExportFromExcelComponent.vue";
+import InventoryNewProductComponent from "@/components/product/InventoryNewProductComponent.vue";
 export default {
   name: "brandView",
   data() {
@@ -34,11 +39,13 @@ export default {
     };
   },
   components: {
+    InventoryNewProductComponent,
     ListBrand,
     Button,
     NewBrandComponent,
     SearchBrandCompoment,
-    ChartBrandProductComponent
+    ChartBrandProductComponent,
+    ImportAndExportFromExcelComponent
   },
   methods: {
     handleModelCreate() {
@@ -51,7 +58,6 @@ export default {
       this.$refs.ListBrandComponent.handleGetBrand();
     },
     handleSearch(searchParams) {
-      console.log("Received Search Params in brandView:", searchParams);
       this.name = searchParams.name;
       this.deleted = searchParams.deleted;
     },

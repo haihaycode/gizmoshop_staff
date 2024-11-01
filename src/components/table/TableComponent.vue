@@ -10,11 +10,8 @@
                 </thead>
 
                 <!-- Table Body -->
-                <tbody class="bg-white ">
-                    <tr v-if="loading">
-                        <td colspan="100%" class="text-center py-4">Đang tải ...</td>
-                    </tr>
-                    <tr v-else-if="!items || items.length === 0">
+                <tbody class="bg-white">
+                    <tr v-if="!items || items.length === 0">
                         <td colspan="100%" class="text-center py-4">Không có dữ liệu</td>
                     </tr>
                     <template v-else>
@@ -56,4 +53,28 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/*(Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    /* Độ rộng của scrollbar */
+    height: 8px;
+    /* Chiều cao của scrollbar cho cuộn ngang */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #88888855;
+    /* Màu của thanh cuộn */
+    border-radius: 2px;
+    /* Bo tròn góc thanh cuộn */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #55555593;
+    /* Màu khi hover thanh cuộn */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+</style>
