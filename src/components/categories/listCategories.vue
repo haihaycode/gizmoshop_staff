@@ -65,7 +65,7 @@
 
 <script>
 import TableComponent from '../table/TableComponent.vue';
-import searchComponent from '@/components/categories/searchComponent.vue';
+import searchComponent from '@/components/search/searchComponent.vue';
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';

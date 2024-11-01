@@ -1,228 +1,217 @@
 <template>
     <div>
-        <TableComponent :items="products">
+        <searchComponent @search="getDataProduct"></searchComponent>
+        <TableComponent :items="products" :loading="isLoading">
             <template #header>
-                <th @click=" changeSort('id')"
+                <th @click="changeSort('id')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     STT <span v-html="getSortIcon('id')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    TÊN SẢN PHẨM <span v-html="getSortIcon('id')"></span>
+                    TÊN SẢN PHẨM <span v-html="getSortIcon('name')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('price')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    GIÁ GỐC <span v-html="getSortIcon('id')"></span>
+                    GIÁ GỐC <span v-html="getSortIcon('price')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('category.name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    GIÁ ĐANG BÁN <span v-html="getSortIcon('id')"></span>
+                    DANH MỤC <span v-html="getSortIcon('category.name')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('productBrand.name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    GIẢM GIÁ THEO % <span v-html="getSortIcon('id')"></span>
+                    THƯƠNG HIỆU <span v-html="getSortIcon('productBrand.name')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('productInventoryResponse.inventory.inventoryName')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    MÔ TẢ <span v-html="getSortIcon('id')"></span>
+                    KHO <span v-html="getSortIcon('productInventoryResponse.inventory.inventoryName')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('fullname')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    ẢNH ĐẠI DIỆN <span v-html="getSortIcon('id')"></span>
+                    NGƯỜI TẠO <span v-html="getSortIcon('fullname')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('createAt')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    DANH MỤC <span v-html="getSortIcon('id')"></span>
+                    NGÀY KHỞI TẠO <span v-html="getSortIcon('createAt')"></span>
                 </th>
-                <th @click="changeSort('id')"
+                <th @click="changeSort('productStatusResponse.name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    THƯƠNG HIỆU <span v-html="getSortIcon('id')"></span>
+                    TRẠNG THÁI <span v-html="getSortIcon('productStatusResponse.name')"></span>
                 </th>
-                <th @click="changeSort('id')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    NGƯỜI TẠO <span v-html="getSortIcon('id')"></span>
-                </th>
-                <th @click="changeSort('id')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    SỐ LƯỢNG/KHO <span v-html="getSortIcon('id')"></span>
-                </th>
-                <th @click="changeSort('id')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    THÔNG TIN CƠ BẢN <span v-html="getSortIcon('id')"></span>
-                </th>
-                <th @click="changeSort('id')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    TRẠNG THÁI <span v-html="getSortIcon('id')"></span>
-                </th>
-                <th @click="changeSort('id')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    THAO TÁC <span v-html="getSortIcon('id')"></span>
-                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">THAO TÁC</th>
             </template>
             <template #body>
-                <tr v-for="(product, index) in products" :key="product.id">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.originalPrice.toLocaleString() }} VNĐ</td>
-                    <td>{{ product.currentPrice.toLocaleString() }} VNĐ</td>
-                    <td>{{ product.discountPercentage }}%</td>
-                    <td>{{ product.description }}</td>
-                    <td>
-                        <img :src="product.imageUrl" alt="Ảnh đại diện" width="50" />
+                <tr v-for="item in formatData" :key="item.id" class="hover:bg-gray-300">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.productName }}
                     </td>
-                    <td>{{ product.category.name }}</td>
-                    <td>{{ product.brand.name }}</td>
-                    <td>
-                        <div @mouseover="showTooltipBox(index, $event)" @mouseleave="hideTooltip"
-                            class="relative inline-block cursor-pointer">
-                            {{ product.creator.name }}
-                        </div>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        item.productPrice.toLocaleString() }} VNĐ</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        item.productCategories.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.productBrand.name
+                        }}</td>
+                    <td @mouseover="showTooltipBox('productInventory', item, $event)" @mouseleave="hideTooltip"
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {{ item.productInventoryResponse?.inventory?.inventoryName || 'Không có dữ liệu' }}</td>
+                    <td @mouseover="showTooltipBox('authorProduct', item, $event)" @mouseleave="hideTooltip"
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.author.fullname }}
                     </td>
-                    <td>{{ product.inventory.quantity }} tại {{ product.inventory.inventoryName }}</td>
-                    <td>
-                        {{ product.inventory.city }}, {{ product.inventory.district }}, {{ product.inventory.commune }}
-                    </td>
-                    <td>{{ product.status.name }}</td>
-                    <td>
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded">Edit</button>
-                        <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        item.productCreationDate }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        item.productStatusResponse.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <Button :icon="`<i class='bx bxs-edit text-xl'></i>`" :text="''"></Button>
                     </td>
                 </tr>
             </template>
             <template #footer>
                 <td colspan="8"></td>
             </template>
+            <template #pagination>
+                <div>
+                    <Pagination :total-items="pagination?.totalElements || 1" :items-per-page="size"
+                        :current-page="page + 1" @page-changed="handlePageChange" @limit-changed="handleLimitChange">
+                    </Pagination>
+                </div>
+            </template>
         </TableComponent>
 
-
-        <TooltipBox ooltipBox ref="tooltipBox">
+        <TooltipBox ref="tooltipBox" :bgColor="'bg-gray-800'" :textColor="'text-white'" v-show="tooltipVisible">
             <template v-slot:header>
-                <strong>{{ products[showTooltip]?.creator.name }}</strong>
+                <strong>{{ tooltipContent.title }}</strong>
             </template>
             <template v-slot:body>
-                <p>Email: {{ products[showTooltip]?.creator.email }}</p>
-                <p>Role: {{ products[showTooltip]?.creator.role.name }}</p>
-                <img :src="products[showTooltip]?.creator.avatarUrl" alt="Avatar" class="w-12 h-12 rounded-full mb-2" />
+                <div v-if="tooltipContent.content" v-html="tooltipContent.content"></div>
             </template>
-            <template v-slot:footer>
-                <p class="text-gray-400">Thông tin bổ sung...</p>
-            </template>
+            <template v-slot:footer></template>
         </TooltipBox>
     </div>
 </template>
 
 <script>
-
 import TableComponent from '../table/TableComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
-
+import { getProduct } from '@/api/productApi';
+import Button from '../buttons/button.vue';
+import { mapGetters } from 'vuex';
+import Pagination from '../pagination/Pagination.vue';
+import { formatDay } from '@/utils/currencyUtils'
+import searchComponent from '../search/searchComponent.vue';
+import { loadImage } from '@/services/imageService.js';
 export default {
     name: 'ListVoucherComponent',
     components: {
         TableComponent,
+        Button,
+        Pagination,
         TooltipBox,
+        searchComponent
     },
     data() {
         return {
-            products: [
-                {
-                    id: 1,
-                    name: 'Sản phẩm A',
-                    originalPrice: 100000,
-                    currentPrice: 80000,
-                    discountPercentage: 20,
-                    description: 'Mô tả sản phẩm A',
-                    imageUrl: 'path/to/product-image-a.jpg',
-
-                    category: {
-                        id: 1,
-                        name: 'Danh mục 1',
-                        imageUrl: 'path/to/category-image.jpg'
-                    },
-                    brand: {
-                        id: 1,
-                        name: 'Thương hiệu A',
-                        imageUrl: 'path/to/brand-image.jpg'
-                    },
-                    creator: {
-                        id: 1,
-                        name: 'Nguyễn Văn A',
-                        email: 'nguyenvana@example.com',
-                        avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgv_-3jTPi9rPOSPu7rarJNsEFkEDd3wjKkA&s',
-                        role: {
-                            id: 1,
-                            name: 'ROLE_DOITAC'
-                        }
-                    },
-                    inventory: {
-                        id: 1,
-                        inventoryName: 'Kho Hà Nội',
-                        quantity: 10,
-                        city: 'Hà Nội',
-                        district: 'Quận Ba Đình',
-                        commune: 'Phường Trúc Bạch'
-                    },
-                    status: {
-                        id: 1,
-                        name: 'Còn hàng',
-
-                    }
+            products: [],
+            tooltipVisible: false,
+            tooltipContent: {
+                title: '',
+                content: ''
+            },
+            page: 0,
+            size: 5,
+            pagination: null,
+            deleted: null,
+            sortField: "id",
+            sortDirection: "desc",
+            tooltipKeys: {
+                productInventory: {
+                    title: 'Kho',
+                    content: item => `
+            <div><strong>ID Kho:</strong> ${item.productInventoryResponse?.inventory?.id || 'null'}</div>
+            <div><strong>Tên Kho:</strong> ${item.productInventoryResponse?.inventory?.inventoryName || 'null'}</div>
+            <div><strong>Số Lượng:</strong> ${item.productInventoryResponse?.quantity}</div>
+            <div><strong>Địa chỉ:</strong> ${item.productInventoryResponse?.inventory?.city || 'null'}, ${item.productInventoryResponse?.inventory?.district || 'null'}, ${item.productInventoryResponse?.inventory?.commune || 'null'}</div>
+            <div><strong>Trạng thái:</strong> ${item.productInventoryResponse?.inventory?.active ? 'Hoạt động' : 'Không hoạt động'}</div>
+        `,
                 },
-                {
-                    id: 2,
-                    name: 'Sản phẩm B',
-                    originalPrice: 200000,
-                    currentPrice: 150000,
-                    discountPercentage: 25,
-                    description: 'Mô tả sản phẩm B',
-                    imageUrl: 'path/to/product-image-b.jpg',
-                    category: {
-                        id: 2,
-                        name: 'Danh mục 2',
-                        imageUrl: 'path/to/category-image-2.jpg'
-                    },
-                    brand: {
-                        id: 2,
-                        name: 'Thương hiệu B',
-                        imageUrl: 'path/to/brand-image-2.jpg'
-                    },
-                    creator: {
-                        id: 2,
-                        name: 'Trần Thị B',
-                        email: 'tranthib@example.com',
-                        avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgv_-3jTPi9rPOSPu7rarJNsEFkEDd3wjKkA&s',
-                        role: {
-                            id: 1,
-                            name: 'ROLE_NHANVIEN'
-                        }
-                    },
-                    inventory: {
-                        id: 2,
-                        inventoryName: 'Kho Hồ Chí Minh',
-                        quantity: 5,
-                        city: 'Hồ Chí Minh',
-                        district: 'Quận 1',
-                        commune: 'Phường Bến Nghé'
-                    },
-                    status: {
-                        id: 2,
-                        name: 'Hết hàng',
-
-                    }
-                }
-            ],
-            showTooltip: null,
-
+                authorProduct: {
+                    title: 'Người Tạo',
+                    content: item => `
+            <div><strong>ID Người Tạo:</strong> ${item.author?.id || 'null'}</div>
+            <div><strong>Tên Người Tạo:</strong> ${item.author?.fullname || 'null'}</div>
+             <div><strong>Ảnh Đại Diện:</strong> 
+            ${item.author
+                            ? `<img src="${loadImage(item.author.image, 'account')}" alt="Profile Image" class="w-6 h-6 rounded-full object-cover" />`
+                            : 'Không có ảnh'}
+        </div>
+            
+        `,
+                },
+            }
         };
     },
+    mounted() {
+        this.getDataProduct();
+    },
+    computed: {
+        ...mapGetters("loading", ["isLoading"]),
+        formatData() {
+            return this.products.map(item => {
+                return {
+                    ...item,
+                    productCreationDate: formatDay(item.productCreationDate) // sử dụng formatDay để định dạng ngày
+                }
+            });
+        }
+    },
     methods: {
-        showTooltipBox(index, event) {
-            this.showTooltip = index;
-            this.$refs.tooltipBox.setTooltipPosition(event);
+        loadImage,
+        async getDataProduct(keyWord) {
+            try {
+                const reqData = {
+                    productName: keyWord,
+                    deleted: this.deleted,
+                    page: this.page,
+                    limit: this.size,
+                    sort: `${this.sortField},${this.sortDirection}`,
+                };
+                const res = await getProduct(reqData);
+                this.products = res.data.content;
+                this.pagination = res.data;
+            } catch (error) {
+                console.error(error);
+            }
         },
+
+        getTooltipContent(key, item) {
+            const tooltipData = this.tooltipKeys[key] || {};
+            return {
+                title: tooltipData.title || `Chi tiết ${key}`,
+                content: tooltipData.content ? tooltipData.content(item) : item[key] || 'Không có dữ liệu',
+
+            };
+        },
+
+        showTooltipBox(key, item, event) {
+            const tooltipContent = this.getTooltipContent(key, item);
+            this.tooltipContent = tooltipContent;
+            this.$refs.tooltipBox.updateTooltipData(tooltipContent.title, tooltipContent.content);
+            this.$refs.tooltipBox.setTooltipPosition(event);
+            this.tooltipVisible = true;
+        },
+
         hideTooltip() {
-            this.showTooltip = null;
-            this.$refs.tooltipBox.hideTooltip();
+            this.tooltipVisible = false;
+        },
+        handlePageChange(newPage) {
+            this.page = newPage - 1;
+            this.getDataProduct();
+        },
+        handleLimitChange(limitPagination) {
+            this.size = limitPagination;
+            this.page = 0;
+            this.getDataProduct();
         },
         async changeSort(column) {
             if (this.sortField === column) {
@@ -231,8 +220,9 @@ export default {
                 this.sortField = column;
                 this.sortDirection = "asc";
             }
-            await this.handlegetVouchers();
-        }, getSortIcon(column) {
+            await this.getDataProduct();
+        },
+        getSortIcon(column) {
             if (this.sortField === column) {
                 return this.sortDirection === "asc"
                     ? "<i class='bx bx-sort-a-z'></i>"
@@ -244,6 +234,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Add your styles here */
-</style>
+<style scoped></style>

@@ -1,12 +1,11 @@
 <template>
-    <div v-if="isVisible" class="absolute p-2 text-sm rounded shadow-lg z-50" :class="bgColor + ' ' + textColor"
-        :style="{ left: `${tooltipPosition.x}px`, top: `${tooltipPosition.y}px` }">
+    <div v-if="isVisible" class="absolute p-2 text-sm rounded shadow-lg z-50"
+         :class="bgColor + ' ' + textColor"
+         :style="{ left: `${tooltipPosition.x}px`, top: `${tooltipPosition.y}px` }">
         <div class="font-bold mb-1">
-            <slot name="header"></slot>
+            <slot name="header">{{ title }}</slot>
         </div>
-        <div class="mb-1">
-            <slot name="body"></slot>
-        </div>
+        <div class="mb-1" v-html="content"></div> <!-- Sử dụng v-html để hiển thị HTML -->
         <div class="text-gray-400">
             <slot name="footer"></slot>
         </div>
@@ -20,6 +19,8 @@ export default {
         return {
             tooltipPosition: { x: 0, y: 0 },
             isVisible: false,
+            title: '',   // Khai báo title trong data
+            content: '', // Khai báo content trong data
         };
     },
     props: {
@@ -36,10 +37,8 @@ export default {
         setTooltipPosition(event) {
             const tooltipWidth = 200;
 
-
             let tooltipX = event.clientX;
             let tooltipY = event.clientY;
-
 
             if (window.innerWidth >= 768) {
                 tooltipX = event.clientX - tooltipWidth;
@@ -51,6 +50,10 @@ export default {
         },
         hideTooltip() {
             this.isVisible = false;
+        },
+        updateTooltipData(title, content) {
+            this.title = title;      // Cập nhật title
+            this.content = content;  // Cập nhật content
         }
     }
 };
