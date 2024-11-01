@@ -14,7 +14,7 @@
             <ul class="mt-28 md:mt-4 lg:mt-4 ">
                 <span class="text-white font-bold">QUẢN LÝ CHUNG</span>
                 <li class="mb-1 group">
-                    <router-link :to="{name: 'info'}"
+                    <router-link :to="{ name: 'info' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
                         <i class='bx bx-user mr-3 text-lg'></i>
                         <span class="text-sm">Thông tin cá nhân</span>
@@ -81,7 +81,7 @@
                     <RouterLink :to="{ name: 'product' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-shopping-bag mr-3 text-lg'></i>
-                        <span class="text-sm">SẢN PHẨM</span>
+                        <span class="text-sm">Quản Lý Sản Phẩm</span>
                     </RouterLink>
                 </li>
 

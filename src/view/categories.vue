@@ -1,13 +1,14 @@
 <template>
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5  lg:m-2 md:m-0">
+        <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
         <StatisticsCardsCategory ref="StatisticsCardsCategory"></StatisticsCardsCategory>
-
         <div class="flex justify-end mt-3">
             <Button @click="handleModelCreateCategory" :icon="`<i class= 'bx bx-add-to-queue' > </i>`"
                 :text="'Thêm danh mục mới'"></Button>
         </div>
-        <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
+
         <listCategories ref="listCategories" @handleStatus="loadCardsCategory"></listCategories>
+        <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
         <chartCategories></chartCategories>
     </div>
     <newCategory :isOpen="modalAddNewIsOpen" @create-success="loadCategories" @close="handleModelCreateCategory">
@@ -22,11 +23,16 @@ import newCategory from '@/components/categories/newCategory.vue';
 import StatisticsCardsCategory from '@/components/categories/StatisticsCardsCategory.vue';
 import chartCategories from '@/components/categories/chartCategories.vue';
 import ImportAndExportFromExcelComponent from '@/components/fileTransfer/ImportAndExportFromExcelComponent.vue';
+import BreadcrumbComponent from '@/components/breadcrumb/BreadcrumbComponent.vue';
 export default {
     name: 'categoriesView',
     data() {
         return {
             modalAddNewIsOpen: false,
+            breadcrumbItems: [
+                { text: 'Trang chủ', name: 'dashboard' },
+                { text: 'Quản lý danh mục', name: '' },
+            ]
         }
     },
 
@@ -36,7 +42,8 @@ export default {
         newCategory,
         StatisticsCardsCategory,
         chartCategories,
-        ImportAndExportFromExcelComponent
+        ImportAndExportFromExcelComponent,
+        BreadcrumbComponent
     },
     methods: {
         handleModelCreateCategory() {

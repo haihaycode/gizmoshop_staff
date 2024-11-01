@@ -1,4 +1,5 @@
 const useComponent = (component) => () => import(`../view/${component}.vue`);
+const useComponentTAG = (component) => () => import(`@/components/${component}.vue`);
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import sideBar from "@/components/sideBar.vue";
@@ -10,6 +11,7 @@ const dashboardRoutes = [
     children: [
       {
         path: "",
+        name: "dashboard",
         meta: {
           title: "QUẢN LÝ CHUNG",
           description: "GIZMO",
@@ -29,7 +31,7 @@ const dashboardRoutes = [
     children: [
       {
         path: "",
-        name:"info",
+        name: "info",
         meta: {
           title: "QUẢN LÝ CHUNG",
           description: "GIZMO",
@@ -116,6 +118,19 @@ const dashboardRoutes = [
         },
         components: {
           default: useComponent("product"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      }, {
+        path: "add",
+        name: "add-product",
+        meta: {
+          title: "THÊM SẢN PHẨM",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponentTAG("product/InventoryNewProductComponent"),
           header: Header,
           footer: Footer,
           sideBar: sideBar,
