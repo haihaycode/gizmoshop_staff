@@ -15,7 +15,6 @@
     </ListBrand>
 
 
-    <ListBrand :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent"></ListBrand>
     <!-- component import and Export all For Brand  -->
     <ImportAndExportForBrandComponent></ImportAndExportForBrandComponent>
     <!-- Component Thêm thương hiệu mới -->
