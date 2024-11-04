@@ -11,7 +11,7 @@
             </div>
             <CardGridComponent class="bg-white p-2" :icon="`<i class='bx bx-home-alt-2'></i>`" :items="data"
                 :loading="isLoading" :excluded-keys="['id', 'active', 'latitude', 'longitude']"
-                @item-clicked="handleItemClick">
+                @item-clicked="handleItemClick" :display-keys="displayKeys">
             </CardGridComponent>
             <div>
                 <Pagination :total-items="pagination?.totalElements || 0" :items-per-page="limit"
@@ -49,6 +49,16 @@ export default {
                 { text: 'Quản lý sản phẩm', name: 'product' },
                 { text: 'Thêm mới sản phẩm ', name: null },
             ],
+            displayKeys: {
+                inventoryName: 'Tên kho',
+                city: 'Thành phố',
+                district: 'Quận/Huyện',
+                commune: 'Xã/Phường',
+                active: 'Trạng thái',
+                id: 'ID',
+                latitude: 'Vĩ độ',
+                longitude: 'Kinh độ'
+            },
             data: null,
             pagination: [],
             sortField: 'id',

@@ -9,7 +9,8 @@
 
     <!-- Danh sách thương hiệu -->
     <ListBrand :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent"></ListBrand>
-    <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
+    <!-- component import and Export all For Brand  -->
+    <ImportAndExportForBrandComponent></ImportAndExportForBrandComponent>
     <!-- Component Thêm thương hiệu mới -->
     <NewBrandComponent :isOpen="modalAddNewIsOpen" @close="handleModelCreate" @create-success="refreshBrandList">
     </NewBrandComponent>
@@ -26,7 +27,7 @@ import Button from "@/components/buttons/button.vue";
 import NewBrandComponent from "@/components/brand/NewBrandComponent.vue";
 import SearchBrandCompoment from "@/components/brand/SearchBrandCompoment.vue";
 import ChartBrandProductComponent from "@/components/brand/ChartBrandProductComponent.vue";
-import ImportAndExportFromExcelComponent from "@/components/fileTransfer/ImportAndExportFromExcelComponent.vue";
+import ImportAndExportForBrandComponent from "@/components/brand/ImportAndExportForBrandComponent.vue";
 import BreadcrumbComponent from "@/components/breadcrumb/BreadcrumbComponent.vue";
 export default {
   name: "brandView",
@@ -47,7 +48,7 @@ export default {
     NewBrandComponent,
     SearchBrandCompoment,
     ChartBrandProductComponent,
-    ImportAndExportFromExcelComponent,
+    ImportAndExportForBrandComponent,
     BreadcrumbComponent
   },
   methods: {

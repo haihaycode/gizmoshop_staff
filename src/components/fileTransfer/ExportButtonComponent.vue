@@ -5,8 +5,11 @@
 </template>
 
 <script>
+import { getCurrentDate } from '@/utils/currencyUtils';
 import Button from '../buttons/button.vue';
-
+import { exportFileExcel } from '@/api/exportAndImportApi';
+import { number } from 'yup';
+import notificationService from '@/services/notificationService';
 export default {
     name: 'ExportButtonComponent',
     components: {
@@ -29,23 +32,42 @@ export default {
             type: String,
             default: `<i class='bx bxs-file-export text-lg mr-2' ></i>`
         },
-        exportLink: {
+        nameExport: {
             type: String,
             required: false,
-            default: 'https://docs.google.com/spreadsheets/d/1LxnU0Hr_iitpMVYcLoqZGfPlWryCssWyXwuUnrhUv7A/export?format=xlsx'
+            default: ''
+        },
+        idExport: {
+            type: number,
+            required: false,
         }
+
     },
     methods: {
-        handleExportAll() {
-            if (this.exportLink) {
+        async handleExportAll() {
+            if (this.nameExport) {
+                const response = await exportFileExcel(this.nameExport, this.idExport);
+                const blob = new Blob([response.data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.href = this.exportLink;
-                link.setAttribute('download', 'data-export.xlsx');
+                link.href = url;
+
+                // Lấy tên file từ Content-Disposition nếu có
+                const contentDisposition = response.headers['content-disposition'];
+                const filename = contentDisposition
+                    ? contentDisposition.split('filename=')[1].replace(/"/g, '') + getCurrentDate() + '.xlsx'
+                    : 'download.xlsx';
+
+                link.setAttribute('download', filename);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                notificationService.success("Xuất file thành công" + filename);
             } else {
-                console.warn('Export link is not provided.');
+                console.warn(' "nameExport" rỗng line 70 file  ExportButtonComponent  func : handleExportAll()  .');
             }
         }
     }

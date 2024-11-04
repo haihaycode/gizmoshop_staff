@@ -9,7 +9,8 @@ import publicRoutes from './publicRoutes';
 import dashboardRoutes from './dashboardRoutes';
 export const routes = [
     ...publicRoutes,
-    ...dashboardRoutes
+    ...dashboardRoutes,
+    { path: '/:pathMatch(.*)*', redirect: { name: 'NotFound' } }
 ];
 
 

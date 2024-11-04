@@ -2,7 +2,7 @@
     <!-- Controller Button  -->
     <div
         class="flex flex-col sm:flex-row items-center justify-start p-1 bg-white rounded-sm space-y-4 sm:space-y-0 sm:space-x-4 mb-2 mt-2">
-        <ExportButtonComponent :text="'Xuất dữ liệu'" :exportLink="''"
+        <ExportButtonComponent :text="'Xuất dữ liệu'" :nameExport="nameExport"
             :icon="`<i class='bx bx-import text-base mr-1'></i>`"
             exportClass="bg-green-600 text-white hover:bg-green-700 transition-colors duration-200" />
         <ImportButtonComponent text="Nhập dữ liệu"
@@ -23,6 +23,11 @@ import ImportButtonComponent from './ImportButtonComponent.vue';
 import ExcelViewerComponent from './ExcelViewerComponent.vue';
 export default {
     name: 'ImportAndExportFromExcelComponent',
+    props: {
+        nameExport: {
+            type: String
+        }
+    },
     data() {
         return {
             modalExcelViewerIsOpen: false,
@@ -46,7 +51,6 @@ export default {
             this.modalExcelViewerIsOpen = !this.modalExcelViewerIsOpen;
         },
         handleFileSave(updatedFile) {
-            console.log('Saved file:', updatedFile);
             this.$emit('file-ready-for-update', updatedFile);
         },
     }

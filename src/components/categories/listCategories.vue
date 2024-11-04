@@ -21,6 +21,9 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     TRẠNG THÁI<span v-html="getSortIcon('active')"></span>
                 </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                    THAO TÁC
+                </th>
             </template>
             <!-- Body Slot -->
             <template #body>
@@ -40,6 +43,10 @@
                         <toggleButton :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
                         </toggleButton>
 
+                    </td>
+                    <td>
+                        <ExportButtonComponent @click.stop :nameExport="'category'" :idExport="item.id">
+                        </ExportButtonComponent>
                     </td>
                 </tr>
             </template>
@@ -72,6 +79,7 @@ import { getCategories, changeActive } from '@/api/categoriesApi';
 import { mapGetters } from 'vuex';
 import { loadImage } from '@/services/imageService.js';
 import Pagination from '../pagination/Pagination.vue';
+import ExportButtonComponent from '../fileTransfer/ExportButtonComponent.vue';
 export default {
     name: 'lisCategoriesComponent',
     data() {
@@ -93,7 +101,8 @@ export default {
         toggleButton,
         Pagination,
         searchComponent,
-        updataCategories
+        updataCategories,
+        ExportButtonComponent
     },
     mounted() {
         this.handlesListCategories()

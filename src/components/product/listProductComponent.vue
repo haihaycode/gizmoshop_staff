@@ -130,7 +130,7 @@ export default {
                 content: ''
             },
             page: 0,
-            size: 5,
+            size: 10,
             pagination: null,
             deleted: null,
             sortField: "id",

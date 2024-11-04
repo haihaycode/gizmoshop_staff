@@ -41,7 +41,7 @@
             <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
           </td>
           <td>
-            <ExportButtonComponent>
+            <ExportButtonComponent @click.stop :nameExport="'brand'" :idExport="item.id">
             </ExportButtonComponent>
           </td>
         </tr>

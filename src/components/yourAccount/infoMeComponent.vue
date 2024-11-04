@@ -47,7 +47,11 @@
           </div>
           <div>
             <span class="font-semibold">Quyền</span>
-            <p>{{ formattedRoles }}</p>
+            <p class="text-gray-700">
+              <span v-for="(role, index) in translatedRoles" :key="index" :style="{ color: role.color }" class="inline">
+                {{ role.name }}<span v-if="index < translatedRoles.length - 1">, </span>
+              </span>
+            </p>
           </div>
           <div>
             <span class="font-semibold">Thời gian tạo tài khoản</span>
@@ -86,6 +90,7 @@ import updateAvatar from "../yourAccount/updateAvatar.vue";
 import changeEmail from "../yourAccount/changeEmail.vue";
 import updateInfoMe from "../yourAccount/updateInfoMe.vue";
 import { mapGetters } from "vuex";
+import { translatedRoles } from "@/utils/currencyUtils";
 
 export default {
   name: "infoMeComponent",
@@ -131,6 +136,9 @@ export default {
       return this.infoAccount?.createAt
         ? dayjs(this.infoAccount.createAt).format("DD/MM/YYYY HH:mm")
         : "No creation date available";
+    },
+    translatedRoles() {
+      return translatedRoles(this.infoAccount.roles || []);
     },
   },
   mounted() {

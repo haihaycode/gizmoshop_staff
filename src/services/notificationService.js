@@ -1,55 +1,39 @@
 // services/notificationService.js
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
+import Toast, { useToast } from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 
-const notyf = new Notyf({
-    duration: 3000,
-    position: { x: 'right', y: 'top' },
-    dismissible: true,
-    ripple: true,
-    types: [
-        { type: 'success', background: '#00A36C' },
-        { type: 'error', background: '#FA5F55' },
-        { type: 'info', background: '#6495ED' },
-        { type: 'warning', background: '#E4D00A' }
-    ]
-});
+const options = {
+    position: "top-right",
+    timeout: 2000,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true
+};
 
-// Hàm tạo thông báo có icon
-function createNotification({ type, message, iconClass }) {
-    notyf.open({
-        type,
-        message: `<i class="${iconClass} mr-2"></i> ${message}`,
-    });
+// Hàm khởi tạo vue-toastification, 
+//sử dụng khi khởi tạo ứng dụng trong main.js
+export function initializeToast(app) {
+    app.use(Toast, options);
 }
+
+const toast = useToast();
 
 export default {
     success(message = 'Thành công!') {
-        createNotification({
-            type: 'success',
-            message,
-            iconClass: 'bx bxs-check-circle' // Icon thành công
-        });
+        toast.success(message);
     },
     error(message = 'Có lỗi xảy ra!') {
-        createNotification({
-            type: 'error',
-            message,
-            iconClass: 'bx bxs-error' // Icon lỗi
-        });
+        toast.error(message);
     },
     info(message = 'Thông tin!') {
-        createNotification({
-            type: 'info',
-            message,
-            iconClass: 'bx bxs-info-circle' // Icon thông tin
-        });
+        toast.info(message);
     },
     warning(message = 'Cảnh báo!') {
-        createNotification({
-            type: 'warning',
-            message,
-            iconClass: 'bx bxs-bug' // Icon cảnh báo
-        });
+        toast.warning(message);
     }
 };

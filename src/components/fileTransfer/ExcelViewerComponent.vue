@@ -20,18 +20,32 @@
                 </template>
 
                 <template #body>
-                    <tr v-for="(row, rowIndex) in excelData" :key="rowIndex">
-                        <td v-for="(cell, cellIndex) in row" :key="cellIndex" class="border px-2 py-1"
+                    <tr v-for="(row, rowIndex) in excelData" :key="rowIndex"
+                        :class="{ 'bg-gray-50': rowIndex % 2 === 0, 'bg-white': rowIndex % 2 !== 0 }">
+                        <td v-for="(cell, cellIndex) in row" :key="cellIndex"
+                            class="relative border px-2 py-1 focus:outline-none focus:bg-blue-500 focus:text-white"
                             contenteditable="true" @input="updateCell(rowIndex, cellIndex, $event.target.innerText)">
-                            {{ cell }}
+
+                            <span>{{ cell }}</span>
+
+                            <!-- Nút X để xóa nội dung ô -->
+
                         </td>
                     </tr>
+                    <tr>
+                        <td :colspan="headers.length" class="border px-2 py-1">
+                            <button @click="addRow" class="px-4 py-2  text-gray-500 rounded">
+                                + Thêm hàng
+                            </button>
+                        </td>
+                    </tr>
+
                 </template>
             </TableComponent>
         </template>
 
         <template #footer>
-            <Button v-if="excelData.length" @click="saveChanges" :text="'Lưu Thay Đổi'"
+            <Button v-if="excelData.length" @click="saveChanges" :text="'Lưu Thay Đổi'" :isLoading="isLoading"
                 :icon="`<i class='bx bxs-save' ></i>`"
                 class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
             </Button>
@@ -48,6 +62,8 @@ import * as XLSX from 'xlsx';
 import TableComponent from '../table/TableComponent.vue';
 import ModalBox from '../modal/ModalBox.vue';
 import Button from '../buttons/button.vue';
+import { mapGetters } from 'vuex';
+import notificationService from '@/services/notificationService';
 export default {
     name: 'ExcelViewerComponent',
     components: {
@@ -70,6 +86,9 @@ export default {
             excelData: [],
             headers: [],
         };
+    },
+    computed: {
+        ...mapGetters("loading", ["isLoading"]),
     },
     watch: {
         excelFile: {
@@ -94,21 +113,46 @@ export default {
             };
             reader.readAsArrayBuffer(file);
         },
+        addRow() {
+            const emptyRow = Array(this.headers.length).fill('');
+            this.excelData.push(emptyRow);
+        },
         updateCell(rowIndex, columnKey, value) {
+            const cleanedValue = value.replace(/\n/g, '');
             if (this.excelData && this.excelData[rowIndex]) {
-                this.excelData[rowIndex][columnKey] = value;
+                this.excelData[rowIndex][columnKey] = cleanedValue;
+                this.excelData = [...this.excelData];
+            }
+        },
+        clearCell(rowIndex, columnKey) {
+            if (this.excelData && this.excelData[rowIndex]) {
+                this.excelData[rowIndex][columnKey] = '';
                 this.excelData = [...this.excelData];
             }
         },
         saveChanges() {
             const updatedData = [this.headers, ...this.excelData];
+            console.log(updatedData)
             const worksheet = XLSX.utils.aoa_to_sheet(updatedData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+            // Tạo buffer từ workbook
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+            // Tạo Blob từ buffer
+            const excelBlob = new Blob([excelBuffer], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+
+            // Tạo tên file duy nhất với timestamp
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const fileName = `updated-data-${timestamp}.xlsx`;
-            XLSX.writeFile(workbook, fileName);
-            const updatedFile = new File([workbook], fileName, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // Tạo đối tượng File và emit ra ngoài
+            const updatedFile = new File([excelBlob], fileName, {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
             this.$emit('file-saved', updatedFile);
         },
         downloadEditedExcel() {
@@ -118,6 +162,7 @@ export default {
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const fileName = `downloadFileExcel-${timestamp}.xlsx`;
             XLSX.writeFile(workbook, fileName);
+            notificationService.success("Tải file thành công" + fileName);
         },
         closeModal() {
             this.$emit('close');

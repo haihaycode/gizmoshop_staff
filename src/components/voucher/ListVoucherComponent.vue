@@ -116,7 +116,7 @@
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <toggleButton :is-toggled="item.status" @update:isToggled="handleChangeStatusVoucher(item.id)">
+            <toggleButton @click.stop :is-toggled="item.status" @update:isToggled="handleChangeStatusVoucher(item.id)">
             </toggleButton>
           </td>
         </tr>
