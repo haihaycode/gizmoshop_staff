@@ -2,7 +2,8 @@
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5  lg:m-2 md:m-0">
         <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
         <StatisticsCardsCategory ref="StatisticsCardsCategory"></StatisticsCardsCategory>
-        <div class="flex justify-end mt-3">
+        <searchComponent @search="handlesearch"></searchComponent>
+        <div class="flex justify-end my-3">
             <Button @click="handleModelCreateCategory" :icon="`<i class= 'bx bx-add-to-queue' > </i>`"
                 :text="'Thêm danh mục mới'"></Button>
         </div>
@@ -18,6 +19,7 @@
 
 <script>
 import listCategories from '@/components/categories/listCategories.vue';
+import searchComponent from '@/components/search/searchComponent.vue';
 import Button from '@/components/buttons/button.vue';
 import newCategory from '@/components/categories/newCategory.vue';
 import StatisticsCardsCategory from '@/components/categories/StatisticsCardsCategory.vue';
@@ -43,7 +45,9 @@ export default {
         StatisticsCardsCategory,
         chartCategories,
         ImportAndExportFromExcelComponent,
-        BreadcrumbComponent
+        BreadcrumbComponent,
+        searchComponent
+        
     },
     methods: {
         handleModelCreateCategory() {
@@ -54,6 +58,9 @@ export default {
         },
         async loadCardsCategory() {
             await this.$refs.StatisticsCardsCategory.getArr();
+        },
+        async handlesearch(key) {
+            await this.$refs.listCategories.handlesListCategories(key);
         }
 
     }

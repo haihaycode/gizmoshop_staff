@@ -1,6 +1,9 @@
 <template>
   <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0">
     <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
+
+    <StatisticsCardsBrand ref="StatisticsCardsBrand"></StatisticsCardsBrand>
+
     <SearchBrandCompoment @search="handleSearch"></SearchBrandCompoment>
     <div class="flex justify-end">
       <Button @click="handleModelCreate" :text="'Thêm Thương Hiệu Mới'" :icon="`<i class='bx bx-add-to-queue'></i>`"
@@ -8,6 +11,10 @@
     </div>
 
     <!-- Danh sách thương hiệu -->
+    <ListBrand @handleStatus="loadCardsBrand" :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent">
+    </ListBrand>
+
+
     <ListBrand :nameProp="name" :deletedProp="deleted" ref="ListBrandComponent"></ListBrand>
     <!-- component import and Export all For Brand  -->
     <ImportAndExportForBrandComponent></ImportAndExportForBrandComponent>
@@ -23,6 +30,7 @@
 
 <script>
 import ListBrand from "@/components/brand/ListBrand.vue";
+import StatisticsCardsBrand from "@/components/brand/StatisticsCardsBrand.vue";
 import Button from "@/components/buttons/button.vue";
 import NewBrandComponent from "@/components/brand/NewBrandComponent.vue";
 import SearchBrandCompoment from "@/components/brand/SearchBrandCompoment.vue";
@@ -49,9 +57,14 @@ export default {
     SearchBrandCompoment,
     ChartBrandProductComponent,
     ImportAndExportForBrandComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    StatisticsCardsBrand
   },
   methods: {
+
+    async loadCardsBrand() {
+      await this.$refs.StatisticsCardsBrand.getArr();
+    },
     handleModelCreate() {
       this.modalAddNewIsOpen = !this.modalAddNewIsOpen;
     },

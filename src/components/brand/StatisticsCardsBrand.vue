@@ -9,10 +9,9 @@
                 <p class="text-2xl font-bold transition ease-in-out duration-500 transform hover:scale-x-105">
                     {{ animatedCount }} +
                 </p>
-                <p class="text-gray-500">Tổng số danh mục</p>
+                <p class="text-gray-500">Tổng số thương hiệu</p>
             </div>
         </div>
-
 
         <div class="p-4 bg-white bg-opacity-70 rounded-sm shadow-md flex flex-col justify-between hover:bg-gray-300">
             <div class="flex justify-between items-center">
@@ -22,7 +21,7 @@
                 <p class="text-2xl font-bold transition ease-in-out duration-500 transform hover:scale-x-105">
                     {{ activeCount }} +
                 </p>
-                <p class="text-gray-500">Danh mục đang hoạt động</p>
+                <p class="text-gray-500">Thương hiệu đang hoạt động</p>
             </div>
         </div>
 
@@ -34,14 +33,14 @@
                 <p class="text-2xl font-bold transition ease-in-out duration-500 transform hover:scale-x-105">
                     {{ inactiveCount }} +
                 </p>
-                <p class="text-gray-500">Danh mục không hoạt động</p>
+                <p class="text-gray-500">Thương hiệu không hoạt động</p>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { listCategories } from '@/api/categoriesApi';
+import { getBrand } from '@/api/brandApi';
 
 export default {
     name: 'StatisticsCards',
@@ -59,14 +58,14 @@ export default {
     methods: {
         async getArr() {
             try {
-                const arr = await listCategories();
+                const arr = await getBrand();
                 this.categories = arr.data;
 
                 const totalWarehouses = this.categories.length;
-                const activeWarehouses = this.categories.filter(item => item.active).length;
+                const activeWarehouses = this.categories.filter(item => !item.deleted).length;
                 const inactiveWarehouses = totalWarehouses - activeWarehouses;
 
-                // Animate all counts
+        
                 this.animateCount(totalWarehouses, 'animatedCount');
                 this.animateCount(activeWarehouses, 'activeCount');
                 this.animateCount(inactiveWarehouses, 'inactiveCount');

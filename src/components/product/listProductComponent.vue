@@ -1,6 +1,5 @@
 <template>
     <div>
-        <SearchProductCompoment @search="getDataProduct"></SearchProductCompoment>
         <TableComponent :items="products" :loading="isLoading">
             <template #header>
                 <th @click="changeSort('id')"
@@ -88,7 +87,7 @@
 
         <TooltipBox ref="tooltipBox" :bgColor="'bg-gray-800'" :textColor="'text-white'" v-show="tooltipVisible">
             <template v-slot:header>
-                <strong>{{ tooltipContent.title }}</strong>
+                <strong>{{tooltipContent.title}}</strong>
             </template>
             <template v-slot:body>
                 <div v-if="tooltipContent.content" v-html="tooltipContent.content"></div>
@@ -101,13 +100,11 @@
 <script>
 import TableComponent from '../table/TableComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
-import { getProduct, getStatusProduct } from '@/api/productApi';
+import { getProductPage, getStatusProduct } from '@/api/productApi';
 import Button from '../buttons/button.vue';
 import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import { formatDay } from '@/utils/currencyUtils'
-// import searchComponent from '../search/searchComponent.vue';
-import SearchProductCompoment from './SearchProductCompoment.vue';
 import { loadImage } from '@/services/imageService.js';
 export default {
     name: 'ListVoucherComponent',
@@ -116,7 +113,6 @@ export default {
         Button,
         Pagination,
         TooltipBox,
-        SearchProductCompoment
     },
     data() {
         return {
@@ -139,18 +135,18 @@ export default {
                 productInventory: {
                     title: 'Kho',
                     content: item => `
-            <div><strong>ID Kho:</strong> ${item.productInventoryResponse?.inventory?.id || 'null'}</div>
-            <div><strong>Tên Kho:</strong> ${item.productInventoryResponse?.inventory?.inventoryName || 'null'}</div>
+            <div><strong>ID Kho:</strong> ${item.productInventoryResponse?.inventory?.id || 'Không có'}</div>
+            <div><strong>Tên Kho:</strong> ${item.productInventoryResponse?.inventory?.inventoryName || 'Không có'}</div>
             <div><strong>Số Lượng:</strong> ${item.productInventoryResponse?.quantity}</div>
-            <div><strong>Địa chỉ:</strong> ${item.productInventoryResponse?.inventory?.city || 'null'}, ${item.productInventoryResponse?.inventory?.district || 'null'}, ${item.productInventoryResponse?.inventory?.commune || 'null'}</div>
+            <div><strong>Địa chỉ:</strong> ${item.productInventoryResponse?.inventory?.city || ''}, ${item.productInventoryResponse?.inventory?.district || ''}, ${item.productInventoryResponse?.inventory?.commune || ''}</div>
             <div><strong>Trạng thái:</strong> ${item.productInventoryResponse?.inventory?.active ? 'Hoạt động' : 'Không hoạt động'}</div>
         `,
                 },
                 authorProduct: {
-                    title: 'Người Tạo',
+                    title: item => `Người Tạo: ${item.isSupplier ? 'Đối tác' : 'Nhân viên'}`,
                     content: item => `
-            <div><strong>ID Người Tạo:</strong> ${item.author?.id || 'null'}</div>
-            <div><strong>Tên Người Tạo:</strong> ${item.author?.fullname || 'null'}</div>
+            <div><strong>ID Người Tạo:</strong> ${item.author?.id || 'Không tìm thấy'}</div>
+            <div><strong>Tên Người Tạo:</strong> ${item.author?.fullname || 'Không tìm thấy'}</div>
              <div><strong>Ảnh Đại Diện:</strong> 
             ${item.author
                             ? `<img src="${loadImage(item.author.image, 'account')}" alt="Profile Image" class="w-6 h-6 rounded-full object-cover" />`
@@ -171,7 +167,6 @@ export default {
         ...mapGetters("loading", ["isLoading"]),
         formatData() {
             return this.products.map(item => {
-                console.log(item.productStatusResponse.id);
                 return {
                     ...item,
                     productCreationDate: formatDay(item.productCreationDate)
@@ -194,7 +189,7 @@ export default {
                     limit: this.size,
                     sort: `${this.sortField},${this.sortDirection}`,
                 };
-                const res = await getProduct(reqData);
+                const res = await getProductPage(reqData);
                 this.products = res.data.content;
                 this.pagination = res.data;
             } catch (error) {
@@ -206,7 +201,6 @@ export default {
             try {
                 const res = await getStatusProduct()
                 this.status = res.data
-                console.log(this.status)
             } catch (error) {
                 console.error(error)
             }
@@ -215,11 +209,11 @@ export default {
         getTooltipContent(key, item) {
             const tooltipData = this.tooltipKeys[key] || {};
             return {
-                title: tooltipData.title || `Chi tiết ${key}`,
+                title: typeof tooltipData.title === 'function' ? tooltipData.title(item) : tooltipData.title,
                 content: tooltipData.content ? tooltipData.content(item) : item[key] || 'Không có dữ liệu',
-
             };
         },
+
 
         showTooltipBox(key, item, event) {
             const tooltipContent = this.getTooltipContent(key, item);

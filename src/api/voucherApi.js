@@ -12,6 +12,14 @@ export const getVouchers = async (params) => {
     }
 };
 
+export const getVouchersCard = async () => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/voucher/card`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
 
 // createVoucher
 export const createVoucher = async (voucherNew) => {
@@ -55,3 +63,4 @@ export const changeImageVoucher = async (idVoucher, image) => {
         throw new Error(`${error}`);
     }
 };
+

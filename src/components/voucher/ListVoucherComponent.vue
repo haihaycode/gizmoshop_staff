@@ -135,8 +135,8 @@
       </template>
     </TableComponent>
     <!-- update -->
-    <UpdateVoucherComponent v-if="voucherUpdateSelected" @close="voucherUpdateSelected = null"
-      :isOpen="voucherUpdateSelected" :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
+    <UpdateVoucherComponent v-if="voucherUpdateSelected" @close="modalUpdateVoucherIsOpen = false"
+      :isOpen="modalUpdateVoucherIsOpen" :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
     </UpdateVoucherComponent>
   </div>
 </template>
@@ -165,6 +165,7 @@ export default {
       status: null,
     };
   },
+  emits: ['succes'],
   props: {
     codeProp: {
       type: String,
@@ -215,15 +216,18 @@ export default {
         console.error(error);
       }
     },
+
     async handleChangeStatusVoucher(idVoucher) {
       try {
         const response = await changeStatusVoucher(idVoucher);
         notificationService.success(response.message);
         this.handlegetVouchers();
+        this.$emit('succes')
       } catch (error) {
         console.error(error);
       }
     },
+
     handlePageChange(newPage) {
       this.page = newPage - 1;
       this.handlegetVouchers();
@@ -253,6 +257,7 @@ export default {
     },
     handleUpdateVoucherSelected(item) {
       this.voucherUpdateSelected = item;
+      this.modalUpdateVoucherIsOpen = !this.modalUpdateVoucherIsOpen;
     },
   },
 };

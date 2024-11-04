@@ -213,8 +213,8 @@ export default {
                 status: ''
             }
         };
-    }
-    ,
+    },
+    emits: ['close', 'create-success'],
     computed: {
         ...mapGetters('loading', ['isLoading'])
     },

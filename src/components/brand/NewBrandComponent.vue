@@ -117,6 +117,7 @@ export default {
       },
     };
   },
+  emits: ['close', 'create-success'],
   computed: {
     ...mapGetters("loading", ["isLoading"]),
   },
@@ -133,34 +134,6 @@ export default {
     closeModal() {
       this.$emit("close");
     },
-    // validateForm() {
-    //   this.errors = {};
-
-    //   const schema = Yup.object().shape({
-    //     name: Yup.string()
-    //       .required("Tên thương hiệu là bắt buộc")
-    //       .min(2, "Tên thương hiệu phải có ít nhất 2 ký tự")
-    //       .max(256, "Tên thương hiệu không được vượt quá 256 ký tự"),
-
-    //     description: Yup.string()
-    //       .required("Mô tả là bắt buộc")
-    //       .max(65535, "Mô tả không được vượt quá 65535 ký tự"),
-
-    //     deleted: Yup.boolean().required("Trạng thái là bắt buộc"),
-    //   });
-
-    //   schema
-    //     .validate(this.form, { abortEarly: false })
-    //     .then(() => {
-    //       this.submitFormData();
-    //     })
-    //     .catch((err) => {
-    //       err.inner.forEach((validationError) => {
-    //         this.errors[validationError.path] = validationError.message;
-    //       });
-    //     });
-    // },
-
     async submitFormData() {
       try {
         const data = {
@@ -168,21 +141,18 @@ export default {
           description: this.form.description,
           deleted: this.form.deleted,
         };
-        // Spread form data into object
-
         const res = await createBrand(data);
         if (res && res.data && res.data.message) {
           this.message = res.data.message;
         } else {
-          this.message = "Thương hiệu đã được tạo thành công"; // Nếu không có message, sử dụng thông báo mặc định
+          this.message = "Thương hiệu đã được tạo thành công"; 
         } 
         this.message = res.message; 
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
-        this.$emit("create-success");
+        this.loadBrand()
       } catch (error) {
-        // Hiển thị thông báo lỗi chính xác hơn
-        console.error("Lỗi khi thêm thương hiệu:", error); // In ra lỗi để kiểm tra
+        console.error("Lỗi khi thêm thương hiệu:", error); 
         this.message = error.message || "Có lỗi xảy ra";
         this.messageType = "error";
         this.NotificationModalIsOpen = true;
@@ -193,7 +163,6 @@ export default {
 </script>
 
 <style scoped>
-/* Custom styles for removing borders except for the bottom */
 input {
   border: none;
   border-bottom: 2px solid #ddd;

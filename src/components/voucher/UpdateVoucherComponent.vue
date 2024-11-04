@@ -199,11 +199,12 @@ export default {
             }
         };
     },
+    emits: ['close', 'update-success'],
     computed: {
         ...mapGetters('loading', ['isLoading']),
     },
     mounted() {
-        this.previewImage =  loadImage(this.form.image, `voucher`);
+        this.previewImage = loadImage(this.form.image, `voucher`);
     },
     methods: {
         loadImage,
