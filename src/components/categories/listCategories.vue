@@ -1,6 +1,6 @@
 <template>
     <div>
-        <searchComponent @search="handlesListCategories"></searchComponent>
+        
         <TableComponent :items="listCategories" :loading="isLoading">
             <!-- Header Slot -->
             <template #header>
@@ -65,7 +65,7 @@
 
 <script>
 import TableComponent from '../table/TableComponent.vue';
-import searchComponent from '@/components/search/searchComponent.vue';
+
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
@@ -92,7 +92,6 @@ export default {
         TableComponent,
         toggleButton,
         Pagination,
-        searchComponent,
         updataCategories
     },
     mounted() {
@@ -149,7 +148,7 @@ export default {
         async handleActive(id) {
             try {
                 await changeActive(id)
-                this.handlesListCategories
+                this.handlesListCategories()
                 this.$emit('handleStatus')
             } catch (error) {
                 console.log(error)

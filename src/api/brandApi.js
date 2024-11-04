@@ -1,12 +1,22 @@
 import Axios from "@/api/axios";
 import { HOST } from "@/api/config";
 
-export const getBrand = async (params) => {
+// lấy về danh sách brand phân trang và tham số truyền đi
+export const getListBrand = async (params) => {
   try {
     const response = await Axios.get(`${HOST}/api/public/brand/list`, {
       params: params,
     });
-    return response.data; // Trả về dữ liệu phản hồi
+    return response.data;
+  } catch (error) {
+    throw new Error(`${error}`);
+  }
+};
+
+export const getBrand = async () => {
+  try {
+    const response = await Axios.get(`${HOST}/api/public/brand`);
+    return response.data;
   } catch (error) {
     throw new Error(`${error}`);
   }
@@ -18,7 +28,7 @@ export const createBrand = async (brandNew) => {
       `${HOST}/api/public/brand/create`,
       brandNew
     );
-    return response.data; // Trả về dữ liệu phản hồi nếu thành công
+    return response.data;
   } catch (error) {
     console.log(error);
   }

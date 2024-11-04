@@ -69,7 +69,7 @@
 
 <script>
 import TableComponent from "../table/TableComponent.vue";
-import { getBrand, changeActive } from "@/api/brandApi.js";
+import { getListBrand, changeActive } from "@/api/brandApi.js";
 import Pagination from "../pagination/Pagination.vue";
 import UpdateBrandComponent from "./UpdateBrandComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
@@ -95,6 +95,7 @@ export default {
       messageType: "",
     };
   },
+  emits: ['handleStatus'],
   props: {
     nameProp: {
       type: String,
@@ -141,7 +142,7 @@ export default {
           limit: this.limit,
           sort: `${this.sortField},${this.sortDirection}`,
         };
-        const response = await getBrand(param);
+        const response = await getListBrand(param);
         this.pagination = response.data;
         this.listBrandData = response.data.content;
       } catch (error) {
@@ -191,10 +192,11 @@ export default {
     async handleActive(id) {
       try {
         const res = await changeActive(id);
-        this.message = res.data?.message || "Thương hiệu đã được cập nhật"; // Thông báo mặc định
+        this.message = res.data?.message || "Thương hiệu đã được cập nhật";
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
         this.$emit("create-success");
+        this.$emit('handleStatus')
         this.handleGetBrand();
       } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái thương hiệu:", error);

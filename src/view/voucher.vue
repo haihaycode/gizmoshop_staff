@@ -1,7 +1,6 @@
 <template>
-
-
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0">
+        <StatisticsCardsVoucher ref="StatisticsCardsVoucher"></StatisticsCardsVoucher>
         <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
         <!-- search -->
         <SearchVoucherComponent @search="handleSearch"></SearchVoucherComponent>
@@ -13,7 +12,8 @@
         </div>
 
         <!-- list  -->
-        <ListVoucherComponent :codeProp="code" :statusProp="status" ref="ListVoucherComponent"></ListVoucherComponent>
+        <ListVoucherComponent @succes="handleRefsRefeshLoadVoucherCard" :codeProp="code" :statusProp="status"
+            ref="ListVoucherComponent"></ListVoucherComponent>
         <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
 
     </div>
@@ -31,6 +31,7 @@ import NewVoucherComponent from '@/components/voucher/NewVoucherComponent.vue';
 import SearchVoucherComponent from '@/components/voucher/SearchVoucherComponent.vue';
 import ImportAndExportFromExcelComponent from '@/components/fileTransfer/ImportAndExportFromExcelComponent.vue';
 import BreadcrumbComponent from '@/components/breadcrumb/BreadcrumbComponent.vue';
+import StatisticsCardsVoucher from '@/components/voucher/StatisticsCardsVoucher.vue';
 import Button from '@/components/buttons/button.vue';
 export default {
     name: `VoucherViewComponent`,
@@ -51,9 +52,13 @@ export default {
         SearchVoucherComponent,
         BreadcrumbComponent,
         Button,
-        ImportAndExportFromExcelComponent
+        ImportAndExportFromExcelComponent,
+        StatisticsCardsVoucher
     },
     methods: {
+        handleRefsRefeshLoadVoucherCard() {
+            this.$refs.StatisticsCardsVoucher.getArr();
+        },
         handleChangeStatusModalAddNew() {
             this.modalAddNewVoucherisOpen = !this.modalAddNewVoucherisOpen;
         },
