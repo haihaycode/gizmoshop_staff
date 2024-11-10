@@ -30,9 +30,9 @@
 
                 <!-- Modal Footer -->
                 <div class="flex justify-end">
-                    <Button v-if="closeText" @click="closeModal" :text="closeText || 'Đóng'"
+                    <ButtonR v-if="closeText" @click="closeModal" :text="closeText || 'Đóng'"
                         class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-                    </button>
+                    </ButtonR>
                 </div>
             </div>
         </div>
@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import Button from '../buttons/button.vue';
+import ButtonR from '../buttons/button.vue';
 export default {
     components: {
-        Button
+        ButtonR
     },
     props: {
         isOpen: {
