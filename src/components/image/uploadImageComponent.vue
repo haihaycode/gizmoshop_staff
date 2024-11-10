@@ -3,11 +3,11 @@
         <ImageViewerComponent :isOpen="viewImageSelected ? true : false" :image="viewImageSelected"
             @close="viewImageSelected = null" />
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 ">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             <!-- Thẻ hình ảnh -->
             <div v-for="(image, index) in images" :key="index" class="relative">
-                <!-- Hiển thị hình ảnh -->
-                <img :src="image" @click="viewImage(image)"
+                <!-- Hiển thị hình ảnh dưới dạng Base64 -->
+                <img :src="image.preview" @click="viewImage(image.preview)"
                     class="w-full h-32 md:h-48 object-cover rounded-lg shadow-md" />
                 <!-- Nút Xóa (X icon) -->
                 <span @click="removeImage(index)"
@@ -30,13 +30,12 @@
                 Bạn chỉ có thể chọn tối đa 7 hình ảnh.
             </div>
         </div>
-
     </div>
 </template>
 
-
 <script>
 import ImageViewerComponent from './ImageViewerComponent.vue';
+
 export default {
     components: {
         ImageViewerComponent
@@ -44,36 +43,40 @@ export default {
     data() {
         return {
             viewImageSelected: '',
-            images: [],
+            images: [], // Lưu trữ file và bản xem trước Base64
             showAlert: false
         };
     },
     methods: {
         // Mở hộp thoại chọn file
         selectImages() {
-            // Sử dụng phương thức click() để mở input chọn file ẩn
             this.$refs.fileInput.click();
         },
 
         // Xử lý khi chọn file
         handleFileSelect(event) {
             const files = Array.from(event.target.files);
+            const maxImages = 7;
+
             // Kiểm tra nếu thêm các file này sẽ vượt quá giới hạn
-            if (this.images.length + files.length > 7) {
-                this.showAlert = true; // Hiển thị thông báo
+            if (this.images.length + files.length > maxImages) {
+                this.showAlert = true;
                 setTimeout(() => {
-                    this.showAlert = false; // Tắt thông báo sau 3 giây
+                    this.showAlert = false;
                 }, 3000);
                 return;
             }
 
-            // Đọc mỗi file được chọn và thêm vào mảng hình ảnh
             files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    if (this.images.length < 7) {
-                        this.images.push(e.target.result);
-                        this.$emit('update-images', this.images);
+                    // Lưu trữ cả file và bản xem trước Base64 trong images
+if (this.images.length < maxImages) {
+                        this.images.push({
+                            file: file,
+                            preview: e.target.result
+                        });
+                        this.$emit('update-images', this.images.map(image => image.file)); // Emit chỉ danh sách file
                     }
                 };
                 reader.readAsDataURL(file);
@@ -86,10 +89,13 @@ export default {
         // Xóa một hình ảnh khỏi mảng hình ảnh
         removeImage(index) {
             this.images.splice(index, 1);
+            this.$emit('update-images', this.images.map(image => image.file)); // Emit cập nhật lại danh sách file
         },
+
+        // Xem hình ảnh
         viewImage(image) {
             this.viewImageSelected = image;
-        },
+        }
     }
 };
 </script>

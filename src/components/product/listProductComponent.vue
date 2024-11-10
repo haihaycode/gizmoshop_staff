@@ -69,7 +69,8 @@
                         </select>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <Button :icon="`<i class='bx bxs-edit text-xl'></i>`" :text="''"></Button>
+                        <Button @click="handleChangModal(item)" :icon="`<i class='bx bxs-edit text-xl'></i>`"
+                            :text="''"></Button>
                     </td>
                 </tr>
             </template>
@@ -87,18 +88,26 @@
 
         <TooltipBox ref="tooltipBox" :bgColor="'bg-gray-800'" :textColor="'text-white'" v-show="tooltipVisible">
             <template v-slot:header>
-                <strong>{{tooltipContent.title}}</strong>
+                <strong>{{ tooltipContent.title }}</strong>
             </template>
             <template v-slot:body>
                 <div v-if="tooltipContent.content" v-html="tooltipContent.content"></div>
             </template>
             <template v-slot:footer></template>
         </TooltipBox>
+
+        <UpdateProductModalComponent v-if="productSeleted" :isOpen="isOpenModel" :productSelected="productSeleted"
+            @close=" isOpenModel = false">
+        </UpdateProductModalComponent>
+
+        
+
     </div>
 </template>
 
 <script>
 import TableComponent from '../table/TableComponent.vue';
+import UpdateProductModalComponent from './UpdateProductModalComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
 import { getProductPage, getStatusProduct } from '@/api/productApi';
 import Button from '../buttons/button.vue';
@@ -106,6 +115,7 @@ import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import { formatDay } from '@/utils/currencyUtils'
 import { loadImage } from '@/services/imageService.js';
+
 export default {
     name: 'ListVoucherComponent',
     components: {
@@ -113,9 +123,12 @@ export default {
         Button,
         Pagination,
         TooltipBox,
+        UpdateProductModalComponent
     },
     data() {
         return {
+            productSeleted: null,
+            isOpenModel: false,
             idStatusSelected: null,
             status: [],
             products: [],
@@ -252,6 +265,11 @@ export default {
             }
             return "";
         },
+        handleChangModal(data) {
+            this.productSeleted =data
+            this.isOpenModel = !this.isOpenModel;
+          
+        }
     }
 };
 </script>

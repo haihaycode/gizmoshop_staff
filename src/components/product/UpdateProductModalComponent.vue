@@ -1,11 +1,10 @@
 <template>
     <div>
-        <ModalBox :isOpen="isOpen" :loading="isLoading" :closeModal="closeModal" :closeText="'Đóng'">
+        <ModalBox :isOpen="isOpen" :closeModal="closeModal" :loading="isLoading">
             <template #header>
-                <h3 class="sm:text-sm md:text-lg font-bold">Thêm sản phẩm vào kho <span class="text-blue-500">{{
-                    inventory?.inventoryName }}</span></h3>
+                <h1 class="sm:text-sm md:text-lg font-bold">Cập nhật thông tin cho sản phẩm ID: <span
+                        class="text-blue-500">{{ form?.id }}</span></h1>
             </template>
-
             <template #body>
                 <form @submit.prevent="validateForm">
 
@@ -19,30 +18,47 @@
                         <p class="lg:text-sm text-red-500">{{ errors.productName }}</p>
                     </div>
 
+
+                    <div class="mb-4 relative">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="productCategory">Sản phẩm đang
+                            thuộc kho
+                            *</label>
+                        <input v-model="form.productInventoryResponse.name"
+                            @click="modalSelectInventoryComponentIsOpen = true"
+                            class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 pr-10"
+                            id="productCategory" placeholder="Chọn danh mục" readonly />
+                        <span v-if="form.productInventoryResponse.name"
+                            @click="form.productInventoryResponse = { id: '', name: '' }"
+                            class="absolute right-2 top-2 cursor-pointer">
+                            <i class="bx bx-x text-2xl"></i>
+                        </span>
+                        <p class="lg:text-sm text-red-500">{{ errors.productInventoryResponse?.id }}</p>
+                    </div>
+
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productName">Trạng thái sản phẩm
                             *</label>
-                        <select class="border-b-2 w-full" v-model="form.productStatus.id" @change="handleStatusSelect">
+                        <select class="border-b-2 w-full" v-model="form.productStatusResponse.id"
+                            @change="handleStatusSelect">
                             <option value="" disabled>Chọn trạng thái sản phẩm</option>
                             <option v-for="status in listStatus" :key="status.id" :value="status.id">
                                 {{ status.name }}
                             </option>
                         </select>
-                        <p class="lg:text-sm text-red-500">{{ errors.productStatus?.id }}</p>
+                        <p class="lg:text-sm text-red-500">{{ errors.productStatusResponse?.id }}</p>
                     </div>
 
                     <div class="mb-4 relative">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productCategory">Danh mục
                             *</label>
-                        <input v-model="form.productCategory.name" @click="modalSelectCategoryComponentIsOpen = true"
+                        <input v-model="form.productCategories.name" @click="modalSelectCategoryComponentIsOpen = true"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 pr-10"
-                            :class="errors.productCategory ? 'border-red-500' : ''" id="productCategory"
-                            placeholder="Chọn danh mục" readonly />
-                        <span v-if="form.productCategory.name" @click="form.productCategory = { id: '', name: '' }"
+                            id="productCategory" placeholder="Chọn danh mục" readonly />
+                        <span v-if="form.productCategories.name" @click="form.productCategories = { id: '', name: '' }"
                             class="absolute right-2 top-2 cursor-pointer">
                             <i class="bx bx-x text-2xl"></i>
                         </span>
-                        <p class="lg:text-sm text-red-500">{{ errors.productCategory?.id }}</p>
+                        <p class="lg:text-sm text-red-500">{{ errors.productCategories?.id }}</p>
                     </div>
 
 
@@ -51,8 +67,7 @@
                             *</label>
                         <input v-model="form.productBrand.name" @click="modalSelectBrandComponentIsOpen = true"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 pr-10"
-                            :class="errors.productBrand ? 'border-red-500' : ''" id="productCategory"
-                            placeholder="Chọn danh mục" readonly />
+                            id="productCategory" placeholder="Chọn danh mục" readonly />
                         <span v-if="form.productBrand.name" @click="form.productBrand = { id: '', name: '' }"
                             class="absolute right-2 top-2 cursor-pointer">
                             <i class="bx bx-x text-2xl"></i>
@@ -180,71 +195,70 @@
                 </form>
             </template>
         </ModalBox>
+
+        <!-- modalSelectCategoryComponent  -->
+        <modalSelectCategoryComponent :isOpen="modalSelectCategoryComponentIsOpen"
+            @close="modalSelectCategoryComponentIsOpen = false"
+            @itemClicked="(item) => { form.productCategory = { id: item.id, name: item.name } }">
+        </modalSelectCategoryComponent>
+
+        <modalSelectBrandComponent :isOpen="modalSelectBrandComponentIsOpen"
+            @close="modalSelectBrandComponentIsOpen = false"
+            @itemClicked="(item) => { form.productBrand = { id: item.id, name: item.name } }">
+        </modalSelectBrandComponent>
+
+        <modaleSelectInventoryComponent :isOpen="modalSelectInventoryComponentIsOpen"
+            @close="modalSelectInventoryComponentIsOpen = false"
+            @itemClicked="(item) => { form.productInventoryResponse = { id: item.id, name: item.name } }">
+        </modaleSelectInventoryComponent>
     </div>
-
-    <!-- modalSelectCategoryComponent  -->
-    <modalSelectCategoryComponent :isOpen="modalSelectCategoryComponentIsOpen"
-        @close="modalSelectCategoryComponentIsOpen = false"
-        @itemClicked="(item) => { form.productCategory = { id: item.id, name: item.name } }">
-    </modalSelectCategoryComponent>
-
-    <modalSelectBrandComponent :isOpen="modalSelectBrandComponentIsOpen"
-        @close="modalSelectBrandComponentIsOpen = false"
-        @itemClicked="(item) => { form.productBrand = { id: item.id, name: item.name } }">
-    </modalSelectBrandComponent>
-
 </template>
 
 <script>
 import ModalBox from '../modal/ModalBox.vue';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+import MyUploadAdapter from '@/utils/myUploadAdapter';
+import notificationService from '@/services/notificationService';
+import * as Yup from "yup";
+import { mapGetters } from 'vuex';
+import Button from '../buttons/button.vue';
+import uploadImageComponent from '../image/uploadImageComponent.vue';
+import { getStatusProduct, updateProduct } from '@/api/productApi'
 import modalSelectCategoryComponent from './modalSelectCategoryComponent.vue';
 import modalSelectBrandComponent from './modalSelectBrandComponent.vue';
-import uploadImageComponent from '../image/uploadImageComponent.vue';
-import { mapGetters } from 'vuex';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import MyUploadAdapter from '@/utils/myUploadAdapter';
-import { Ckeditor } from '@ckeditor/ckeditor5-vue';
-import Button from '../buttons/button.vue';
-import * as Yup from "yup";
-import notificationService from '@/services/notificationService';
-import { createProduct, getStatusProduct, updataImage } from '@/api/productApi'
+import modaleSelectInventoryComponent from './modaleSelectInventoryComponent.vue';
 
 export default {
-    name: 'addNewProductComponent',
-    components: {
-        ModalBox,
-        ckeditor: Ckeditor,
-        Button,
-        modalSelectCategoryComponent,
-        modalSelectBrandComponent,
-        uploadImageComponent
-    },
-    emits: ['create-success', 'close'],
+    name: 'updateProductComponent',
     data() {
         return {
+            modalSelectInventoryComponentIsOpen: false,
             modalSelectCategoryComponentIsOpen: false,
             modalSelectBrandComponentIsOpen: false,
-            messageType: '',
-            message: '',
-            resProductData: {},
             listStatus: [],
+            message: '',
             form: {
+                ...this.productSelected
+            },
+            errors: {
+                id: '',
                 productName: '',
-                productPrice: 0,
-                discountProduct: 0,
+                productPrice: '',
+                discountProduct: '',
                 thumbnail: '',
                 productLongDescription: '',
                 productShortDescription: '',
-                productWeight: 0,
-                productArea: 0,
-                productVolume: 0,
-                productWidth: 0,
-                productHeight: 0,
-                productLength: 0,
+                productWeight: '',
+                productArea: '',
+                productVolume: '',
+                productWidth: '',
+                productHeight: '',
+                productLength: '',
                 inventoryId: '',
-                productQuantity: 0,
+                productQuantity: '',
                 selectedImages: [],
-                productCategory: {
+                productStatusResponse: {
                     id: '',
                     name: ''
                 },
@@ -252,47 +266,48 @@ export default {
                     id: '',
                     name: ''
                 },
-                productStatus: {
+                productCategories: {
+                    id: '',
+                    name: ''
+                },
+                productInventoryResponse: {
                     id: '',
                     name: ''
                 }
-
             },
-            errors: {},
             editor: ClassicEditor
-        };
+        }
     },
     computed: {
         ...mapGetters('loading', ['isLoading'])
     },
+    mounted() {
+        this.getListStatus();
+    },
+    components: {
+        ModalBox,
+        Button,
+        uploadImageComponent,
+        modalSelectCategoryComponent,
+        modalSelectBrandComponent,
+        modaleSelectInventoryComponent,
+        ckeditor: Ckeditor,
+
+    },
+    emits: ['close'],
     props: {
         isOpen: {
             type: Boolean,
-            default: false,
+            default: false
         },
-        inventory: {
+        productSelected: {
             type: Object,
             required: false
-        },
-    },
-    mounted() {
-        this.getListStatus();
+        }
     },
     methods: {
         closeModal() {
             this.$emit('close');
-        },
-        onEditorChange(event, editor) {
-            this.form.productLongDescription = editor.getData();
-        },
-        onEditorReady(editor) {
-            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                return new MyUploadAdapter(loader);
-            };
-            editor.ui.view.editable.element.style.height = '300px';
-            editor.ui.view.editable.element.style.minHeight = '200px';
-            editor.ui.view.editable.element.style.overflowY = 'auto';
-
         },
         validateForm() {
             this.errors = {};
@@ -307,15 +322,18 @@ export default {
                 productWidth: Yup.number().required('Chiều rộng sản phẩm là bắt buộc'),
                 productHeight: Yup.number().required('Chiều cao sản phẩm là bắt buộc'),
                 productLength: Yup.number().required('Chiều dài sản phẩm là bắt buộc'),
-                productCategory: Yup.object().shape({
+                productCategories: Yup.object().shape({
                     id: Yup.string().required('Danh mục là bắt buộc'),
-                }).required('Danh mục là bắt buộc'),
+                }),
                 productBrand: Yup.object().shape({
                     id: Yup.string().required('Thương hiệu là bắt buộc'),
-                }).required('Thương hiệu là bắt buộc'),
-                productStatus: Yup.object().shape({
+                }),
+                productStatusResponse: Yup.object().shape({
                     id: Yup.string().required('Trạng thái sản phẩm là bắt buộc'),
-                }).required('Trạng thái sản phẩm là bắt buộc'),
+                }),
+                productInventoryResponse: Yup.object().shape({
+                    id: Yup.string().required('Sản phẩm là bắt buộc phải có kho'),
+                }),
                 productLongDescription: Yup.string().required('Mô tả dài là bắt buộc')
             });
             schema.validate(this.form, { abortEarly: false })
@@ -324,28 +342,31 @@ export default {
                 })
                 .catch(err => {
                     err.inner.forEach((validationError) => {
-                        if (validationError.path.startsWith('productCategory.')) {
-                            // Xử lý lỗi cho productCategory
-                            const key = validationError.path.split('.')[1]; // Lấy tên thuộc tính bên trong productCategory
-                            this.errors.productCategory = this.errors.productCategory || {};
-                            this.errors.productCategory[key] = validationError.message;
+                        if (validationError.path.startsWith('productCategories.')) {
+                            const key = validationError.path.split('.')[1];
+                            this.errors.productCategories = this.errors.productCategories || {};
+                            this.errors.productCategories[key] = validationError.message;
 
                             notificationService.warning(validationError.message);
                         } else if (validationError.path.startsWith('productBrand.')) {
-                            // Xử lý lỗi cho productBrand
-                            const key = validationError.path.split('.')[1]; // Lấy tên thuộc tính bên trong productBrand
+                            const key = validationError.path.split('.')[1];
                             this.errors.productBrand = this.errors.productBrand || {};
                             this.errors.productBrand[key] = validationError.message;
 
                             notificationService.warning(validationError.message);
-                        } else if (validationError.path.startsWith('productStatus.')) {
+                        } else if (validationError.path.startsWith('productStatusResponse.')) {
                             const key = validationError.path.split('.')[1];
-                            this.errors.productStatus = this.errors.productStatus || {};
-                            this.errors.productStatus[key] = validationError.message;
+                            this.errors.productStatusResponse = this.errors.productStatusResponse || {};
+                            this.errors.productStatusResponse[key] = validationError.message;
+
+                            notificationService.warning(validationError.message);
+                        } else if (validationError.path.startsWith('productInventoryResponse.')) {
+                            const key = validationError.path.split('.')[1];
+                            this.errors.productInventoryResponse = this.errors.productInventoryResponse || {};
+                            this.errors.productInventoryResponse[key] = validationError.message;
 
                             notificationService.warning(validationError.message);
                         } else {
-                            // Xử lý lỗi cho các trường khác
                             this.errors[validationError.path] = validationError.message;
                             notificationService.warning(validationError.message);
                         }
@@ -353,10 +374,6 @@ export default {
                     });
                 });
         },
-        handleSelectImages(images) {
-            this.form.selectedImages = images;
-        },
-
         async getListStatus() {
             try {
                 const res = await getStatusProduct();
@@ -365,65 +382,80 @@ export default {
                 console.error(error)
             }
         },
-        handleStatusSelect() {
-            const selectedStatus = this.listStatus.find(status => status.id === this.form.productStatus.id);
-            this.form.productStatus = selectedStatus ? { id: selectedStatus.id, name: selectedStatus.name } : { id: '', name: '' };
-            console.log(this.form.productStatus)
+        handleSelectImages(images) {
+            this.form.selectedImages = images;
+        },
+        onEditorChange(event, editor) {
+            this.form.productLongDescription = editor.getData();
+        },
+        onEditorReady(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+            editor.ui.view.editable.element.style.height = '300px';
+            editor.ui.view.editable.element.style.minHeight = '200px';
+            editor.ui.view.editable.element.style.overflowY = 'auto';
+
         },
         async submitForm() {
             try {
-                this.addNewProduct(this.form)
+                this.update()
             } catch (error) {
                 console.error(error)
             }
         },
-
-        async addNewProduct(data) {
+        async update() {
             try {
-                const productNew = {
-                    productName: data.productName,
-                    thumbnail: data.thumbnail,
-                    productCategoryId: data.productCategory.id,
-                    productPrice: data.productPrice,
-                    discountProduct: data.discountProduct,
-                    productLongDescription: data.productLongDescription,
-                    productWeight: data.productWeight,
-                    productArea: data.productArea,
-                    productVolume: data.productVolume,
-                    productHeight: data.productHeight,
-                    productLength: data.productLength,
-                    productBrandId: data.productBrand.id,
-                    inventoryId: this.inventory?.id,
-                    quantity: data.productQuantity,
-                    productStatusResponseId: data.productStatus.id,
-                    width: data.productWidth
-                };
-                const res = await createProduct(productNew);
-
-                if (data.selectedImages && data.selectedImages.length > 0) {
-                    const dataUpdateImage = {
-                        productId: res.data.id,
-                        files: data.selectedImages
-                    };
-                    await this.addImageProduct(dataUpdateImage);
+                if (!this.form) {
+                    console.error("Form is missing");
+                    return;
                 }
+                if (!this.form.productCategories || !this.form.productCategories.id) {
+                    console.error("Product category is missing");
+                    return;
+                }
+                if (!this.form.productBrand || !this.form.productBrand.id) {
+                    console.error("Product brand is missing");
+                    return;
+                }
+                if (!this.form.productInventoryResponse || !this.form.productInventoryResponse.id) {
+                    console.error("Inventory is missing");
+                    return;
+                }
+                const data = {
+                    productName: this.form.productName,
+                    thumbnail: this.form.thumbnail,
+                    productCategoryId: this.form.productCategory?.id,
+                    productPrice: this.form.productPrice,
+                    discountProduct: this.form.discountProduct,
+                    productShortDescription: 'ssss',
+                    productLongDescription: this.form.productLongDescription,
+                    productWeight: this.form.productWeight,
+                    productArea: this.form.productArea,
+                    productVolume: this.form.productVolume,
+                    productHeight: this.form.productHeight,
+                    productLength: this.form.productLength,
+                    productBrandId: this.form.productBrand?.id,
+                    inventoryId: this.form.productInventoryResponse?.id,
+                    quantity: this.form.productQuantity,
+                    productStatusResponseId: this.form.productStatusResponse?.id,
+                    width: this.form.productWidth
+                }
+                console.log(data)
+                await updateProduct(53, data)
+                notificationService.success("Cập nhật sản phẩm thành công");
+
             } catch (error) {
                 console.error(error)
             }
         },
-
-        async addImageProduct(data) {
-            try {
-                const res = await updataImage(data)
-                console.log("gửi thành công" + res)
-            } catch (error) {
-                console.error(error)
-            }
+    },
+    watch: {
+        productSelected(newProduct) {
+            this.form = { ...newProduct };
         }
     },
-
 }
-
 </script>
 
 <style></style>
