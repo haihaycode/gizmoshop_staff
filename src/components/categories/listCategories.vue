@@ -37,7 +37,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <img v-if="item?.image" :src="loadImage(item?.image, `category`)" alt="Profile Image"
-                            class="w-12 h-12 rounded-full object-cover" />
+                            class="w-12 h-12 rounded-sm object-cover" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <toggleButton :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
@@ -45,7 +45,7 @@
 
                     </td>
                     <td>
-                        <ExportButtonComponent @click.stop :nameExport="'category'" :idExport="item.id">
+                        <ExportButtonComponent @click.stop :nameExport="'categories'" :idExport="item.id">
                         </ExportButtonComponent>
                     </td>
                 </tr>
@@ -64,8 +64,8 @@
             </template>
         </TableComponent>
         <!-- update -->
-        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen" @close="isOpen = false"
-            @update-success="handlesListCategories">
+        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen"
+            @close="isOpen = false, idSelected = null" @update-success="handlesListCategories">
         </updataCategories>
     </div>
 </template>

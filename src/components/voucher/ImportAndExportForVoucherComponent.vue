@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ImportAndExportFromExcelComponent :nameExport="'brand'" @file-ready-for-update="handleImportFileExcel">
+        <ImportAndExportFromExcelComponent :nameExport="'categories'" @file-ready-for-update="handleImportFileExcel">
         </ImportAndExportFromExcelComponent>
     </div>
 </template>
@@ -16,7 +16,7 @@ export default {
     methods: {
         async handleImportFileExcel(file) {
             try {
-                const res = await importFileExcel('brand', file);
+                const res = await importFileExcel('categories', file);
                 notificationService.success(res.data.message);
                 this.$emit('load');
             } catch (error) {

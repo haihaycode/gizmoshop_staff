@@ -9,7 +9,7 @@
         </div>
 
         <listCategories ref="listCategories" @handleStatus="loadCardsCategory"></listCategories>
-        <ImportAndExportFromExcelComponent></ImportAndExportFromExcelComponent>
+        <ImportAndExportForCategoryComponent @load="loadCategories"></ImportAndExportForCategoryComponent>
         <chartCategories></chartCategories>
     </div>
     <newCategory :isOpen="modalAddNewIsOpen" @create-success="loadCategories" @close="handleModelCreateCategory">
@@ -24,7 +24,7 @@ import Button from '@/components/buttons/button.vue';
 import newCategory from '@/components/categories/newCategory.vue';
 import StatisticsCardsCategory from '@/components/categories/StatisticsCardsCategory.vue';
 import chartCategories from '@/components/categories/chartCategories.vue';
-import ImportAndExportFromExcelComponent from '@/components/fileTransfer/ImportAndExportFromExcelComponent.vue';
+import ImportAndExportForCategoryComponent from '@/components/categories/ImportAndExportForCategoryComponent.vue';
 import BreadcrumbComponent from '@/components/breadcrumb/BreadcrumbComponent.vue';
 export default {
     name: 'categoriesView',
@@ -44,10 +44,10 @@ export default {
         newCategory,
         StatisticsCardsCategory,
         chartCategories,
-        ImportAndExportFromExcelComponent,
+        ImportAndExportForCategoryComponent,
         BreadcrumbComponent,
         searchComponent
-        
+
     },
     methods: {
         handleModelCreateCategory() {

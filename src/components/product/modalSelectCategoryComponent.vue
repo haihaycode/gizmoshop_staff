@@ -37,8 +37,6 @@ export default {
                 name: 'Tên danh mục',
                 quantity: 'Tổng mặt hàng ',
                 quantityActive: 'Mặt hàng hoạt động',
-
-
             }
         }
     },

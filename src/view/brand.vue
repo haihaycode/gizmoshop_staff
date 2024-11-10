@@ -16,7 +16,7 @@
 
 
     <!-- component import and Export all For Brand  -->
-    <ImportAndExportForBrandComponent></ImportAndExportForBrandComponent>
+    <ImportAndExportForBrandComponent @load="refreshBrandList"></ImportAndExportForBrandComponent>
     <!-- Component Thêm thương hiệu mới -->
     <NewBrandComponent :isOpen="modalAddNewIsOpen" @close="handleModelCreate" @create-success="refreshBrandList">
     </NewBrandComponent>

@@ -135,8 +135,9 @@
       </template>
     </TableComponent>
     <!-- update -->
-    <UpdateVoucherComponent v-if="voucherUpdateSelected" @close="modalUpdateVoucherIsOpen = false"
-      :isOpen="modalUpdateVoucherIsOpen" :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
+    <UpdateVoucherComponent v-if="voucherUpdateSelected"
+      @close="modalUpdateVoucherIsOpen = false, voucherUpdateSelected = null" :isOpen="modalUpdateVoucherIsOpen"
+      :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
     </UpdateVoucherComponent>
   </div>
 </template>

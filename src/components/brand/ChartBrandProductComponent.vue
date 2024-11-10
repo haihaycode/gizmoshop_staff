@@ -94,7 +94,7 @@ export default {
 
         const createChart = () => {
             const ctx = barChart.value.getContext('2d');
-            const maxYValue = Math.max(...paginatedData.value.map(item => item.quantity)) +5;
+            const maxYValue = Math.max(...paginatedData.value.map(item => item.quantity)) + 5;
             myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
