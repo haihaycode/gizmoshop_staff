@@ -399,12 +399,17 @@ export default {
                     width: data.productWidth
                 };
                 const res = await createProduct(productNew);
+                // Kiểm tra kết quả trả về từ createProduct
+                console.log("createProduct response:", res);
 
                 if (data.selectedImages && data.selectedImages.length > 0) {
+                    console.log("có dữ liệu ảnh")
                     const dataUpdateImage = {
                         productId: res.data.id,
                         files: data.selectedImages
                     };
+
+                    console.log("Data gửi vào addImageProduct:", dataUpdateImage);
                     await this.addImageProduct(dataUpdateImage);
                 }
             } catch (error) {
@@ -414,10 +419,17 @@ export default {
 
         async addImageProduct(data) {
             try {
-                const res = await updataImage(data)
-                console.log("gửi thành công" + res)
+                const formData = new FormData();
+                formData.append("productId", data.productId);
+                data.files.forEach(file => {
+                    formData.append("files", file);
+                });
+
+                const res = await updataImage(formData);
+
+                console.log("gửi thành công", res);
             } catch (error) {
-                console.error(error)
+                console.error(error);
             }
         }
     },

@@ -36,7 +36,7 @@ export const createProduct = async (data) => {
     }
 };
 
-export const updateProduct = async (idProduct,data) => {
+export const updateProduct = async (idProduct, data) => {
     try {
         const response = await Axios.put(`${HOST}/api/admin/product/update/${idProduct}`, data);
         return response.data;
@@ -45,18 +45,19 @@ export const updateProduct = async (idProduct,data) => {
     }
 };
 
-export const updataImage = async (data) => {
+export const updataImage = async (formData) => {
     try {
-        const response = await Axios.post(`${HOST}/api/admin/product/updateimage?productId=${data.productId}`, data.files, {
+        const response = await Axios.post(`${HOST}/api/admin/product/updateimage`, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
             }
         });
         return response.data;
     } catch (error) {
-        throw new Error(`${error}`);
+        throw new Error(`Lỗi API updataImage: ${error}`);
     }
 };
+
 
 export const fetchInventoryProductCounts = async () => {
     try {

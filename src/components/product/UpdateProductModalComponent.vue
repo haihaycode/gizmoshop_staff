@@ -18,15 +18,14 @@
                         <p class="lg:text-sm text-red-500">{{ errors.productName }}</p>
                     </div>
 
-
                     <div class="mb-4 relative">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="productCategory">Sản phẩm đang
-                            thuộc kho
-                            *</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="productInventoryResponse">
+                            Sản phẩm đang thuộc kho *
+                        </label>
                         <input v-model="form.productInventoryResponse.name"
                             @click="modalSelectInventoryComponentIsOpen = true"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 pr-10"
-                            id="productCategory" placeholder="Chọn danh mục" readonly />
+                            id="productInventoryResponse" placeholder="Chọn kho mới" readonly />
                         <span v-if="form.productInventoryResponse.name"
                             @click="form.productInventoryResponse = { id: '', name: '' }"
                             class="absolute right-2 top-2 cursor-pointer">
@@ -184,8 +183,18 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="">Chọn hình cho sản phẩm</label>
-                        <uploadImageComponent @update-images="handleSelectImages"></uploadImageComponent>
+                        <uploadImageComponent :listImages="listImagePreview" @update-images="handleSelectImages">
+                        </uploadImageComponent>
                     </div>
+                    <!-- 
+                    <div v-for="(url, index) in imageList" :key="index">
+                        <img :src="loadImage(url, 'product')" alt="Product Image" />
+                    </div> -->
+
+                    <!-- <div v-for="(image, index) in listImagePreview" :key="index">
+                        <img v-if="getImageUrl(image)" :src="getImageUrl(image)" alt="Image preview"
+                            class="w-32 h-32 object-cover" />
+                    </div> -->
 
                     <div class="flex justify-end">
                         <Button :is-Loading="isLoading" :text="'Lưu'" type="submit"
@@ -209,7 +218,7 @@
 
         <modaleSelectInventoryComponent :isOpen="modalSelectInventoryComponentIsOpen"
             @close="modalSelectInventoryComponentIsOpen = false"
-            @itemClicked="(item) => { form.productInventoryResponse = { id: item.id, name: item.name } }">
+            @item-clicked="(item) => { form.productInventoryResponse = { id: item.id, name: item.name } }">
         </modaleSelectInventoryComponent>
     </div>
 </template>
@@ -224,10 +233,11 @@ import * as Yup from "yup";
 import { mapGetters } from 'vuex';
 import Button from '../buttons/button.vue';
 import uploadImageComponent from '../image/uploadImageComponent.vue';
-import { getStatusProduct, updateProduct } from '@/api/productApi'
+import { getStatusProduct, updateProduct, updataImage } from '@/api/productApi'
 import modalSelectCategoryComponent from './modalSelectCategoryComponent.vue';
 import modalSelectBrandComponent from './modalSelectBrandComponent.vue';
 import modaleSelectInventoryComponent from './modaleSelectInventoryComponent.vue';
+import { loadImage } from "@/services/imageService";
 
 export default {
     name: 'updateProductComponent',
@@ -238,6 +248,7 @@ export default {
             modalSelectBrandComponentIsOpen: false,
             listStatus: [],
             message: '',
+            listImagePreview: [],
             form: {
                 ...this.productSelected
             },
@@ -279,7 +290,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('loading', ['isLoading'])
+        ...mapGetters('loading', ['isLoading']),
+        imageList() {
+            return this.productSelected?.productImageMappingResponse?.flatMap(mapping =>
+                mapping.image.map(img => img.fileDownloadUri)
+            ) || [];
+        }
     },
     mounted() {
         this.getListStatus();
@@ -306,8 +322,17 @@ export default {
         }
     },
     methods: {
+        loadImage,
         closeModal() {
             this.$emit('close');
+        },
+        // Tạo URL tạm thời từ File để hiển thị ảnh
+        getImageUrl(file) {
+            // console.log(file); // Kiểm tra file
+            if (file && file.type.startsWith('image/')) {
+                return URL.createObjectURL(file); // Tạo URL từ file
+            }
+            return 'không phải ảnh'; // Trả về chuỗi rỗng nếu không phải ảnh
         },
         validateForm() {
             this.errors = {};
@@ -442,19 +467,84 @@ export default {
                     width: this.form.productWidth
                 }
                 console.log(data)
-                await updateProduct(53, data)
-                notificationService.success("Cập nhật sản phẩm thành công");
+                const res = await updateProduct(this.form.id, data)
+                // notificationService.success("Cập nhật sản phẩm thành công");
+                if (this.form.selectedImages && this.form.selectedImages.length > 0) {
+                    console.log("có dữ liệu ảnh")
+                    const dataUpdateImage = {
+                        productId: res.data.id,
+                        files: this.form.selectedImages
+                    };
+                    console.log("Data gửi vào addImageProduct:", dataUpdateImage);
+                    await this.addImageProduct(dataUpdateImage);
+                }
+                notificationService.success("Cập nhật sản phẩm thành công thành công");
 
             } catch (error) {
                 console.error(error)
             }
         },
-    },
-    watch: {
-        productSelected(newProduct) {
-            this.form = { ...newProduct };
+        async addImageProduct(data) {
+            try {
+                const formData = new FormData();
+                formData.append("productId", data.productId);
+                data.files.forEach(file => {
+                    formData.append("files", file);
+                });
+                const res = await updataImage(formData);
+                console.log("gửi thành công", res);
+            } catch (error) {
+                console.error(error);
+            }
         }
     },
+    watch: {
+        async productSelected(newProduct) {
+            // Cập nhật form
+            this.form = {
+                ...newProduct,
+                productInventoryResponse: newProduct.productInventoryResponse || { name: '' },
+            };
+
+            // Cập nhật thông tin tồn kho
+            if (newProduct.productInventoryResponse && newProduct.productInventoryResponse.inventory) {
+                this.form.productInventoryResponse.name = newProduct.productInventoryResponse.inventory.inventoryName;
+            }
+
+            // Cập nhật danh sách ảnh
+            if (Array.isArray(newProduct.productImageMappingResponse)) {
+                this.listImagePreview = []; // Reset lại danh sách ảnh trước khi thêm ảnh mới
+
+                // Dùng for...of để xử lý bất đồng bộ một cách chính xác
+                for (const mapping of newProduct.productImageMappingResponse) {
+                    if (mapping.image) {
+                        for (const img of mapping.image) {
+                            const imageUrl = loadImage(img.fileDownloadUri, 'product');
+                            try {
+                                const response = await fetch(imageUrl);
+                                const blob = await response.blob();
+                                const fileName = img.fileDownloadUri.split('/').pop();
+                                const file = new File([blob], fileName, { type: blob.type });
+                                this.listImagePreview.push(file); // Thêm file vào danh sách
+                            } catch (error) {
+                                console.error('Lỗi tải ảnh:', error);
+                            }
+                        }
+                    }
+                }
+            } else {
+                this.listImagePreview = []; // Nếu không có productImageMappingResponse, reset lại danh sách ảnh
+            }
+            console.log('listImagePreview:', this.listImagePreview);
+            this.listImagePreview.forEach(file => {
+                console.log(file instanceof File); // Kiểm tra xem mỗi phần tử có phải là File không
+            });
+        }
+    }
+
+
+
+
 }
 </script>
 

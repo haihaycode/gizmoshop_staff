@@ -52,13 +52,19 @@ export default {
     mounted() {
         this.getAllInventory()
     },
+    props: {
+        isOpen: {
+            type: Boolean,
+            required: true
+        },
+    },
     emits: ['item-clicked', 'close'],
     methods: {
         async getAllInventory() {
             try {
                 const res = await fetchInventoryProductCounts()
                 this.data = res.data.map(inventory => {
-                    const totalProducts = inventory.productInventory.length;  
+                    const totalProducts = inventory.productInventory.length;
                     const totalQuantity = inventory.productInventory.reduce((sum, item) => sum + item.quantity, 0);
 
                     return {
@@ -83,7 +89,7 @@ export default {
             this.$emit('close');
         },
         handleItemClick(itemClicked) {
-            this.$emit('itemClicked', itemClicked);
+            this.$emit('item-clicked', itemClicked);
             this.$emit('close');
         },
     }

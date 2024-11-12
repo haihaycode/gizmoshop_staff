@@ -1,28 +1,32 @@
 <template>
   <div>
     <ImageViewerComponent :isOpen="viewImageSelected ? true : false" :image="viewImageSelected"
-                          @close="viewImageSelected = null" />
+      @close="viewImageSelected = null" />
 
     <!-- Sử dụng draggable để sắp xếp hình ảnh -->
-    <draggable v-model="images" :tag="'div'" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"
-               @change="updateFileOrder">
+    <draggable :itemKey="''" v-model="images" :tag="'div'" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"
+      @change="updateFileOrder">
       <!-- Thẻ hình ảnh -->
       <template v-slot:item="{ element, index }">
         <div class="relative">
           <!-- Hiển thị dấu + khi element là add-button -->
           <div v-if="element.isAddButton" @click="selectImages"
-               class="flex items-center justify-center w-full h-32 md:h-48 border-dashed border-2 border-gray-400 rounded-lg cursor-pointer">
+            class="flex items-center justify-center w-full h-32 md:h-48 border-dashed border-2 border-gray-400 rounded-lg cursor-pointer">
             <span class="text-3xl font-bold text-gray-400">+</span>
           </div>
 
           <!-- Hiển thị hình ảnh khi element không phải là add-button -->
           <div v-else class="relative">
+
             <img :src="element.preview" @click="viewImage(element.preview)"
-                 class="w-full border border-gray-300 h-32 md:h-48 object-cover rounded-lg shadow-md" />
+              class="w-full border border-gray-300 h-32 md:h-48 object-cover rounded-lg shadow-md" />
+
+
+
             <span @click="removeImage(index)"
-                  class="absolute top-1 right-1 bg-red-400 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer">
-                            X
-                        </span>
+              class="absolute top-1 right-1 bg-red-400 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer">
+              X
+            </span>
           </div>
         </div>
       </template>
@@ -50,12 +54,22 @@ export default {
   data() {
     return {
       viewImageSelected: '',
-      images: [
-        { isAddButton: true } // Dấu cộng nằm trong danh sách ảnh
-      ],
+      images: [{ isAddButton: true }], // Nút dấu cộng mặc định
       showAlert: false
     };
   },
+  props: {
+    listImages: {
+      type: Array,
+      default: () => []
+    }
+  },
+  mounted() {
+    if (this.listImages.length > 0) {
+      this.convertListImage(this.listImages); // Nếu có listImages, khởi tạo ảnh từ đó
+    }
+  },
+
   methods: {
     // Mở hộp thoại chọn file
     selectImages() {
@@ -93,26 +107,59 @@ export default {
       this.$refs.fileInput.value = "";
     },
 
-    // Cập nhật thứ tự danh sách file khi thứ tự thay đổi
-    updateFileOrder() {
-      // Lọc bỏ add-button và emit thứ tự file mới
-      this.$emit('update-images', this.images.filter(img => !img.isAddButton).map(image => image.file));
+
+
+    // Lấy URL từ file
+    // getImageUrl(file) {
+    //   if (file && file.type.startsWith('image/')) {
+    //     return URL.createObjectURL(file); // Tạo URL tạm từ file
+    //   }
+    //   return ''; // Trả về chuỗi rỗng nếu không phải ảnh
+    // },
+
+
+
+    async convertListImage(files) {
+      this.images = [
+        { isAddButton: true },
+        ...(await Promise.all(
+          files.map(file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve({
+              file: file,
+              preview: reader.result,
+              isAddButton: false
+            });
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          }))
+        ))
+      ];
     },
 
-    // Xóa một hình ảnh khỏi mảng hình ảnh
+
+    // Cập nhật thứ tự file khi thay đổi
+    updateFileOrder() {
+      const filteredImages = this.images.filter(img => !img.isAddButton).map(image => image.file);
+      console.log(filteredImages);
+      this.$emit('update-images', filteredImages);
+    },
+
+
+    // Xóa ảnh
     removeImage(index) {
       this.images.splice(index, 1);
       this.$emit('update-images', this.images.filter(img => !img.isAddButton).map(image => image.file));
     },
 
-    // Xem hình ảnh
+    // Xem ảnh
     viewImage(image) {
-      this.viewImageSelected = image;
+      if (image) {
+        this.viewImageSelected = image;
+      }
     }
   }
 };
 </script>
 
-<style scoped>
-/* CSS tùy chọn cho component */
-</style>
+<style scoped></style>
