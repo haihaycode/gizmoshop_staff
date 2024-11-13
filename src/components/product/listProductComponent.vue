@@ -100,7 +100,7 @@
             @close=" isOpenModel = false">
         </UpdateProductModalComponent>
 
-        
+
 
     </div>
 </template>
@@ -127,6 +127,8 @@ export default {
     },
     data() {
         return {
+            isSupplier: null,
+            keyword: null,
             productSeleted: null,
             isOpenModel: false,
             idStatusSelected: null,
@@ -171,6 +173,22 @@ export default {
             }
         };
     },
+    props: {
+        queryParams: {
+            type: Object,
+            default: () => ({})
+        }
+    },
+
+    watch: {
+        queryParams(newCode) {
+            console.log('New Code:', newCode);
+            this.keyword = newCode.name;
+            this.isSupplier = newCode.isSupplier;
+            this.getDataProduct();
+        },
+    },
+
     async mounted() {
         await this.getListStatusProduct();
         this.getDataProduct();
@@ -187,21 +205,24 @@ export default {
             });
         },
     },
+
     methods: {
         loadImage,
         handleStatusChange(productId, selectedStatusId) {
             console.log('Product ID:', productId);
             console.log('Selected Status ID:', selectedStatusId);
         },
-        async getDataProduct(keyWord) {
+        async getDataProduct() {
             try {
                 const reqData = {
-                    productName: keyWord,
+                    productName: this.keyword,
                     deleted: this.deleted,
+                    isSupplier: this.isSupplier,
                     page: this.page,
                     limit: this.size,
                     sort: `${this.sortField},${this.sortDirection}`,
                 };
+                console.log('Request Data:', reqData);
                 const res = await getProductPage(reqData);
                 this.products = res.data.content;
                 this.pagination = res.data;
@@ -266,9 +287,9 @@ export default {
             return "";
         },
         handleChangModal(data) {
-            this.productSeleted =data
+            this.productSeleted = data
             this.isOpenModel = !this.isOpenModel;
-          
+
         }
     }
 };

@@ -67,3 +67,13 @@ export const fetchInventoryProductCounts = async () => {
         throw new Error(`${error}`);
     }
 };
+
+// http://localhost:8081/api/admin/product/demo?month=1&year=2024&page=0
+export const getTopProduct = async (data) => {
+    try {
+        const response = await Axios.get(`${HOST}/api/admin/product/top`, { params: data });
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};

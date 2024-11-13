@@ -60,7 +60,7 @@ export default {
             this.$refs.StatisticsCardsVoucher.getArr();
         },
         handleChangeStatusModalAddNew() {
-            this.modalAddNewVoucherisOpen = !this.modalAddNewVoucherisOpen;
+            this.modalAddNewVoucherisOpen = !this.modalAddNewVoucherisOpen; 
         },
         handleRefsRefeshVoucher() {
             this.$refs.ListVoucherComponent.handlegetVouchers();
