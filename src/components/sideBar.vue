@@ -84,6 +84,7 @@
                     </RouterLink>
                 </li>
 
+
                 <span class="text-white font-bold">QUẢN LÝ ĐỐI TÁC</span>
                 <li class="mb-1 group">
                     <a href=""
@@ -96,18 +97,18 @@
                 </li>
                 <span class="text-white font-bold">QUẢN LÝ ĐƠN HÀNG</span>
                 <li class="mb-1 group">
-                    <a href=""
+                    <RouterLink :to="{ name: 'orderpartner' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Đơn hàng Đối Tác </span>
-                    </a>
+                        <i class='bx bx-shopping-bag mr-3 text-lg'></i>
+                        <span class="text-sm">Quản Lý đơn hàng đối tác</span>
+                    </RouterLink>
                 </li>
                 <li class="mb-1 group">
-                    <a href=""
+                    <RouterLink :to="{ name: 'orderclient' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Đơn hàng khách hàng </span>
-                    </a>
+                        <i class='bx bx-shopping-bag mr-3 text-lg'></i>
+                        <span class="text-sm">Quản Lý đơn hàng khách hàng</span>
+                    </RouterLink>
                 </li>
 
 

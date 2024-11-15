@@ -225,6 +225,7 @@ export default {
                 console.log('Request Data:', reqData);
                 const res = await getProductPage(reqData);
                 this.products = res.data.content;
+                console.log('Response Data:', this.products);
                 this.pagination = res.data;
             } catch (error) {
                 console.error(error);

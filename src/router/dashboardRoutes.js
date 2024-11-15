@@ -138,5 +138,44 @@ const dashboardRoutes = [
       },
     ],
   },
+  {
+    path: "/orderclient",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "orderclient",
+        meta: {
+          title: "DANH SÁCH SẢN PHẨM",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("orderClient"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      },
+    ],
+  }, {
+    path: "/orderpartner",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "orderpartner",
+        meta: {
+          title: "DANH SÁCH SẢN PHẨM",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("orderPartner"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      },
+    ],
+  },
 ];
 export default dashboardRoutes;

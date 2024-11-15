@@ -453,7 +453,7 @@ export default {
                     productCategoryId: this.form.productCategory?.id,
                     productPrice: this.form.productPrice,
                     discountProduct: this.form.discountProduct,
-                    productShortDescription: 'ssss',
+                    productShortDescription: this.form.productShortDescription,
                     productLongDescription: this.form.productLongDescription,
                     productWeight: this.form.productWeight,
                     productArea: this.form.productArea,
