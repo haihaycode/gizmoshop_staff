@@ -67,7 +67,7 @@
             </template>
             <template #pagination>
                 <div>
-                    <Pagination :total-items="pagination?.totalElements || 1" :items-per-page="size"
+                    <Pagination :total-items="pagination?.totalElements || 1" :items-per-page="limit"
                         :current-page="page + 1" @page-changed="handlePageChange" @limit-changed="handleLimitChange">
                     </Pagination>
                 </div>
@@ -135,6 +135,7 @@ export default {
                 }
                 const res = await getListAllOrder(data);
                 this.listOrder = res.data.content;
+                this.pagination = res.data;
                 console.log(this.listOrder);
             } catch (error) {
                 console.error(error);

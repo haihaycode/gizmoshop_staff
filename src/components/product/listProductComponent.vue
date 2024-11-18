@@ -61,7 +61,6 @@
                         item.productCreationDate }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"> <select
                             v-model="item.productStatusResponse.id"
-                            @change="handleStatusChange(item.id, item.productStatusResponse.id)"
                             class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option v-for="statusItem in status" :key="statusItem.id" :value="statusItem.id">
                                 {{ statusItem.name }}
@@ -97,15 +96,16 @@
         </TooltipBox>
 
         <UpdateProductModalComponent v-if="productSeleted" :isOpen="isOpenModel" :productSelected="productSeleted"
-            @close=" isOpenModel = false">
+            @close=" isOpenModel = false" @update-success="getDataProduct">
         </UpdateProductModalComponent>
-
+        
 
 
     </div>
 </template>
 
 <script>
+
 import TableComponent from '../table/TableComponent.vue';
 import UpdateProductModalComponent from './UpdateProductModalComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
@@ -123,7 +123,7 @@ export default {
         Button,
         Pagination,
         TooltipBox,
-        UpdateProductModalComponent
+        UpdateProductModalComponent,
     },
     data() {
         return {
@@ -205,13 +205,8 @@ export default {
             });
         },
     },
-
     methods: {
         loadImage,
-        handleStatusChange(productId, selectedStatusId) {
-            console.log('Product ID:', productId);
-            console.log('Selected Status ID:', selectedStatusId);
-        },
         async getDataProduct() {
             try {
                 const reqData = {
@@ -222,10 +217,8 @@ export default {
                     limit: this.size,
                     sort: `${this.sortField},${this.sortDirection}`,
                 };
-                console.log('Request Data:', reqData);
                 const res = await getProductPage(reqData);
                 this.products = res.data.content;
-                console.log('Response Data:', this.products);
                 this.pagination = res.data;
             } catch (error) {
                 console.error(error);
@@ -288,6 +281,7 @@ export default {
             return "";
         },
         handleChangModal(data) {
+            console.log(data)
             this.productSeleted = data
             this.isOpenModel = !this.isOpenModel;
 

@@ -32,7 +32,7 @@
                 </th>
             </template>
             <template #body>
-                <tr v-for="(item, index) in listOrder" :key="index">
+                <tr @click="openModalDetailOrder(item)" v-for="(item, index) in listOrder" :key="index">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.id }}
                     </td>
@@ -49,16 +49,19 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ formatDay(item.createOderTime) }}
                     </td>
+
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <select v-model="item.orderStatus.id"
+                        <select v-model="item.orderStatus.id" @change="updateOrderSelected(item, item.orderStatus.id)"
                             class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id">
                                 {{ statusItem.status }}
                             </option>
                         </select>
                     </td>
+
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.note }}
+                        <i @click="openModalUpdate(item)" class='bx bxs-edit-alt'></i>
                     </td>
                 </tr>
             </template>
@@ -67,29 +70,44 @@
             </template>
             <template #pagination>
                 <div>
-                    <Pagination :total-items="pagination?.totalElements || 1" :items-per-page="size"
+                    <Pagination :total-items="pagination?.totalElements || 1" :items-per-page="limit"
                         :current-page="page + 1" @page-changed="handlePageChange" @limit-changed="handleLimitChange">
                     </Pagination>
                 </div>
             </template>
         </TableComponent>
+
+        <orderUpdateComponent @update-success:="getListAll" :isOpen="isOpenModelUpdate"
+            @close="isOpenModelUpdate = false" :order="orderSelected">
+        </orderUpdateComponent>
+        <orderDetailComponent :isOpen="isOpenModalDetailOrder" @close="isOpenModalDetailOrder = false"
+            :order="orderSelected">
+        </orderDetailComponent>
     </div>
 </template>
 
 <script>
-import { getAllStatusOrder, getListAllOrder } from '@/api/orderApi';
+import orderDetailComponent from '../order/orderDetailComponent.vue';
+import orderUpdateComponent from '../order/orderUpdateComponent.vue';
+import { getAllStatusOrder, getListAllOrder, updateOrder } from '@/api/orderApi';
 import TableComponent from '../table/TableComponent.vue';
 import { mapGetters } from 'vuex';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import Pagination from '../pagination/Pagination.vue';
+import notificationService from '@/services/notificationService';
 export default {
     name: "orderClientComponent",
     components: {
         TableComponent,
-        Pagination
+        Pagination,
+        orderUpdateComponent,
+        orderDetailComponent
     },
     data() {
         return {
+            isOpenModalDetailOrder: false,
+            isOpenModelUpdate: false,
+            orderSelected: null,
             idRoleStatus: false,
             limit: 5,
             type: 0,
@@ -113,6 +131,7 @@ export default {
     methods: {
         formatCurrencyVN,
         formatDay,
+
         async getListStatus() {
             try {
                 const data = {
@@ -120,7 +139,6 @@ export default {
                 }
                 const res = await getAllStatusOrder(data);
                 this.statusOrder = res.data;
-                console.log(this.statusOrder);
             } catch (error) {
                 console.error(error);
             }
@@ -135,11 +153,30 @@ export default {
                 }
                 const res = await getListAllOrder(data);
                 this.listOrder = res.data.content;
-                console.log(this.listOrder);
+                this.pagination = res.data;
             } catch (error) {
                 console.error(error);
             }
         },
+
+        async updateOrderSelected(dataOrder, idOrder) {
+
+            try {
+                const data = {
+                    orderStatus: {
+                        id: idOrder
+
+                    }
+                };
+                console.log("id status: " + data)
+                await updateOrder(dataOrder.id, data);
+                this.getListAll()
+                notificationService.success("Cập nhật thành công");
+            } catch (error) {
+                console.error('Lỗi khi cập nhật đơn hàng:', error);
+            }
+        },
+
         handlePageChange(newPage) {
             this.page = newPage - 1;
             this.getListAll();
@@ -165,6 +202,16 @@ export default {
             }
             return "";
         },
+        openModalUpdate(data) {
+            console.log(data);
+            this.isOpenModelUpdate = true;
+            this.orderSelected = data;
+        },
+        openModalDetailOrder(data) {
+            console.log(data);
+            this.orderSelected = data;
+            this.isOpenModalDetailOrder = !this.isOpenModalDetailOrder;
+        }
     }
 
 }

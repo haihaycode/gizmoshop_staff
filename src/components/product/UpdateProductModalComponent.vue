@@ -60,7 +60,6 @@
                         <p class="lg:text-sm text-red-500">{{ errors.productCategories?.id }}</p>
                     </div>
 
-
                     <div class="mb-4 relative">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productCategory">Thương hiệu
                             *</label>
@@ -146,6 +145,7 @@
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productHeight">Chiều cao
                             *</label>
                         <input type="number" v-model="form.productHeight"
+                            @blur="form.productHeight = form.productHeight ? form.productHeight : 0"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productHeight ? 'border-red-500' : ''" id="productHeight"
                             placeholder="Nhập chiều cao sản phẩm (cm)" />
@@ -183,18 +183,10 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="">Chọn hình cho sản phẩm</label>
-                        <uploadImageComponent :listImages="listImagePreview" @update-images="handleSelectImages">
+                        <uploadImageComponent :listImages="listImagePreview" @update-images="handleSelectImages"
+                            @update-prod="loadProp">
                         </uploadImageComponent>
                     </div>
-                    <!-- 
-                    <div v-for="(url, index) in imageList" :key="index">
-                        <img :src="loadImage(url, 'product')" alt="Product Image" />
-                    </div> -->
-
-                    <!-- <div v-for="(image, index) in listImagePreview" :key="index">
-                        <img v-if="getImageUrl(image)" :src="getImageUrl(image)" alt="Image preview"
-                            class="w-32 h-32 object-cover" />
-                    </div> -->
 
                     <div class="flex justify-end">
                         <Button :is-Loading="isLoading" :text="'Lưu'" type="submit"
@@ -250,22 +242,19 @@ export default {
             message: '',
             listImagePreview: [],
             form: {
-                ...this.productSelected
-            },
-            errors: {
                 id: '',
                 productName: '',
-                productPrice: '',
+                productPrice: 0,
                 discountProduct: '',
                 thumbnail: '',
                 productLongDescription: '',
                 productShortDescription: '',
-                productWeight: '',
+                productWeight: 0,
                 productArea: '',
-                productVolume: '',
-                productWidth: '',
-                productHeight: '',
-                productLength: '',
+                productVolume: 0,
+                productWidth: 0,
+                productHeight: 0,
+                productLength: 0,
                 inventoryId: '',
                 productQuantity: '',
                 selectedImages: [],
@@ -286,6 +275,7 @@ export default {
                     name: ''
                 }
             },
+            errors: {},
             editor: ClassicEditor
         }
     },
@@ -295,11 +285,13 @@ export default {
             return this.productSelected?.productImageMappingResponse?.flatMap(mapping =>
                 mapping.image.map(img => img.fileDownloadUri)
             ) || [];
-        }
+        },
     },
+
     mounted() {
         this.getListStatus();
     },
+
     components: {
         ModalBox,
         Button,
@@ -310,7 +302,7 @@ export default {
         ckeditor: Ckeditor,
 
     },
-    emits: ['close'],
+    emits: ['close', 'update-success'],
     props: {
         isOpen: {
             type: Boolean,
@@ -323,16 +315,34 @@ export default {
     },
     methods: {
         loadImage,
+        async processImages(imageMappings) {
+            const promises = imageMappings.flatMap(mapping => {
+                if (!mapping.image) return [];
+                return mapping.image.map(async img => {
+                    try {
+                        const imageUrl = loadImage(img.fileDownloadUri, 'product');
+                        const response = await fetch(imageUrl);
+                        const blob = await response.blob();
+                        const fileName = img.fileDownloadUri.split('/').pop();
+                        const file = new File([blob], fileName, { type: blob.type });
+                        this.listImagePreview.push(file);
+                    } catch (error) {
+                        console.error('Lỗi tải ảnh:', error);
+                    }
+                });
+            });
+            await Promise.all(promises);
+        },
+
         closeModal() {
             this.$emit('close');
         },
-        // Tạo URL tạm thời từ File để hiển thị ảnh
+
         getImageUrl(file) {
-            // console.log(file); // Kiểm tra file
             if (file && file.type.startsWith('image/')) {
-                return URL.createObjectURL(file); // Tạo URL từ file
+                return URL.createObjectURL(file);
             }
-            return 'không phải ảnh'; // Trả về chuỗi rỗng nếu không phải ảnh
+            return 'không phải ảnh';
         },
         validateForm() {
             this.errors = {};
@@ -410,7 +420,7 @@ export default {
         handleSelectImages(images) {
             this.form.selectedImages = images;
         },
-        onEditorChange(event, editor) {
+        onEditorChange(editor) {
             this.form.productLongDescription = editor.getData();
         },
         onEditorReady(editor) {
@@ -431,26 +441,10 @@ export default {
         },
         async update() {
             try {
-                if (!this.form) {
-                    console.error("Form is missing");
-                    return;
-                }
-                if (!this.form.productCategories || !this.form.productCategories.id) {
-                    console.error("Product category is missing");
-                    return;
-                }
-                if (!this.form.productBrand || !this.form.productBrand.id) {
-                    console.error("Product brand is missing");
-                    return;
-                }
-                if (!this.form.productInventoryResponse || !this.form.productInventoryResponse.id) {
-                    console.error("Inventory is missing");
-                    return;
-                }
                 const data = {
                     productName: this.form.productName,
                     thumbnail: this.form.thumbnail,
-                    productCategoryId: this.form.productCategory?.id,
+                    productCategoryId: this.form.productCategories?.id,
                     productPrice: this.form.productPrice,
                     discountProduct: this.form.discountProduct,
                     productShortDescription: this.form.productShortDescription,
@@ -468,9 +462,7 @@ export default {
                 }
                 console.log(data)
                 const res = await updateProduct(this.form.id, data)
-                // notificationService.success("Cập nhật sản phẩm thành công");
                 if (this.form.selectedImages && this.form.selectedImages.length > 0) {
-                    console.log("có dữ liệu ảnh")
                     const dataUpdateImage = {
                         productId: res.data.id,
                         files: this.form.selectedImages
@@ -478,7 +470,9 @@ export default {
                     console.log("Data gửi vào addImageProduct:", dataUpdateImage);
                     await this.addImageProduct(dataUpdateImage);
                 }
+                this.$emit('update-product')
                 notificationService.success("Cập nhật sản phẩm thành công thành công");
+
 
             } catch (error) {
                 console.error(error)
@@ -499,48 +493,61 @@ export default {
         }
     },
     watch: {
-        async productSelected(newProduct) {
-            // Cập nhật form
-            this.form = {
-                ...newProduct,
-                productInventoryResponse: newProduct.productInventoryResponse || { name: '' },
-            };
+        productSelected: {
+            handler: async function (newProduct) {
+                this.form = {
+                    ...newProduct,
+                    productInventoryResponse: {
+                        id: newProduct.productInventoryResponse?.inventory?.id || '',
+                        name: newProduct.productInventoryResponse?.inventory?.inventoryName || ''
+                    },
+                    productStatusResponse: {
+                        id: newProduct.productStatusResponse?.id || '',
+                        name: newProduct.productStatusResponse?.name || ''
+                    },
+                    productBrand: {
+                        id: newProduct.productBrand?.id || '',
+                        name: newProduct.productBrand?.name || ''
+                    },
+                    productCategories: {
+                        id: newProduct.productCategories?.id || '',
+                        name: newProduct.productCategories?.name || ''
+                    },
+                    productVolume: newProduct.productVolume || '0',
+                    productPrice: newProduct.productPrice || '0',
+                    productWeight: newProduct.productWeight || '0',
+                    productWidth: newProduct.productWidth || '0',
+                    productHeight: newProduct.productHeight || '0',
+                    productLength: newProduct.productLength || '0',
+                    productQuantity: newProduct.productQuantity || '0',
 
-            // Cập nhật thông tin tồn kho
-            if (newProduct.productInventoryResponse && newProduct.productInventoryResponse.inventory) {
-                this.form.productInventoryResponse.name = newProduct.productInventoryResponse.inventory.inventoryName;
-            }
+                };
 
-            // Cập nhật danh sách ảnh
-            if (Array.isArray(newProduct.productImageMappingResponse)) {
-                this.listImagePreview = []; // Reset lại danh sách ảnh trước khi thêm ảnh mới
-
-                // Dùng for...of để xử lý bất đồng bộ một cách chính xác
-                for (const mapping of newProduct.productImageMappingResponse) {
-                    if (mapping.image) {
-                        for (const img of mapping.image) {
-                            const imageUrl = loadImage(img.fileDownloadUri, 'product');
-                            try {
-                                const response = await fetch(imageUrl);
-                                const blob = await response.blob();
-                                const fileName = img.fileDownloadUri.split('/').pop();
-                                const file = new File([blob], fileName, { type: blob.type });
-                                this.listImagePreview.push(file); // Thêm file vào danh sách
-                            } catch (error) {
-                                console.error('Lỗi tải ảnh:', error);
-                            }
-                        }
+                this.listImagePreview = [];
+                this.loading = true;
+                try {
+                    if (Array.isArray(newProduct.productImageMappingResponse)) {
+                        await this.processImages(newProduct.productImageMappingResponse);
                     }
+                } catch (error) {
+                    console.error('Lỗi khi xử lý ảnh:', error);
+                } finally {
+                    this.loading = false;
                 }
-            } else {
-                this.listImagePreview = []; // Nếu không có productImageMappingResponse, reset lại danh sách ảnh
-            }
-            console.log('listImagePreview:', this.listImagePreview);
-            this.listImagePreview.forEach(file => {
-                console.log(file instanceof File); // Kiểm tra xem mỗi phần tử có phải là File không
-            });
+                console.log('listImagePreview:', this.listImagePreview);
+                this.listImagePreview.forEach(file => {
+                    console.log(file instanceof File);
+                });
+                if (!this.loading) {
+                    this.processImages(this.listImagePreview);
+                }
+            },
+            deep: true,  // Theo dõi sự thay đổi sâu trong đối tượng productSelected
+            immediate: true  // Đảm bảo watcher chạy ngay khi component được tạo
         }
     }
+
+
 
 
 

@@ -3,19 +3,15 @@
     <ImageViewerComponent :isOpen="viewImageSelected ? true : false" :image="viewImageSelected"
       @close="viewImageSelected = null" />
 
-    <!-- Sử dụng draggable để sắp xếp hình ảnh -->
     <draggable :itemKey="''" v-model="images" :tag="'div'" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"
       @change="updateFileOrder">
-      <!-- Thẻ hình ảnh -->
+
       <template v-slot:item="{ element, index }">
         <div class="relative">
-          <!-- Hiển thị dấu + khi element là add-button -->
           <div v-if="element.isAddButton" @click="selectImages"
             class="flex items-center justify-center w-full h-32 md:h-48 border-dashed border-2 border-gray-400 rounded-lg cursor-pointer">
             <span class="text-3xl font-bold text-gray-400">+</span>
           </div>
-
-          <!-- Hiển thị hình ảnh khi element không phải là add-button -->
           <div v-else class="relative">
 
             <img :src="element.preview" @click="viewImage(element.preview)"
@@ -32,10 +28,8 @@
       </template>
     </draggable>
 
-    <!-- Input chọn file (ẩn) -->
     <input type="file" ref="fileInput" @change="handleFileSelect" accept="image/*" multiple hidden />
 
-    <!-- Thông báo (hiển thị khi vượt quá số lượng cho phép) -->
     <div v-if="showAlert" class="col-span-3 p-2 bg-red-100 text-red-700 rounded-md text-center">
       Bạn chỉ có thể chọn tối đa 7 hình ảnh.
     </div>
@@ -64,25 +58,16 @@ export default {
       default: () => []
     }
   },
-  mounted() {
-    if (this.listImages.length > 0) {
-      this.convertListImage(this.listImages); // Nếu có listImages, khởi tạo ảnh từ đó
-    }
-  },
-
   methods: {
-    // Mở hộp thoại chọn file
+
     selectImages() {
       this.$refs.fileInput.click();
     },
 
-    // Xử lý khi chọn file
     handleFileSelect(event) {
       const files = Array.from(event.target.files);
       const maxImages = 7;
-
-      // Kiểm tra nếu thêm các file này sẽ vượt quá giới hạn
-      if (this.images.length - 1 + files.length > maxImages) { // Trừ phần tử add-button
+      if (this.images.length - 1 + files.length > maxImages) {
         this.showAlert = true;
         setTimeout(() => {
           this.showAlert = false;
@@ -93,7 +78,7 @@ export default {
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = e => {
-          if (this.images.length - 1 < maxImages) { // Trừ phần tử add-button
+          if (this.images.length - 1 < maxImages) {
             this.images.splice(this.images.length - 1, 0, {
               file: file,
               preview: e.target.result
@@ -106,18 +91,6 @@ export default {
 
       this.$refs.fileInput.value = "";
     },
-
-
-
-    // Lấy URL từ file
-    // getImageUrl(file) {
-    //   if (file && file.type.startsWith('image/')) {
-    //     return URL.createObjectURL(file); // Tạo URL tạm từ file
-    //   }
-    //   return ''; // Trả về chuỗi rỗng nếu không phải ảnh
-    // },
-
-
 
     async convertListImage(files) {
       this.images = [
@@ -137,29 +110,31 @@ export default {
       ];
     },
 
-
-    // Cập nhật thứ tự file khi thay đổi
     updateFileOrder() {
       const filteredImages = this.images.filter(img => !img.isAddButton).map(image => image.file);
       console.log(filteredImages);
       this.$emit('update-images', filteredImages);
     },
 
-
-    // Xóa ảnh
     removeImage(index) {
       this.images.splice(index, 1);
       this.$emit('update-images', this.images.filter(img => !img.isAddButton).map(image => image.file));
     },
 
-    // Xem ảnh
     viewImage(image) {
       if (image) {
         this.viewImageSelected = image;
       }
     }
+  },
+  watch: {
+    listImages: {
+      handler(newImages) {
+        this.convertListImage(newImages);
+      },
+      immediate: true,
+      deep: true,
+    }
   }
 };
 </script>
-
-<style scoped></style>
