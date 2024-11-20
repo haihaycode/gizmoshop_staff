@@ -43,8 +43,10 @@
             <template #body>
                 <tr v-for="item in formatData" :key="item.id" class="hover:bg-gray-300">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.id }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.productName }}
-                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        truncate(item.productName, {
+                            length: 20
+                        }) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                         item.productPrice.toLocaleString() }} VNĐ</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
@@ -98,7 +100,7 @@
         <UpdateProductModalComponent v-if="productSeleted" :isOpen="isOpenModel" :productSelected="productSeleted"
             @close=" isOpenModel = false" @update-success="getDataProduct">
         </UpdateProductModalComponent>
-        
+
 
 
     </div>
@@ -115,7 +117,7 @@ import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import { formatDay } from '@/utils/currencyUtils'
 import { loadImage } from '@/services/imageService.js';
-
+import { truncate } from 'lodash';
 export default {
     name: 'ListVoucherComponent',
     components: {
@@ -206,6 +208,7 @@ export default {
         },
     },
     methods: {
+        truncate,
         loadImage,
         async getDataProduct() {
             try {

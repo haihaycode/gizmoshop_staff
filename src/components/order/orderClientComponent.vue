@@ -51,7 +51,8 @@
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <select v-model="item.orderStatus.id" @change="updateOrderSelected(item, item.orderStatus.id)"
+                        <select @click.stop v-model="item.orderStatus.id"
+                            @change="updateOrderSelected(item, item.orderStatus.id)"
                             class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id">
                                 {{ statusItem.status }}
@@ -59,9 +60,11 @@
                         </select>
                     </td>
 
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ item.note }}
-                        <i @click="openModalUpdate(item)" class='bx bxs-edit-alt'></i>
+
+                    <td @click.stop="openModalUpdate(item)"
+           s             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <!-- {{ item.note }} -->
+                        <i class='bx bxs-edit-alt'></i>
                     </td>
                 </tr>
             </template>

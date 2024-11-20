@@ -146,7 +146,7 @@ const dashboardRoutes = [
         path: "",
         name: "orderclient",
         meta: {
-          title: "DANH SÁCH SẢN PHẨM",
+          title: "DANH SÁCH ĐƠN HÀNG KHÁCH HÀNG",
           description: "GIZMO",
         },
         components: {
@@ -165,11 +165,30 @@ const dashboardRoutes = [
         path: "",
         name: "orderpartner",
         meta: {
-          title: "DANH SÁCH SẢN PHẨM",
+          title: "DANH SÁCH ĐƠN HÀNG ĐỐI TÁC",
           description: "GIZMO",
         },
         components: {
           default: useComponent("orderPartner"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      },
+    ],
+  }, {
+    path: "/transaction",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "transactions",
+        meta: {
+          title: "DANH SÁCH GIAO DỊCH",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("transaction"),
           header: Header,
           footer: Footer,
           sideBar: sideBar,

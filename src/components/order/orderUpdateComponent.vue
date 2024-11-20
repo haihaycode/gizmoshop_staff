@@ -81,10 +81,9 @@ export default {
                 await updateOrder(this.dataOrder.id, payload);
                 notificationService.success("Cập nhật thành công");
                 this.$emit('update-success');
-                this.closeModal();
             } catch (error) {
                 notificationService.error("Lỗi khi cập nhật đơn hàng");
-                console.error("Lỗi khi gửi requestBody:", error);
+                console.error(error);
             }
         }
 

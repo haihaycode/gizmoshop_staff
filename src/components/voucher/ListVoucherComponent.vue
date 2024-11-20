@@ -74,7 +74,7 @@
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.description }}
+            {{ truncate(item.description, { length: 25 }) }}
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -150,6 +150,7 @@ import { mapGetters } from "vuex";
 import UpdateVoucherComponent from "./UpdateVoucherComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import notificationService from "@/services/notificationService";
+import { truncate } from 'lodash';
 export default {
   name: "listVoucherComponent",
   data() {
@@ -192,6 +193,7 @@ export default {
     UpdateVoucherComponent,
     Pagination,
     toggleButton,
+
   },
   computed: {
     ...mapGetters("loading", ["isLoading"]),
@@ -200,6 +202,7 @@ export default {
     this.handlegetVouchers();
   },
   methods: {
+    truncate,
     formatCurrencyVN,
     async handlegetVouchers() {
       try {

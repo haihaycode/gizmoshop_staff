@@ -5,7 +5,7 @@
                 <h2 class="sm:text-sm md:text-lg font-bold"> Chi tiết đơn hàng</h2>
             </template>
             <template #body>
-                <TableComponent>
+                <TableComponent :items="orderDetails">
                     <template #header>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Stt
                         </th>
@@ -19,7 +19,7 @@
                             tiền</th>
                     </template>
                     <template #body>
-                        <tr v-for="(item, index) in dataOrder?.orderDetails" :key="index">
+                        <tr v-for="(item, index) in orderDetails" :key="index">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ index + 1 }}
                             </td>
@@ -30,19 +30,27 @@
                                 {{ item.quantity }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ item.price }}
+                                {{ formatCurrencyVN(item.price) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ item.total }}
+                                {{ formatCurrencyVN(item.total) }}
                             </td>
                         </tr>
                     </template>
                 </TableComponent>
             </template>
             <template #footer>
-                <div> <span>Tổng thanh toán: </span>
-                    <input :value="formatCurrencyVN(dataOrder.totalPrice)" type="text"
-                        class="border-2 border-gray-300 rounded-md px-2 py-1" />
+                <div class="flex justify-between items-center gap-4">
+                    <div>
+                        <span>Tổng đã tiền giảm là: </span>
+                        <input readonly :value="formatCurrencyVN(discount)" type="text"
+                            class="border-2 border-gray-300 rounded-md px-2 py-1" />
+                    </div>
+                    <div>
+                        <span>Tổng thanh toán: </span>
+                        <input readonly :value="formatCurrencyVN(dataOrder.totalPrice)" type="text"
+                            class="border-2 border-gray-300 rounded-md px-2 py-1" />
+                    </div>
                 </div>
             </template>
         </ModalBox>
@@ -59,7 +67,10 @@ export default {
     name: 'orderDetailComponent',
     data() {
         return {
-            dataOrder: {},
+            discount: 0,
+            orderDetails: null,
+            dataOrder: {
+            },
         }
     },
     props: {
@@ -86,7 +97,6 @@ export default {
         closeModal() {
             this.$emit('close');
         },
-
     },
     watch: {
         order: {
@@ -98,15 +108,21 @@ export default {
                     note: newOrder?.note || '',
                     idStatus: newOrder?.orderStatus && { id: newOrder.orderStatus.id },
                     totalPrice: newOrder?.totalPrice || 0,
-                    orderDetails: newOrder?.orderDetails || [],
+                    vouchers: newOrder?.vouchers || [],
+
                 };
-                console.log(" sản phẩm của order" + this.dataOrder.orderDetails);
+                this.orderDetails = this.dataOrder?.orderDetails || [],
+                    this.discount = this.dataOrder.vouchers?.[0]?.voucher
+                        ? (this.dataOrder.vouchers[0].voucher.discountPercent
+                            ? (this.dataOrder.vouchers[0].voucher.discountPercent / 100) * this.dataOrder.totalPrice
+                            : this.dataOrder.vouchers[0].voucher.discountAmount)
+                        : 0;
+
+                console.log("dataOrder sau khi gán: ", this.orderDetails);
             },
-            deep: true
-        }
+            deep: true,
+        },
     }
-
-
 }
 </script>
 

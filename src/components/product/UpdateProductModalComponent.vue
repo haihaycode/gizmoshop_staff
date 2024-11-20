@@ -172,6 +172,49 @@
                         <p class="lg:text-sm text-red-500">{{ errors.productShortDescription }}</p>
                     </div>
 
+
+                    <table v-if="isTableVisible || specifications.length > 0"
+                        class="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 text-left text-gray-800">STT</th>
+                                <th class="px-4 py-2 text-left text-gray-800">Tên thông số</th>
+                                <th class="px-4 py-2 text-left text-gray-800">Giá trị thông số</th>
+                                <th class="px-4 py-2 text-left text-gray-800"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(spec, index) in specifications" :key="index">
+                                <!-- STT -->
+                                <td class="px-4 py-2 border-b border-gray-300">{{ index + 1 }}</td>
+                                <!-- Tên thông số -->
+                                <td class="px-4 py-2 border-b border-gray-300">
+                                    <input v-model="spec.name"
+                                        class="w-full mt-1 rounded-md border-2 border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out py-2 px-3 text-gray-700 leading-tight"
+                                        :id="'specName' + index" placeholder="Nhập tên thông số" />
+                                </td>
+                                <!-- Giá trị thông số -->
+                                <td class="px-4 py-2 border-b border-gray-300">
+                                    <input v-model="spec.value"
+                                        class="w-full mt-1 rounded-md border-2 border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out py-2 px-3 text-gray-700 leading-tight"
+                                        :id="'specValue' + index" placeholder="Nhập giá trị thông số" />
+                                </td>
+                                <!-- Nút Xóa -->
+                                <td class="px-4 py-2 border-b border-gray-300 text-center">
+                                    <Button @click="removeSpecification(index)"
+                                        class="text-red-500 hover:text-red-700 font-bold" :text="'X'"></Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                    <div class="mb-4">
+                        <Button @click="addSpecifications" :text="'thêm thông số kỹ thuật'" type="button"></Button>
+                    </div>
+
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productLongDescription">Mô tả dài
                             *</label>
@@ -200,7 +243,7 @@
         <!-- modalSelectCategoryComponent  -->
         <modalSelectCategoryComponent :isOpen="modalSelectCategoryComponentIsOpen"
             @close="modalSelectCategoryComponentIsOpen = false"
-            @itemClicked="(item) => { form.productCategory = { id: item.id, name: item.name } }">
+            @itemClicked="(item) => { form.productCategories = { id: item.id, name: item.name } }">
         </modalSelectCategoryComponent>
 
         <modalSelectBrandComponent :isOpen="modalSelectBrandComponentIsOpen"
@@ -230,7 +273,6 @@ import modalSelectCategoryComponent from './modalSelectCategoryComponent.vue';
 import modalSelectBrandComponent from './modalSelectBrandComponent.vue';
 import modaleSelectInventoryComponent from './modaleSelectInventoryComponent.vue';
 import { loadImage } from "@/services/imageService";
-
 export default {
     name: 'updateProductComponent',
     data() {
@@ -238,9 +280,11 @@ export default {
             modalSelectInventoryComponentIsOpen: false,
             modalSelectCategoryComponentIsOpen: false,
             modalSelectBrandComponentIsOpen: false,
+            isTableVisible: false,
             listStatus: [],
             message: '',
             listImagePreview: [],
+            specifications: [],
             form: {
                 id: '',
                 productName: '',
@@ -315,6 +359,13 @@ export default {
     },
     methods: {
         loadImage,
+        addSpecifications() {
+            this.specifications.push({ name: '', value: '' });
+            this.isTableVisible = true;
+        },
+        removeSpecification(index) {
+            this.specifications.splice(index, 1);
+        },
         async processImages(imageMappings) {
             const promises = imageMappings.flatMap(mapping => {
                 if (!mapping.image) return [];
@@ -441,13 +492,25 @@ export default {
         },
         async update() {
             try {
+                const specificationsData = this.specifications.reduce((acc, spec) => {
+                    if (spec.name && spec.value) {
+                        acc[spec.name] = spec.value;
+                    }
+                    return acc;
+                }, {});
+
+                // Chuyển `specificationsData` sang JSON
+                const specificationsJson = specificationsData && Object.keys(specificationsData).length > 0
+                    ? `\n[[[\n${JSON.stringify(specificationsData, null, 2)}\n]]]`
+                    : "";
+
                 const data = {
                     productName: this.form.productName,
                     thumbnail: this.form.thumbnail,
                     productCategoryId: this.form.productCategories?.id,
                     productPrice: this.form.productPrice,
                     discountProduct: this.form.discountProduct,
-                    productShortDescription: this.form.productShortDescription,
+                    productShortDescription: `${this.form.productShortDescription}\n${specificationsJson}`,
                     productLongDescription: this.form.productLongDescription,
                     productWeight: this.form.productWeight,
                     productArea: this.form.productArea,
@@ -495,6 +558,24 @@ export default {
     watch: {
         productSelected: {
             handler: async function (newProduct) {
+                function extractSpecifications(description) {
+                    const regex = /\[\[\[\s*(\{.*?\})\s*\]\]\]/s; // Tìm chuỗi [[[ {...} ]]]
+                    const match = description.match(regex);
+
+                    if (match) {
+                        try {
+                            const parsedSpecifications = JSON.parse(match[1]); // Parse JSON từ chuỗi
+                            const specifications = Object.entries(parsedSpecifications).map(([name, value]) => ({ name, value }));
+                            // Loại bỏ thông số kỹ thuật khỏi productShortDescription
+                            const cleanedDescription = description.replace(regex, "").trim();
+                            return { specifications, cleanedDescription };
+                        } catch (error) {
+                            console.error("Lỗi khi parse thông số kỹ thuật:", error);
+                        }
+                    }
+                    return { specifications: [], cleanedDescription: description };
+                }
+                const { specifications, cleanedDescription } = extractSpecifications(newProduct.productShortDescription || "");
                 this.form = {
                     ...newProduct,
                     productInventoryResponse: {
@@ -520,8 +601,10 @@ export default {
                     productHeight: newProduct.productHeight || '0',
                     productLength: newProduct.productLength || '0',
                     productQuantity: newProduct.productQuantity || '0',
-
+                    productShortDescription: cleanedDescription, // Giữ phần mô tả không chứa thông số kỹ thuật
                 };
+
+                this.specifications = specifications; // Gán thông số kỹ thuật tách được
 
                 this.listImagePreview = [];
                 this.loading = true;
