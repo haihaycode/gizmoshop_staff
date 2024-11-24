@@ -184,7 +184,6 @@ export default {
 
     watch: {
         queryParams(newCode) {
-            console.log('New Code:', newCode);
             this.keyword = newCode.name;
             this.isSupplier = newCode.isSupplier;
             this.getDataProduct();
@@ -284,7 +283,6 @@ export default {
             return "";
         },
         handleChangModal(data) {
-            console.log(data)
             this.productSeleted = data
             this.isOpenModel = !this.isOpenModel;
 

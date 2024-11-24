@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       viewImageSelected: '',
-      images: [{ isAddButton: true }], // Nút dấu cộng mặc định
+      images: [{ isAddButton: true }], 
       showAlert: false
     };
   },
@@ -112,7 +112,6 @@ export default {
 
     updateFileOrder() {
       const filteredImages = this.images.filter(img => !img.isAddButton).map(image => image.file);
-      console.log(filteredImages);
       this.$emit('update-images', filteredImages);
     },
 

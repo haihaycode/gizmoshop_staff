@@ -35,7 +35,9 @@
             {{ item.name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.description }}
+            {{ truncate(item.description, {
+              length: 30
+            }) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
@@ -76,6 +78,8 @@ import toggleButton from "../buttons/toggleButton.vue";
 import NotificationModal from "../modal/NotificationModal.vue";
 import { mapGetters } from "vuex";
 import ExportButtonComponent from "../fileTransfer/ExportButtonComponent.vue";
+import { truncate } from 'lodash';
+
 export default {
   name: "listBrand",
   data() {
@@ -133,6 +137,7 @@ export default {
     ...mapGetters("loading", ["isLoading"]),
   },
   methods: {
+    truncate,
     async handleGetBrand() {
       try {
         const param = {

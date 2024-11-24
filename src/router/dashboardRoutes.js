@@ -195,6 +195,25 @@ const dashboardRoutes = [
         },
       },
     ],
+  }, {
+    path: "/listsupplier",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "listtsupplier",
+        meta: {
+          title: "DANH SÁCH NHÀ CUNG CẤP",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("listsupplier"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      },
+    ],
   },
 ];
 export default dashboardRoutes;

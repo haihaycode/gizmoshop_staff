@@ -10,7 +10,7 @@
                 </select>
             </div>
             <div class="w-full lg:w-1/3">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="status">Trạng thái</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="status">Trạng thái: </label>
                 <select v-model="dataSearch.status" id="status"
                     class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option selected value="PENDING">Chờ duyệt</option>

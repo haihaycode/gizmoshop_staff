@@ -1,7 +1,8 @@
 <template>
     <div class="p-2 bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 lg:m-2 md:m-0">
-        <StatisticsCardsVoucher ref="StatisticsCardsVoucher"></StatisticsCardsVoucher>
         <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
+        <StatisticsCardsVoucher ref="StatisticsCardsVoucher"></StatisticsCardsVoucher>
+
         <!-- search -->
         <SearchVoucherComponent @search="handleSearch"></SearchVoucherComponent>
         <!-- btn add New  -->
@@ -60,7 +61,7 @@ export default {
             this.$refs.StatisticsCardsVoucher.getArr();
         },
         handleChangeStatusModalAddNew() {
-            this.modalAddNewVoucherisOpen = !this.modalAddNewVoucherisOpen; 
+            this.modalAddNewVoucherisOpen = !this.modalAddNewVoucherisOpen;
         },
         handleRefsRefeshVoucher() {
             this.$refs.ListVoucherComponent.handlegetVouchers();

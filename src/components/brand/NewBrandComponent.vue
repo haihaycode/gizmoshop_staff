@@ -14,13 +14,13 @@
       <form @submit.prevent="submitFormData">
         <!-- Name -->
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="name"
-            >Tên thương hiệu *</label
-          >
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+            Tên thương hiệu *
+          </label>
           <input
             v-model="form.name"
-            class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            :class="errors.name ? 'border-red-500' : ''"
+            :class="errors.name ? 'border-red-500' : 'border-gray-300'"
+            class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
             id="name"
             placeholder="Nhập tên thương hiệu"
           />
@@ -29,15 +29,13 @@
 
         <!-- Description -->
         <div class="mb-4">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="description"
-            >Mô tả *</label
-          >
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+            Mô tả *
+          </label>
           <input
             v-model="form.description"
-            class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            :class="errors.description ? 'border-red-500' : ''"
+            :class="errors.description ? 'border-red-500' : 'border-gray-300'"
+            class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
             id="description"
             placeholder="Nhập mô tả"
           />
@@ -46,15 +44,13 @@
 
         <!-- Status -->
         <div class="mb-4">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="deleted"
-            >Trạng thái *</label
-          >
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="deleted">
+            Trạng thái *
+          </label>
           <select
             v-model="form.deleted"
-            class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            :class="errors.deleted ? 'border-red-500' : ''"
+            :class="errors.deleted ? 'border-red-500' : 'border-gray-300'"
+            class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
             id="deleted"
           >
             <option :value="false">Hoạt động</option>
@@ -88,7 +84,7 @@
 <script>
 import ModalBox from "../modal/ModalBox.vue";
 import { mapGetters } from "vuex";
-// import * as Yup from "yup";
+import * as Yup from "yup"; // Import Yup
 import { createBrand } from "@/api/brandApi";
 import NotificationModal from "../modal/NotificationModal.vue";
 import Button from "../buttons/button.vue";
@@ -110,14 +106,10 @@ export default {
         description: "", // Mô tả
         deleted: false, // Trạng thái (Hoạt động/Ngừng hoạt động)
       },
-      errors: {
-        name: "",
-        description: "",
-        deleted: "",
-      },
+      errors: {}, // Lưu lỗi cho từng trường
     };
   },
-  emits: ['close', 'create-success'],
+  emits: ["close", "create-success"],
   computed: {
     ...mapGetters("loading", ["isLoading"]),
   },
@@ -134,28 +126,49 @@ export default {
     closeModal() {
       this.$emit("close");
     },
+    // Schema validate với Yup
+    validateSchema() {
+      const schema = Yup.object().shape({
+        name: Yup.string()
+          .required("Tên thương hiệu không được để trống")
+          .max(50, "Tên thương hiệu không được vượt quá 50 ký tự"),
+        description: Yup.string()
+          .required("Mô tả không được để trống")
+          .max(255, "Mô tả không được vượt quá 255 ký tự"),
+        deleted: Yup.boolean().required("Trạng thái không được để trống"),
+      });
+
+      return schema;
+    },
     async submitFormData() {
       try {
-        const data = {
-          name: this.form.name,
-          description: this.form.description,
-          deleted: this.form.deleted,
-        };
+        // Validate dữ liệu
+        const schema = this.validateSchema();
+        await schema.validate(this.form, { abortEarly: false });
+
+        // Nếu không có lỗi, gửi dữ liệu
+        const data = { ...this.form };
         const res = await createBrand(data);
-        if (res && res.data && res.data.message) {
-          this.message = res.data.message;
-        } else {
-          this.message = "Thương hiệu đã được tạo thành công"; 
-        } 
-        this.message = res.message; 
+
+        this.message =
+          res?.data?.message || "Thương hiệu đã được tạo thành công";
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
-        this.loadBrand()
+        this.loadBrand();
       } catch (error) {
-        console.error("Lỗi khi thêm thương hiệu:", error); 
-        this.message = error.message || "Có lỗi xảy ra";
-        this.messageType = "error";
-        this.NotificationModalIsOpen = true;
+        if (error.name === "ValidationError") {
+          // Lưu lỗi từ Yup vào errors
+          this.errors = {};
+          error.inner.forEach((err) => {
+            this.errors[err.path] = err.message;
+          });
+        } else {
+          // Lỗi từ server
+          console.error("Lỗi khi thêm thương hiệu:", error);
+          this.message = error.message || "Có lỗi xảy ra";
+          this.messageType = "error";
+          this.NotificationModalIsOpen = true;
+        }
       }
     },
   },
@@ -163,14 +176,15 @@ export default {
 </script>
 
 <style scoped>
-input {
+input,
+select {
   border: none;
   border-bottom: 2px solid #ddd;
 }
 
-input:focus {
+input:focus,
+select:focus {
   outline: none;
   border-bottom-color: #3b82f6;
-  /* Blue border on focus */
 }
 </style>

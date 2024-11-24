@@ -63,9 +63,6 @@
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-category mr-3 text-lg'></i>
                         <span class="text-sm">Quản Lý Danh Mục</span>
-                        <!-- <span
-                            class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-600 bg-green-200 rounded-full">2
-                            New</span> -->
                     </RouterLink>
                 </li>
                 <li class="mb-1 group">
@@ -85,15 +82,15 @@
                 </li>
 
 
-                <span class="text-white font-bold">QUẢN LÝ ĐỐI TÁC</span>
+                <span class="text-white font-bold">QUẢN LÝ NHÀ CUNG CẤP</span>
                 <li class="mb-1 group">
-                    <a href=""
+                    <router-link :to="{ name: 'listtsupplier' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Quản lý Đối Tác </span>
+                        <span class="text-sm">Danh Sách Nhà Cung Cấp </span>
                         <span
                             class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-600 bg-red-200 rounded-full">5</span>
-                    </a>
+                    </router-link>
                 </li>
                 <span class="text-white font-bold">QUẢN LÝ ĐƠN HÀNG</span>
                 <li class="mb-1 group">

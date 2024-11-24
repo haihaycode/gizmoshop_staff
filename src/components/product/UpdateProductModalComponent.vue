@@ -273,6 +273,7 @@ import modalSelectCategoryComponent from './modalSelectCategoryComponent.vue';
 import modalSelectBrandComponent from './modalSelectBrandComponent.vue';
 import modaleSelectInventoryComponent from './modaleSelectInventoryComponent.vue';
 import { loadImage } from "@/services/imageService";
+
 export default {
     name: 'updateProductComponent',
     data() {
@@ -523,7 +524,6 @@ export default {
                     productStatusResponseId: this.form.productStatusResponse?.id,
                     width: this.form.productWidth
                 }
-                console.log(data)
                 const res = await updateProduct(this.form.id, data)
                 if (this.form.selectedImages && this.form.selectedImages.length > 0) {
                     const dataUpdateImage = {
@@ -548,8 +548,7 @@ export default {
                 data.files.forEach(file => {
                     formData.append("files", file);
                 });
-                const res = await updataImage(formData);
-                console.log("gửi thành công", res);
+                await updataImage(formData);
             } catch (error) {
                 console.error(error);
             }
@@ -601,10 +600,10 @@ export default {
                     productHeight: newProduct.productHeight || '0',
                     productLength: newProduct.productLength || '0',
                     productQuantity: newProduct.productQuantity || '0',
-                    productShortDescription: cleanedDescription, // Giữ phần mô tả không chứa thông số kỹ thuật
+                    productShortDescription: cleanedDescription,
                 };
 
-                this.specifications = specifications; // Gán thông số kỹ thuật tách được
+                this.specifications = specifications;
 
                 this.listImagePreview = [];
                 this.loading = true;
@@ -617,16 +616,16 @@ export default {
                 } finally {
                     this.loading = false;
                 }
-                console.log('listImagePreview:', this.listImagePreview);
-                this.listImagePreview.forEach(file => {
-                    console.log(file instanceof File);
-                });
+                // console.log('listImagePreview:', this.listImagePreview);
+                // this.listImagePreview.forEach(file => {
+                //     console.log(file instanceof File);
+                // });
                 if (!this.loading) {
                     this.processImages(this.listImagePreview);
                 }
             },
-            deep: true,  // Theo dõi sự thay đổi sâu trong đối tượng productSelected
-            immediate: true  // Đảm bảo watcher chạy ngay khi component được tạo
+            deep: true,
+            immediate: true
         }
     }
 
