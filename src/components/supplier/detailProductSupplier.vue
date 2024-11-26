@@ -98,7 +98,8 @@ export default {
                 limit: this.limit,
             }
             try {
-                const res = await getListProductAuthor(Number(this.author.id), data);
+            
+                const res = await getListProductAuthor(Number(this.author.accountResponse.id), data);
                 this.listProduct = res.data.content;
                 this.pagination = res.data;
                 console.log(this.listProduct);

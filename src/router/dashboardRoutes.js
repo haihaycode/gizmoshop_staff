@@ -174,7 +174,7 @@ const dashboardRoutes = [
           footer: Footer,
           sideBar: sideBar,
         },
-      },
+      }
     ],
   }, {
     path: "/transaction",

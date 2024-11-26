@@ -8,7 +8,7 @@
                 </th>
                 <th @click="changeSort('id')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    TÊN ĐỐI TÁC <span v-html="getSortIcon('id')"></span>
+                    TÊN NHÀ CUNG CẤP <span v-html="getSortIcon('id')"></span>
                 </th>
                 <th @click="changeSort('totalPrice')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
@@ -16,7 +16,7 @@
                 </th>
                 <th @click="changeSort('vouchers')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    SỐ LƯỢNG SẢN PHẨM <span v-html="getSortIcon('vouchers')"></span>
+                    SỐ LƯỢNG MẶT HÀNG CUNG CẤP <span v-html="getSortIcon('vouchers')"></span>
                 </th>
                 <th @click="changeSort('createOderTime')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
@@ -28,16 +28,16 @@
                 </th>
                 <th @click="changeSort('name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    GHI CHÚ <span v-html="getSortIcon('id')"></span>
+                    CHI TIẾT HỢP ĐỒNG <span v-html="getSortIcon('id')"></span>
                 </th>
             </template>
             <template #body>
-                <tr v-for="(item, index) in listOrder" :key="index">
+                <tr @click="isOpenModalDetail(item)" v-for="(item, index) in listOrder" :key="index">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.id }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ item.account.fullname }}
+                        {{ item.account.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ formatCurrencyVN(item.totalPrice) }}
@@ -50,7 +50,7 @@
                         {{ formatDay(item.createOderTime) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <select v-model="item.orderStatus.id"
+                        <select @click.stop v-model="item.orderStatus.id"
                             class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id">
                                 {{ statusItem.status }}
@@ -74,6 +74,8 @@
             </template>
         </TableComponent>
     </div>
+    <orderSupplierDetailComponent :isOpen="isOpenDetail" @closeModal="closeandload" :orderdata="orderSelected">
+    </orderSupplierDetailComponent>
 </template>
 
 <script>
@@ -82,14 +84,21 @@ import TableComponent from '../table/TableComponent.vue';
 import { mapGetters } from 'vuex';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import Pagination from '../pagination/Pagination.vue';
+import orderSupplierDetailComponent from './orderSupplierDetailComponent.vue';
+
+
 export default {
     name: "orderClientComponent",
     components: {
         TableComponent,
-        Pagination
+        Pagination,
+        orderSupplierDetailComponent,
+
     },
     data() {
         return {
+            orderSelected: null,
+            isOpenDetail: false,
             idRoleStatus: true,
             limit: 5,
             type: 1,
@@ -113,6 +122,17 @@ export default {
     methods: {
         formatCurrencyVN,
         formatDay,
+
+        isOpenModalDetail(data) {
+            console.log(data);
+            this.orderSelected = data;
+            this.isOpenDetail = !this.isOpenDetail
+        },
+
+        closeandload() {
+            this.isOpenDetail = false;
+            this.getListAll();
+        },
         async getListStatus() {
             try {
                 const data = {

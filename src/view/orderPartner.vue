@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import orderPartnerComponent from '@/components/order/orderPartnerComponent.vue';
+import orderPartnerComponent from '@/components/order/orderSupplierComponent.vue';
 import BreadcrumbComponent from '@/components/breadcrumb/BreadcrumbComponent.vue';
 export default {
     name: 'orderPartner',

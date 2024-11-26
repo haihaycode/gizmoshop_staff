@@ -4,13 +4,13 @@
             Danh sách các nhà cung cấp <span class="text-red-600">đang chờ xét duyệt</span>
         </h1>
         <TableComponent :items="staffList" :isLoading="isLoading">
-            <!-- Header Slot -->
+
             <template #header>
                 <th @click="changeSort('account.id')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">STT <span
                         v-html="getSortIcon('id')"></span></th>
                 <th @click="changeSort('account.fullname')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">TÊN NHÀ
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">TÊN NGƯỜI
                     CUNG
                     CẤP
                     <span v-html="getSortIcon('account.fullname')"></span>
@@ -24,20 +24,24 @@
                     THOẠI
                     <span v-html="getSortIcon('account.sdt')"></span>
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Công cụ
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">CHI TIẾT
                 </th>
             </template>
 
-            <!-- Body Slot -->
+
             <template #body>
-                <tr @click="detaiModal(item)" v-for="(item, index) in staffList" :key="index" class="hover:bg-gray-300">
+                <tr v-for="(item, index) in staffList" :key="index" class="hover:bg-gray-300">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ index + 1 }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.fullname }}
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        item.accountResponse.fullname }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.email }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.sdt }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <i @click="handleModalSetting(item.id)" class='bx bx-cog text-xl'></i>
+                        <!-- <i class='bx bx-edit text-2xl'></i> -->
+                        <!-- <i @click="handleModalSetting(item.id)" class='bx bx-cog text-xl'></i> -->
+                        <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleStatusSupplier(item)">
+                        </toggleButton>
                     </td>
                 </tr>
             </template>
@@ -55,28 +59,30 @@
             </template>
         </TableComponent>
     </div>
-    <DetailProductSupplier @closeModal="ModalDetailIsOpen = false" :isOpen="ModalDetailIsOpen"
+    <!-- <DetailProductSupplier @closeModal="ModalDetailIsOpen = false" :isOpen="ModalDetailIsOpen"
         :author="authorSeleected">
-    </DetailProductSupplier>
+    </DetailProductSupplier> -->
 
 </template>
 
 <script>
-import { getListSupplier } from '@/api/supplierApi';
+import { getListSupplier, updateStatusSupplier } from '@/api/supplierApi';
 import TableComponent from '../table/TableComponent.vue';
 import Pagination from '../pagination/Pagination.vue';
-
+import toggleButton from '../buttons/toggleButton.vue';
 import { mapGetters } from 'vuex';
-import DetailProductSupplier from './detailProductSupplier.vue';
+// import DetailProductSupplier from './detailProductSupplier.vue';
 
 export default {
     name: 'listSupplierComponent',
     components: {
         TableComponent,
         Pagination,
-        DetailProductSupplier
+        toggleButton,
+        // DetailProductSupplier
 
     },
+    emits: ['reloadData'],
     data() {
         return {
             keyword: '',
@@ -108,7 +114,6 @@ export default {
                     page: this.page,
                     limit: this.limit,
                     sort: `${this.sortField},${this.sortDirection}`
-
                 }
                 const response = await getListSupplier(data);
                 this.pagination = response.data;
@@ -116,6 +121,17 @@ export default {
                 console.log(this.staffList);
             } catch (error) {
                 console.error('Error loading staff list:', error);
+            }
+        },
+        async handleStatusSupplier(item) {
+            try {
+                const data = {
+                    deleted: !item.deleted
+                }
+                await updateStatusSupplier(item.accountResponse.id, data);
+                this.$emit('reloadData');
+            } catch (error) {
+                console.error(error);
             }
         },
         detaiModal(data) {
@@ -139,7 +155,6 @@ export default {
             }
             return '';
         },
-
         handlePageChange(newPage) {
             this.page = newPage - 1;
             this.getListAllAccount();

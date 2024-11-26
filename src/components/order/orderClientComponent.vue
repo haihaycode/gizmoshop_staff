@@ -62,7 +62,7 @@
 
 
                     <td @click.stop="openModalUpdate(item)"
-           s             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                       class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         <!-- {{ item.note }} -->
                         <i class='bx bxs-edit-alt'></i>
                     </td>

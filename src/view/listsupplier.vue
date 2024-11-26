@@ -1,8 +1,8 @@
 <template>
     <div class="bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 z-30 lg:m-2 md:m-0 p-2">
         <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
-        <listSupplierComponent></listSupplierComponent>
-        <supplierPendingComponent></supplierPendingComponent>
+        <listSupplierComponent ref="listSupplierComponent"></listSupplierComponent>
+        <supplierPendingComponent @reloadData="handleLoad"></supplierPendingComponent>
     </div>
 </template>
 
@@ -13,6 +13,7 @@ import BreadcrumbComponent from '@/components/breadcrumb/BreadcrumbComponent.vue
 
 export default {
     name: 'ListSupplier',
+
     data() {
         return {
             breadcrumbItems: [
@@ -25,6 +26,9 @@ export default {
         listSupplierComponent,
         supplierPendingComponent,
         BreadcrumbComponent
+    },
+    handleLoad() {
+        this.$refs.listSupplierComponent.getListAllAccount();
     },
 }
 </script>
