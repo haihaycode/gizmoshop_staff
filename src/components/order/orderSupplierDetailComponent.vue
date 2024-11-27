@@ -3,7 +3,7 @@
         <ModalBox :isOpen="isOpen" :closeModal="closeModal">
             <template #header>
                 <h1 class="text-xl font-semibold text-center mb-4">Chi tiết đơn hàng của nhà cung cấp: {{
-                    order.account?.fullname }}</h1>
+                    order.supplierDto?.id }}</h1>
             </template>
 
             <template #body>
@@ -22,6 +22,8 @@
                 <!-- Thông tin người dùng -->
                 <div class="mb-6">
                     <strong class="block font-medium text-gray-700">Thông tin nhà cung cấp:</strong>
+                    <p class="text-gray-500"><strong>Tên Người cung cấp:</strong> {{ order.account?.fullname }}
+                    </p>
                     <p class="text-gray-500"><strong>Tên nhà cung cấp:</strong> {{ order.supplierDto?.nameSupplier }}
                     </p>
                     <p class="text-gray-500"><strong>Mã số thuể:</strong> {{ order.supplierDto?.tax_code }}</p>
@@ -31,8 +33,9 @@
                 <div class="mb-6">
                     <strong class="block font-medium text-gray-700">Thông tin đơn hàng:</strong>
                     <p class="text-gray-500"><strong>Ghi chú:</strong> {{ order.note }}</p>
-                    <p class="text-gray-500"><strong>Tổng giá trị:</strong> {{ formatCurrencyVN(order.totalPrice ||
-                        currency) }}</p>
+                    <p class="text-gray-500"><strong>Tổng giá trị đơn hàng:</strong> {{
+                        formatCurrencyVN(order.totalPrice ||
+                            currency) }}</p>
                     <p class="text-gray-500"><strong>Tổng trọng lượng:</strong> {{ order.totalWeight }} kg</p>
                 </div>
 
@@ -49,12 +52,18 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                                 ẢNH MẪU</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                GIÁ SẢN PHẨM</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                GIẢM GIÁ</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                GIÁ BÁN</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                                 SỐ LƯỢNG</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                                GIÁ</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                                 TỔNG:</th>
-                            <th v-if="isOpenButton && !isOpencheckbox"
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                TRẠNG THÁI:</th>
+                            <th v-if="isCheckboxVisible"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                             </th>
                         </template>
@@ -71,20 +80,31 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     formatCurrencyVN(orderDetail.product?.productPrice || currency) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                                    orderDetail.product?.discountProduct || 0 }}%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ formatCurrencyVN(
+                                        (orderDetail.product?.productPrice || currency) * (1 -
+                                            (orderDetail.product?.discountProduct || 0) / 100)
+                                    ) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     orderDetail.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     formatCurrencyVN(orderDetail.total || currency) }}</td>
-                                <td v-if="isOpenButton && !isOpencheckbox"
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                                    orderDetail.product?.productStatusResponse?.name }}</td>
+                                <td v-if="isCheckboxVisible"
                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     <input type="checkbox" :value="orderDetail.id"
                                         @change="toggleSelection(orderDetail.product.id, $event)" />
                                 </td>
+
                             </tr>
 
 
                         </template>
                     </TableComponent>
-                    <div class="flex gap-4" v-if="isOpencheckbox">
+                    <div class="flex gap-4" v-if="isButtonVisible">
                         <Button @click="handleButtonClick(true)"
                             class="mt-2 BG-BLUE-500 TEXT-WHITE PX-4 PY-2 ROUNDED HOVER:BG-BLUE-600"
                             :text="'Xác Nhận'"></Button>
@@ -110,11 +130,13 @@
                 <!-- Thông tin hợp đồng -->
                 <div v-if="order.contractresponse" class="mb-6">
                     <strong class="block font-medium text-gray-700">Thông tin hợp đồng:</strong>
-                    <div><strong class="font-medium text-gray-700">Mã hợp đồng:</strong> {{
+                    <div><strong class="font-medium text-gray-500">Tổng phí duy trì:</strong> {{
+                        formatCurrencyVN(order.contractresponse?.contractMaintenanceFee) }}</div>
+                    <div><strong class="font-medium text-gray-500">Mã hợp đồng:</strong> {{
                         order.contractresponse?.contractId }}</div>
-                    <div><strong class="font-medium text-gray-700">Ngày bắt đầu:</strong> {{
+                    <div><strong class="font-medium text-gray-500">Ngày bắt đầu:</strong> {{
                         formatDay(order.contractresponse?.start_date || date) }}</div>
-                    <div><strong class="font-medium text-gray-700">Ngày hết hạn:</strong> {{
+                    <div><strong class="font-medium text-gray-500">Ngày hết hạn:</strong> {{
                         formatDay(order.contractresponse?.expirationDate || date) }}</div>
                 </div>
             </template>
@@ -129,6 +151,7 @@ import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import { loadImage } from '@/services/imageService';
 import Button from '../buttons/button.vue';
 import { approveOrder, approveorderfinal } from '@/api/supplierApi';
+import notificationService from '@/services/notificationService';
 
 
 export default {
@@ -148,12 +171,13 @@ export default {
             required: true
         }
     },
-    emits: ['closeModal'],
+    emits: ['closeModal', 'loadOrder'],
     data() {
         return {
             isOpenButton: false,
             selectedOrder: new Set(),
-            isOpencheckbox: false,
+            isCheckboxVisible: false,
+            isButtonVisible: false,
             order: {}
         };
     },
@@ -177,9 +201,10 @@ export default {
         },
 
         handleButtonClick(status) {
-            if (this.isOpenButton && !this.isOpencheckbox) {
+            if (this.isCheckboxVisible) {
                 this.confirmSelection(status);
             } else {
+
                 this.finalOrderSupplier(status);
             }
         },
@@ -193,8 +218,10 @@ export default {
                 }
                 const res = await approveOrder(this.order.id, data);
                 console.log(res.data);
-                this.closeModal();
+                this.$emit('loadOrder')
+                notificationService.success('Xác nhận đơn hàng thành công');
             } catch (error) {
+                notificationService.error('Xác nhận đơn hàng thất bại');
                 console.error(error)
             }
         },
@@ -205,8 +232,10 @@ export default {
                 }
                 const res = await approveorderfinal(this.order.id, data);
                 console.log(res.data);
-                this.closeModal();
+                this.$emit('loadOrder')
+                notificationService.success('Xác nhận đơn hàng thành công');
             } catch (error) {
+                notificationService.error('Xác nhận đơn hàng thất bại');
                 console.error(error)
             }
         },
@@ -216,14 +245,8 @@ export default {
         orderdata: {
             handler(newData) {
                 this.order = { ...newData };
-                if (newData.orderStatus.id === 26 || newData.orderStatus.id === 20) {
-                    this.isOpenButton = true;
-                    this.isOpencheckbox = true;
-                } else {
-                    this.isOpencheckbox = false;
-                    this.isOpenButton = false;
-                }
-                // this.selectedOrder.clear();
+                this.isCheckboxVisible = newData.orderStatus?.id === 26;
+                this.isButtonVisible = [26, 20].includes(newData.orderStatus?.id);
                 this.selectedOrder = new Set(newData.orderDetails?.map(detail => detail.product.id) || []);
             },
             deep: true

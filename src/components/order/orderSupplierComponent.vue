@@ -74,7 +74,8 @@
             </template>
         </TableComponent>
     </div>
-    <orderSupplierDetailComponent :isOpen="isOpenDetail" @closeModal="closeandload" :orderdata="orderSelected">
+    <orderSupplierDetailComponent :isOpen="isOpenDetail" @closeModal="isOpenDetail = false" @loadOrder="closeandload"
+        :orderdata="orderSelected">
     </orderSupplierDetailComponent>
 </template>
 
