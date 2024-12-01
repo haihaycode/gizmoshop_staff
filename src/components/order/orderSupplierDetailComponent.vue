@@ -35,7 +35,7 @@
                     <p class="text-gray-500"><strong>Ghi chú:</strong> {{ order.note }}</p>
                     <p class="text-gray-500"><strong>Tổng giá trị đơn hàng:</strong> {{
                         formatCurrencyVN(order.totalPrice ||
-                            currency) }}</p>
+                            0) }}</p>
                     <p class="text-gray-500"><strong>Tổng trọng lượng:</strong> {{ order.totalWeight }} kg</p>
                 </div>
 
@@ -60,9 +60,9 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                                 SỐ LƯỢNG</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                                TỔNG:</th>
+                                TỔNG</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                                TRẠNG THÁI:</th>
+                                TRẠNG THÁI</th>
                             <th v-if="isCheckboxVisible"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                             </th>
@@ -78,19 +78,19 @@
                                         @error="this.src = 'fallback-image-url.jpg'" class="w-16 h-16">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
-                                    formatCurrencyVN(orderDetail.product?.productPrice || currency) }}</td>
+                                    formatCurrencyVN(orderDetail.product?.productPrice || 0) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     orderDetail.product?.discountProduct || 0 }}%</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     {{ formatCurrencyVN(
-                                        (orderDetail.product?.productPrice || currency) * (1 -
+                                        (orderDetail.product?.productPrice || 0) * (1 -
                                             (orderDetail.product?.discountProduct || 0) / 100)
                                     ) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     orderDetail.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
-                                    formatCurrencyVN(orderDetail.total || currency) }}</td>
+                                    formatCurrencyVN(orderDetail.total || 0) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     orderDetail.product?.productStatusResponse?.name }}</td>
                                 <td v-if="isCheckboxVisible"
@@ -131,7 +131,7 @@
                 <div v-if="order.contractresponse" class="mb-6">
                     <strong class="block font-medium text-gray-700">Thông tin hợp đồng:</strong>
                     <div><strong class="font-medium text-gray-500">Tổng phí duy trì:</strong> {{
-                        formatCurrencyVN(order.contractresponse?.contractMaintenanceFee) }}</div>
+                        formatCurrencyVN(order.contractresponse?.contractMaintenanceFee || 0) }}</div>
                     <div><strong class="font-medium text-gray-500">Mã hợp đồng:</strong> {{
                         order.contractresponse?.contractId }}</div>
                     <div><strong class="font-medium text-gray-500">Ngày bắt đầu:</strong> {{
@@ -210,6 +210,11 @@ export default {
         },
         async confirmSelection(status) {
             const selectedIds = Array.from(this.selectedOrder);
+            if (selectedIds.length >= (this.order.orderDetails?.length || 0) && status == true) {
+                notificationService.error('Vui lòng chọn ít nhất một sản phẩm đơn hàng.');
+                return;
+            }
+
             console.log('Selected IDs:', selectedIds);
             try {
                 const data = {

@@ -38,8 +38,6 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.email }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.sdt }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <!-- <i class='bx bx-edit text-2xl'></i> -->
-                        <!-- <i @click="handleModalSetting(item.id)" class='bx bx-cog text-xl'></i> -->
                         <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleStatusSupplier(item)">
                         </toggleButton>
                     </td>
@@ -59,9 +57,7 @@
             </template>
         </TableComponent>
     </div>
-    <!-- <DetailProductSupplier @closeModal="ModalDetailIsOpen = false" :isOpen="ModalDetailIsOpen"
-        :author="authorSeleected">
-    </DetailProductSupplier> -->
+
 
 </template>
 
@@ -71,7 +67,6 @@ import TableComponent from '../table/TableComponent.vue';
 import Pagination from '../pagination/Pagination.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { mapGetters } from 'vuex';
-// import DetailProductSupplier from './detailProductSupplier.vue';
 
 export default {
     name: 'listSupplierComponent',
@@ -79,10 +74,8 @@ export default {
         TableComponent,
         Pagination,
         toggleButton,
-        // DetailProductSupplier
 
     },
-    emits: ['reloadData'],
     data() {
         return {
             keyword: '',
@@ -129,7 +122,6 @@ export default {
                     deleted: !item.deleted
                 }
                 await updateStatusSupplier(item.accountResponse.id, data);
-                this.$emit('reloadData');
             } catch (error) {
                 console.error(error);
             }

@@ -20,36 +20,13 @@
                         <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90"></i>
                     </router-link>
                 </li>
-                <li class="mb-1 group">
+                <!-- <li class="mb-1 group">
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-list-ul mr-3 text-lg'></i>
                         <span class="text-sm">Thông Báo</span>
                     </a>
-                </li>
-                <span class="text-white font-bold">NHÂN VIÊN</span>
-                <li class="mb-1 group">
-                    <!-- <RouterLink :to="{ name: 'staff'}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
-                        <i class='bx bxl-blogger mr-3 text-lg'></i>
-                        <span class="text-sm">Danh sách</span>
-                        <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90"></i>
-                    </RouterLink> -->
-                </li>
-                <li class="mb-1 group">
-                    <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-archive mr-3 text-lg'></i>
-                        <span class="text-sm">Phân công</span>
-                    </a>
-                </li>
-                <li class="mb-1 group">
-                    <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                        <i class='bx bx-archive mr-3 text-lg'></i>
-                        <span class="text-sm">Chi tiết</span>
-                    </a>
-                </li>
+                </li> -->
                 <span class="text-white font-bold">QUẢN LÝ CỬA HÀNG</span>
                 <li class="mb-1 group">
                     <RouterLink :to="{ name: 'brand' }"
@@ -87,9 +64,23 @@
                     <router-link :to="{ name: 'listtsupplier' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="text-sm">Danh Sách Nhà Cung Cấp </span>
-                        <span
-                            class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-600 bg-red-200 rounded-full">5</span>
+                        <span class="text-sm">Nhà Cung Cấp Đang Hợp Tác</span>
+                        <!-- <span
+                            class=" md:block px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-600 bg-red-200 rounded-full">5</span> -->
+                    </router-link>
+                </li>
+                <li class="mb-1 group">
+                    <router-link :to="{ name: 'ordersupplierpending' }"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                        <i class='bx bx-bell mr-3 text-lg'></i>
+                        <span class="text-sm">Nhà Cung Cấp Đang Chờ Duyệt </span>
+                    </router-link>
+                </li>
+                <li class="mb-1 group">
+                    <router-link :to="{ name: 'suppliercancel' }"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                        <i class='bx bx-bell mr-3 text-lg'></i>
+                        <span class="text-sm">Yêu cầu hủy tư cách nhà cung cấp</span>
                     </router-link>
                 </li>
                 <span class="text-white font-bold">QUẢN LÝ ĐƠN HÀNG</span>
@@ -97,7 +88,7 @@
                     <RouterLink :to="{ name: 'orderpartner' }"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-gray-100 hover:bg-opacity-5 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                         <i class='bx bx-shopping-bag mr-3 text-lg'></i>
-                        <span class="text-sm">Quản Lý đơn hàng đối tác</span>
+                        <span class="text-sm">Quản Lý đơn hàng nhà cung cấp</span>
                     </RouterLink>
                 </li>
                 <li class="mb-1 group">

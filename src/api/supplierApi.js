@@ -52,5 +52,21 @@ export const approveorderfinal = async (orderId, data) => {
         throw new Error(`${error}`);
     }
 };
+export const ListsupplierResCancel = async () => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/supplier/t/show-all-cancel-supplier-requests`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+export const acceptCancelSupplier = async (accountId) => {
+    try {
+        const response = await Axios.post(`${HOST}/api/public/supplier/t/accept-cancel-supplier/${accountId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
 
 

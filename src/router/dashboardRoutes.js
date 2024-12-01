@@ -158,14 +158,14 @@ const dashboardRoutes = [
       },
     ],
   }, {
-    path: "/orderpartner",
+    path: "/ordersupplier",
     component: useComponent("admin"),
     children: [
       {
         path: "",
         name: "orderpartner",
         meta: {
-          title: "DANH SÁCH ĐƠN HÀNG ĐỐI TÁC",
+          title: "DANH SÁCH ĐƠN HÀNG NHÀ CUNG CẤP",
           description: "GIZMO",
         },
         components: {
@@ -177,6 +177,26 @@ const dashboardRoutes = [
       }
     ],
   }, {
+    path: "/ordersupplier-pending",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "ordersupplierpending",
+        meta: {
+          title: "DANH SÁCH ĐƠN HÀNG NHÀ CUNG CẤP ĐANG CHỜ DUYỆT",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("orderPartner"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      }
+    ],
+  },
+  {
     path: "/transaction",
     component: useComponent("admin"),
     children: [
@@ -208,6 +228,25 @@ const dashboardRoutes = [
         },
         components: {
           default: useComponent("listsupplier"),
+          header: Header,
+          footer: Footer,
+          sideBar: sideBar,
+        },
+      },
+    ],
+  }, {
+    path: "/supplier-cancel",
+    component: useComponent("admin"),
+    children: [
+      {
+        path: "",
+        name: "suppliercancel",
+        meta: {
+          title: "YÊU CẦU HỦY HỢP ĐỒNG TỪ NHÀ CUNG CẤP",
+          description: "GIZMO",
+        },
+        components: {
+          default: useComponent("supplierResCancel"),
           header: Header,
           footer: Footer,
           sideBar: sideBar,

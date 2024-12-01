@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-12">
+    <div>
         <h1 class="text-3xl font-bold text-center text-blue-600 uppercase mb-6">
             Danh sách các nhà cung cấp đã & đang cung cấp sản phẩm
         </h1>

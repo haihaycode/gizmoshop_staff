@@ -1,4 +1,35 @@
 <template>
+    <div class="p-4 bg-white shadow-md rounded mb-4">
+        <form @submit.prevent="getListAll" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
+            <!-- Tìm theo mã đơn hàng -->
+            <div class="w-full lg:w-1/3">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="orderCode">Tìm theo mã đơn hàng</label>
+                <input v-model="keysearch" id="orderCode" type="text"
+                    class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Nhập Mã đơn hàng: ORD..." />
+            </div>
+
+            <!-- Tìm theo tên người nhận -->
+            <div class="w-full lg:w-1/6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="receiverName">Tìm theo trạng thái</label>
+                <select v-model="statusFilter" id="receiverName"
+                    class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="true">Đang cần xử lý</option>
+                    <option value="false">Tất cả</option>
+                </select>
+            </div>
+
+            <!-- Nút tìm kiếm -->
+            <div class="w-full lg:w-auto flex justify-end items-end space-x-2">
+                <button type="submit"
+                    class="bg-[#0e0b36] hover:bg-[#2a2eaed7] text-white font-bold py-2 px-4 rounded transition-all duration-300">
+                    Tìm kiếm
+                </button>
+            </div>
+        </form>
+    </div>
+
+
     <div>
         <TableComponent :items="listOrder" :loading="isLoading">
             <template #header>
@@ -16,7 +47,7 @@
                 </th>
                 <th @click="changeSort('vouchers')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    SỐ LƯỢNG MẶT HÀNG CUNG CẤP <span v-html="getSortIcon('vouchers')"></span>
+                    SỐ LƯỢNG MẶT HÀNG<span v-html="getSortIcon('vouchers')"></span>
                 </th>
                 <th @click="changeSort('createOderTime')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
@@ -28,7 +59,7 @@
                 </th>
                 <th @click="changeSort('name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    CHI TIẾT HỢP ĐỒNG <span v-html="getSortIcon('id')"></span>
+                    CHI TIẾT ĐƠN <span v-html="getSortIcon('id')"></span>
                 </th>
             </template>
             <template #body>
@@ -37,7 +68,7 @@
                         {{ item.id }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ item.account.name }}
+                        {{ item.supplierDto?.nameSupplier }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ formatCurrencyVN(item.totalPrice) }}
@@ -45,20 +76,23 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.orderDetails.length }}
                     </td>
-
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ formatDay(item.createOderTime) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         <select @click.stop v-model="item.orderStatus.id"
-                            class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id">
+                            class="border w-40 border-gray-300 rounded py-2 px-3 text-gray-700 bg-gray-50 leading-tight focus:outline-none cursor-default">
+                            <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id"
+                                :disabled="statusItem.id !== item.orderStatus.id">
                                 {{ statusItem.status }}
                             </option>
                         </select>
+                        <i v-if="item.orderStatus.id == 20 || item.orderStatus.id == 26"
+                            class='bx bx-message-square-minus bx-flashing text-2xl'></i>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ item.note }}
+                        <i class='bx bx-info-square text-2xl'></i>
+
                     </td>
                 </tr>
             </template>
@@ -74,6 +108,7 @@
             </template>
         </TableComponent>
     </div>
+
     <orderSupplierDetailComponent :isOpen="isOpenDetail" @closeModal="isOpenDetail = false" @loadOrder="closeandload"
         :orderdata="orderSelected">
     </orderSupplierDetailComponent>
@@ -98,6 +133,7 @@ export default {
     },
     data() {
         return {
+            keysearch: null,
             orderSelected: null,
             isOpenDetail: false,
             idRoleStatus: true,
@@ -149,6 +185,7 @@ export default {
         async getListAll() {
             try {
                 const data = {
+                    orderCode: this.keysearch,
                     idRoleStatus: this.idRoleStatus,
                     page: this.page,
                     limit: this.limit,

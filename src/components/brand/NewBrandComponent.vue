@@ -1,58 +1,42 @@
 <template>
-  <ModalBox
-    :isOpen="isOpen"
-    :loading="isLoading"
-    :closeModal="closeModal"
-    :closeText="'Đóng'"
-  >
-    <!-- Modal Header Slot -->
+  <ModalBox :isOpen="isOpen" :loading="isLoading" :closeModal="closeModal" :closeText="'Đóng'">
+
     <template #header>
       <h3 class="sm:text-sm md:text-lg font-bold">Thêm Thương Hiệu mới</h3>
     </template>
-    <!-- Modal Body Slot -->
+
     <template #body>
       <form @submit.prevent="submitFormData">
-        <!-- Name -->
+
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
             Tên thương hiệu *
           </label>
-          <input
-            v-model="form.name"
-            :class="errors.name ? 'border-red-500' : 'border-gray-300'"
+          <input v-model="form.name" :class="errors.name ? 'border-red-500' : 'border-gray-300'"
             class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            id="name"
-            placeholder="Nhập tên thương hiệu"
-          />
+            id="name" placeholder="Nhập tên thương hiệu" />
           <p class="lg:text-sm text-red-500">{{ errors.name }}</p>
         </div>
 
-        <!-- Description -->
+
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
             Mô tả *
           </label>
-          <input
-            v-model="form.description"
-            :class="errors.description ? 'border-red-500' : 'border-gray-300'"
+          <input v-model="form.description" :class="errors.description ? 'border-red-500' : 'border-gray-300'"
             class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            id="description"
-            placeholder="Nhập mô tả"
-          />
+            id="description" placeholder="Nhập mô tả" />
           <p class="lg:text-sm text-red-500">{{ errors.description }}</p>
         </div>
 
-        <!-- Status -->
+
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="deleted">
             Trạng thái *
           </label>
-          <select
-            v-model="form.deleted"
-            :class="errors.deleted ? 'border-red-500' : 'border-gray-300'"
+          <select v-model="form.deleted" :class="errors.deleted ? 'border-red-500' : 'border-gray-300'"
             class="shadow-none border-b-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-            id="deleted"
-          >
+            id="deleted">
             <option :value="false">Hoạt động</option>
             <option :value="true">Ngừng hoạt động</option>
           </select>
@@ -60,25 +44,16 @@
         </div>
 
         <div class="flex justify-end">
-          <Button
-            :isLoading="isLoading"
-            :text="'Lưu'"
-            type="submit"
-            class="px-4 py-2 text-white rounded-sm hover:bg-[#271a1a]"
-          >
+          <Button :isLoading="isLoading" :text="'Lưu'" type="submit"
+            class="px-4 py-2 text-white rounded-sm hover:bg-[#271a1a]">
           </Button>
         </div>
       </form>
     </template>
   </ModalBox>
 
-  <NotificationModal
-    :isOpen="NotificationModalIsOpen"
-    :message="message"
-    :type="messageType"
-    @close="NotificationModalIsOpen = false"
-    :title="'Thông báo'"
-  ></NotificationModal>
+  <NotificationModal :isOpen="NotificationModalIsOpen" :message="message" :type="messageType"
+    @close="NotificationModalIsOpen = false" :title="'Thông báo'"></NotificationModal>
 </template>
 
 <script>
@@ -102,11 +77,11 @@ export default {
       messageType: "",
       message: "",
       form: {
-        name: "", // Tên thương hiệu
-        description: "", // Mô tả
-        deleted: false, // Trạng thái (Hoạt động/Ngừng hoạt động)
+        name: "",
+        description: "",
+        deleted: false,
       },
-      errors: {}, // Lưu lỗi cho từng trường
+      errors: {},
     };
   },
   emits: ["close", "create-success"],
@@ -126,7 +101,7 @@ export default {
     closeModal() {
       this.$emit("close");
     },
-    // Schema validate với Yup
+
     validateSchema() {
       const schema = Yup.object().shape({
         name: Yup.string()
@@ -142,11 +117,10 @@ export default {
     },
     async submitFormData() {
       try {
-        // Validate dữ liệu
+
         const schema = this.validateSchema();
         await schema.validate(this.form, { abortEarly: false });
 
-        // Nếu không có lỗi, gửi dữ liệu
         const data = { ...this.form };
         const res = await createBrand(data);
 
@@ -157,13 +131,13 @@ export default {
         this.loadBrand();
       } catch (error) {
         if (error.name === "ValidationError") {
-          // Lưu lỗi từ Yup vào errors
+
           this.errors = {};
           error.inner.forEach((err) => {
             this.errors[err.path] = err.message;
           });
         } else {
-          // Lỗi từ server
+
           console.error("Lỗi khi thêm thương hiệu:", error);
           this.message = error.message || "Có lỗi xảy ra";
           this.messageType = "error";

@@ -76,7 +76,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productPrice">Giá Gốc sản phẩm
                             *</label>
-                        <input type="number" v-model="form.productPrice"
+                        <input type="number" v-model="form.productPrice" min="0" step="1"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productPrice ? 'border-red-500' : ''" id="productPrice"
                             placeholder="Nhập giá gốc sản phẩm" />
@@ -86,7 +86,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productPrice">Số lượng sản phẩm
                             *</label>
-                        <input type="number" v-model="form.productQuantity"
+                        <input type="number" v-model="form.productQuantity" min="0" step="1"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productQuantity ? 'border-red-500' : ''" id="productPrice"
                             placeholder="Nhập giá gốc sản phẩm" />
@@ -95,8 +95,8 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="discountProduct">Giảm giá (%)
-                            *</label>
-                        <input type="number" v-model="form.discountProduct"
+                            *</label> 
+                        <input type="number" v-model="form.discountProduct" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.discountProduct ? 'border-red-500' : ''" id="discountProduct"
                             placeholder="Nhập tỷ lệ giảm giá sản phẩm (%)" />
@@ -106,7 +106,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productWeight">Khối lượng
                             *</label>
-                        <input type="number" v-model="form.productWeight"
+                        <input type="number" v-model="form.productWeight" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productWeight ? 'border-red-500' : ''" id="productWeight"
                             placeholder="Nhập khối lượng sản phẩm (kg)" />
@@ -115,7 +115,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productArea">Diện tích *</label>
-                        <input type="number" v-model="form.productArea"
+                        <input type="number" v-model="form.productArea" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productArea ? 'border-red-500' : ''" id="productArea"
                             placeholder="Nhập diện tích sản phẩm (m²)" />
@@ -124,7 +124,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productVolume">Thể tích *</label>
-                        <input type="number" v-model="form.productVolume"
+                        <input type="number" v-model="form.productVolume" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productVolume ? 'border-red-500' : ''" id="productVolume"
                             placeholder="Nhập thể tích sản phẩm (m³)" />
@@ -134,7 +134,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productWidth">Chiều rộng
                             *</label>
-                        <input type="number" v-model="form.productWidth"
+                        <input type="number" v-model="form.productWidth" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productWidth ? 'border-red-500' : ''" id="productWidth"
                             placeholder="Nhập chiều rộng sản phẩm (cm)" />
@@ -144,7 +144,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productHeight">Chiều cao
                             *</label>
-                        <input type="number" v-model="form.productHeight"
+                        <input type="number" v-model="form.productHeight" min="0" step="0.01"
                             @blur="form.productHeight = form.productHeight ? form.productHeight : 0"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productHeight ? 'border-red-500' : ''" id="productHeight"
@@ -155,7 +155,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productLength">Chiều dài
                             *</label>
-                        <input type="number" v-model="form.productLength"
+                        <input type="number" v-model="form.productLength" min="0" step="0.01"
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productLength ? 'border-red-500' : ''" id="productLength"
                             placeholder="Nhập chiều dài sản phẩm (cm)" />
@@ -165,7 +165,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productShortDescription">Mô tả
                             ngắn *</label>
-                        <textarea v-model="form.productShortDescription"
+                        <textarea v-model="form.productShortDescription" 
                             class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                             :class="errors.productShortDescription ? 'border-red-500' : ''" id="productShortDescription"
                             placeholder="Nhập mô tả ngắn sản phẩm"></textarea>
