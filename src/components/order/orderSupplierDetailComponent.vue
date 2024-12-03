@@ -68,7 +68,8 @@
                             </th>
                         </template>
                         <template #body>
-                            <tr v-for="(orderDetail, index) in order.orderDetails" :key="index" class="border-b-4">
+                            <tr @click="detailProduct(orderDetail.product)"
+                                v-for="(orderDetail, index) in order.orderDetails" :key="index" class="border-b-4">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ index + 1
                                     }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
@@ -95,7 +96,7 @@
                                     orderDetail.product?.productStatusResponse?.name }}</td>
                                 <td v-if="isCheckboxVisible"
                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <input type="checkbox" :value="orderDetail.id"
+                                    <input @click.stop type="checkbox" :value="orderDetail.id"
                                         @change="toggleSelection(orderDetail.product.id, $event)" />
                                 </td>
 
@@ -142,9 +143,14 @@
             </template>
         </ModalBox>
     </div>
+    <orderDetailProductSupplier :isOpen="isOpenDetailProductModel" :productSelected="productSeleted"
+        @close=" isOpenDetailProductModel = false" @update-success="getDataProduct">
+    </orderDetailProductSupplier>
+
 </template>
 
 <script>
+import orderDetailProductSupplier from './orderDetailProductSupplier.vue';
 import ModalBox from '../modal/ModalBox.vue';
 import TableComponent from '../table/TableComponent.vue';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
@@ -160,6 +166,7 @@ export default {
         Button,
         ModalBox,
         TableComponent,
+        orderDetailProductSupplier
     },
     props: {
         isOpen: {
@@ -174,6 +181,8 @@ export default {
     emits: ['closeModal', 'loadOrder'],
     data() {
         return {
+            productSeleted: {},
+            isOpenDetailProductModel: false,
             isOpenButton: false,
             selectedOrder: new Set(),
             isCheckboxVisible: false,
@@ -192,6 +201,11 @@ export default {
         closeModal() {
             this.$emit('closeModal');
         },
+        detailProduct(product) {
+            this.productSeleted = product;
+            this.isOpenDetailProductModel = !this.isOpenDetailProductModel;
+            console.log(product);
+        },
         toggleSelection(id, event) {
             if (event.target.checked) {
                 this.selectedOrder.delete(id);
@@ -199,7 +213,6 @@ export default {
                 this.selectedOrder.add(id);
             }
         },
-
         handleButtonClick(status) {
             if (this.isCheckboxVisible) {
                 this.confirmSelection(status);

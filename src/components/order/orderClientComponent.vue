@@ -36,35 +36,42 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     STT <span v-html="getSortIcon('id')"></span>
                 </th>
+                <th @click="changeSort('')"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                    TÊN KHÁCH HÀNG <span v-html="getSortIcon('')"></span>
+                </th>
                 <th @click="changeSort('totalPrice')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     TỔNG TIỀN <span v-html="getSortIcon('totalPrice')"></span>
                 </th>
-                <th @click="changeSort('vouchers')"
+                <th @click="changeSort('')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    SỐ LƯỢNG SẢN PHẨM <span v-html="getSortIcon('vouchers')"></span>
+                    SỐ LƯỢNG SẢN PHẨM <span v-html="getSortIcon('')"></span>
                 </th>
-                <th @click="changeSort('name')"
+                <th @click="changeSort('')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    PHIẾU GIẢM GIÁ <span v-html="getSortIcon('id')"></span>
+                    PHIẾU GIẢM GIÁ <span v-html="getSortIcon('')"></span>
                 </th>
                 <th @click="changeSort('createOderTime')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     NGÀY TẠO <span v-html="getSortIcon('createOderTime')"></span>
                 </th>
-                <th @click="changeSort('name')"
+                <th @click="changeSort('')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    TRẠNG THÁI <span v-html="getSortIcon('id')"></span>
+                    TRẠNG THÁI <span v-html="getSortIcon('')"></span>
                 </th>
-                <th @click="changeSort('name')"
+                <!-- <th @click="changeSort('name')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     GHI CHÚ <span v-html="getSortIcon('id')"></span>
-                </th>
+                </th> -->
             </template>
             <template #body>
                 <tr @click="openModalDetailOrder(item)" v-for="(item, index) in listOrder" :key="index">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ item.id }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {{ item.account?.fullname }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ formatCurrencyVN(item.totalPrice) }}
@@ -82,25 +89,25 @@
 
                     <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                         <div class="flex items-center space-x-4">
-                            <!-- Dropdown trạng thái đơn hàng -->
-                            <select @click.stop v-model="item.orderStatus.id"
-                                @change="updateOrderSelected(item, item.orderStatus.id)"
-                                class="border border-gray-300 rounded-md py-2 px-3 w-40 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option v-for="statusItem in statusOrder" :key="statusItem.id" :value="statusItem.id"
-                                    :disabled="statusItem.id !== item.orderStatus.id">
-                                    {{ statusItem.status }}
-                                </option>
-                            </select>
+                            <div v-if="item.orderStatus.id !== 1">
+                                <select @click.stop v-model="item.orderStatus.id"
+                                    @change="updateOrderSelected(item, item.orderStatus.id)"
+                                    class="border border-gray-300 rounded-md py-2 px-3 w-40 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option v-for="statusItem in statusOrder" :key="statusItem.id"
+                                        :value="statusItem.id" :disabled="statusItem.id !== item.orderStatus.id">
+                                        {{ statusItem.status }}
+                                    </option>
+                                </select>
+                            </div>
 
-                            <!-- Nút duyệt đơn, chỉ hiển thị khi trạng thái là 1 -->
-                            <div v-if="item.orderStatus.id === 1">
-                                <button @click.stop="updateOrderSelected(item, 6)"
+                            <div v-if="item.orderStatus.id === 1" class="flex flex-col space-y-2">
+                                <button @click.stop="openModalUpdate(item, true)"
                                     class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     Duyệt Đơn
                                 </button>
-                                <button @click.stop="updateOrderSelected(item, 17)"
+                                <button @click.stop="openModalUpdate(item, false)"
                                     class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
+                                    Hủy Đơn
                                 </button>
                             </div>
                         </div>
@@ -108,10 +115,10 @@
 
 
 
-                    <td @click.stop="openModalUpdate(item)"
+                    <!-- <td @click.stop="openModalUpdate(item)"
                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         <i class='bx bxs-edit-alt'></i>
-                    </td>
+                    </td> -->
                 </tr>
             </template>
             <template #footer>
@@ -125,23 +132,47 @@
                 </div>
             </template>
         </TableComponent>
-
-        <orderUpdateComponent @update-success:="getListAll" :isOpen="isOpenModelUpdate"
-            @close="isOpenModelUpdate = false" :order="orderSelected">
-        </orderUpdateComponent>
         <orderDetailComponent :isOpen="isOpenModalDetailOrder" @close="isOpenModalDetailOrder = false"
             :order="orderSelected">
         </orderDetailComponent>
+
+
+        <ModalBox :footerIsActive="true" :isOpen="isOpenModelUpdate" :closeModal="handleCloseModal">
+            <template #header>
+                <h2 class="text-xl font-semibold text-gray-800 border-b pb-2">{{ dataModale.header }}</h2>
+            </template>
+            <template #body>
+                <h1 class="text-lg font-medium text-gray-700 mb-4">{{ dataModale.title }}</h1>
+                <div class="mb-4">
+                    <textarea v-model="dataModale.note"
+                        class="shadow-sm border rounded-lg w-full p-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Nhập ghi chú cho đơn hàng"></textarea>
+                </div>
+            </template>
+            <template #footer>
+                <div class="flex justify-end space-x-4">
+                    <button
+                        class="bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        v-for="(text, index) in dataModale.textbutton" :key="index"
+                        @click="updateOrderSelected(dataModale, text)">
+                        {{ text }}
+                    </button>
+                </div>
+            </template>
+        </ModalBox>
+
+
+
     </div>
 </template>
 
 <script>
 // import Button from '../buttons/button.vue';
+import ModalBox from '../modal/ModalBox.vue';
 import orderDetailComponent from '../order/orderDetailComponent.vue';
-import orderUpdateComponent from '../order/orderUpdateComponent.vue';
 import { getAllStatusOrder, getListAllOrder, updateOrder } from '@/api/orderApi';
 import TableComponent from '../table/TableComponent.vue';
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import Pagination from '../pagination/Pagination.vue';
 import notificationService from '@/services/notificationService';
@@ -151,11 +182,13 @@ export default {
         // Button,
         TableComponent,
         Pagination,
-        orderUpdateComponent,
+        ModalBox,
         orderDetailComponent
     },
     data() {
         return {
+            isLoading: true,
+            dataModale: {},
             keysearch: null,
             isOpenModalDetailOrder: false,
             isOpenModelUpdate: false,
@@ -177,12 +210,13 @@ export default {
         await this.getListStatus();
         this.getListAll();
     },
-    computed: {
-        ...mapGetters("loading", ["isLoading"]),
-    },
     methods: {
         formatCurrencyVN,
         formatDay,
+
+        handleCloseModal() {
+            this.isOpenModelUpdate = false;
+        },
 
         async getListStatus() {
             try {
@@ -207,23 +241,45 @@ export default {
                 const res = await getListAllOrder(data);
                 this.listOrder = res.data.content;
                 this.pagination = res.data;
+                this.isLoading = false;
             } catch (error) {
                 console.error(error);
             }
         },
 
-        async updateOrderSelected(dataOrder, idOrder) {
-
+        async updateOrderSelected(dataOrder, text) {
+            console.log(dataOrder.data.note + "||" + dataOrder.note)
             try {
-                const data = {
-                    orderStatus: {
-                        id: idOrder
+                let data = {};
+                if (text === 'Xác nhận đơn') {
+                    data = {
+                        orderStatus: {
+                            id: 6,
+                            note: dataOrder.data.note + "||" + dataOrder.note,
+                        },
+                    };
+                    console.log(data.orderStatus.note)
+                }
+                else if (text === 'Hủy bỏ') {
+                    this.handleCloseModal();
+                    console.log(dataOrder)
+                    return;
+                }
+                else {
+                    data = {
+                        res: {
+                            orderStatus: {
+                                id: 17,
 
-                    }
-                };
-                console.log("id status: " + data)
-                await updateOrder(dataOrder.id, data);
+                            },
+                            note: dataOrder.data.note + "||" + dataOrder.note,
+                        },
+                    };
+                }
+                console.log("id status: " + data.res)
+                await updateOrder(dataOrder.data.id, data.res);
                 this.getListAll()
+                this.handleCloseModal()
                 notificationService.success("Cập nhật thành công");
             } catch (error) {
                 console.error('Lỗi khi cập nhật đơn hàng:', error);
@@ -255,10 +311,28 @@ export default {
             }
             return "";
         },
-        openModalUpdate(data) {
-            console.log(data);
+        openModalUpdate(item, noteStatus) {
+            if (noteStatus) {
+                this.dataModale = {
+                    header: `Đơn hàng của khách hàng ${item.account?.fullName}`,
+                    title: "Ghi chú của nhân viên cho đơn hàng",
+                    data: item,
+                    noteStatus: noteStatus,
+                    note: '',
+                    textbutton: ["Xác nhận đơn"],
+                }
+            } else {
+                this.dataModale = {
+                    header: "Cảnh báo",
+                    title: "Bạn đang muốn hủy đơn hàng này, bạn có chắc chắn muốn hủy đơn hàng này không?",
+                    noteStatus: noteStatus,
+                    data: item,
+                    note: '',
+                    textbutton: ["Chấp nhận", "Hủy bỏ"],
+                }
+            }
+
             this.isOpenModelUpdate = true;
-            this.orderSelected = data;
         },
         openModalDetailOrder(data) {
             console.log(data);

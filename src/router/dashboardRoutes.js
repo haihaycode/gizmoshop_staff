@@ -188,7 +188,7 @@ const dashboardRoutes = [
           description: "GIZMO",
         },
         components: {
-          default: useComponent("orderPartner"),
+          default: useComponent("supplierPending"),
           header: Header,
           footer: Footer,
           sideBar: sideBar,

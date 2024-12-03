@@ -6,11 +6,11 @@
                 <i class='bx bx-menu'></i>
             </button>
             <ul class="ml-auto flex items-center">
-                <li class="mr-1 ">
+                <!-- <li class="mr-1 ">
                     <ActiveTimeTrackerComponent />
-                </li>
+                </li> -->
                 <!-- tìm kiếm  -->
-                <li class="mr-1 ">
+                <!-- <li class="mr-1 ">
                     <button type="button"
                         class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center  hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -22,9 +22,9 @@
                         </svg>
                     </button>
 
-                </li>
+                </li> -->
                 <!-- thông báo -->
-                <li class="mr-1">
+                <!-- <li class="mr-1">
                     <button type="button"
                         class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center  hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -35,7 +35,7 @@
                             </path>
                         </svg>
                     </button>
-                </li>
+                </li> -->
                 <!-- thông tin cá nhân  -->
                 <li class=" ml-3">
                     <button @click="modalInfoIsOpen = !modalInfoIsOpen" type="button" class=" flex items-center">
@@ -56,7 +56,7 @@
                             <p class="text-xs text-white opacity-45">Nhân viên quản lý</p>
                         </div>
                     </button>
-                    <CornerModal :closeModal="() => (modalInfoIsOpen = !modalInfoIsOpen)" :isOpen="modalInfoIsOpen"
+                    <CornerModal class="mr-2" :closeModal="() => (modalInfoIsOpen = !modalInfoIsOpen)" :isOpen="modalInfoIsOpen"
                         :offset="10" :position="'top-right'" :header="'Thông tin cá nhân'">
                         <template #body>
                             <div>
@@ -119,7 +119,7 @@ import { getinfo } from '@/api/auth/meApi';
 import CornerModal from './modal/CornerModal.vue';
 import { loadImage } from '@/services/imageService';
 import { formatBirthDay, translatedRoles } from '@/utils/currencyUtils';
-import ActiveTimeTrackerComponent from './time/ActiveTimeTrackerComponent.vue';
+// import ActiveTimeTrackerComponent from './time/ActiveTimeTrackerComponent.vue';
 export default {
     name: 'HeaderComponent',
     data() {
@@ -131,7 +131,7 @@ export default {
     },
     components: {
         CornerModal,
-        ActiveTimeTrackerComponent
+        // ActiveTimeTrackerComponent
     },
     mounted() {
         this.handleGetInfoAccount();

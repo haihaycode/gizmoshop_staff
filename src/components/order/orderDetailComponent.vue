@@ -41,6 +41,10 @@
             </template>
             <template #footer>
                 <div class="flex justify-between items-center gap-4">
+                    <div v-if="dataOrder.note" class="border border-gray-300 p-4 rounded-md">
+                        <h3 class="text-gray-700 text-lg font-semibold mb-2">Ghi chú</h3>
+                        <p class="text-gray-600 text-sm">{{ dataOrder.note || 'Không có ghi chú' }}</p>
+                    </div>
                     <div>
                         <span>Tổng đã tiền giảm là: </span>
                         <input readonly :value="formatCurrencyVN(discount)" type="text"
@@ -59,6 +63,7 @@
 
 
 <script>
+
 import ModalBox from '../modal/ModalBox.vue';
 import TableComponent from '../table/TableComponent.vue';
 import { formatCurrencyVN } from '@/utils/currencyUtils';
@@ -102,10 +107,13 @@ export default {
         order: {
             handler(newOrder) {
                 console.log("Chi tiết đơn hàng: ", newOrder?.orderDetails);
+                const extractNoteBeforeSeparator = (note) => {
+                    return note?.split('||')[0]?.trim() || '';
+                };
                 this.dataOrder = {
                     ...newOrder,
                     id: newOrder?.id || null,
-                    note: newOrder?.note || '',
+                    note: extractNoteBeforeSeparator(newOrder?.note),
                     idStatus: newOrder?.orderStatus && { id: newOrder.orderStatus.id },
                     totalPrice: newOrder?.totalPrice || 0,
                     vouchers: newOrder?.vouchers || [],

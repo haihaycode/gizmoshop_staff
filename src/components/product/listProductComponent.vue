@@ -113,7 +113,7 @@ import UpdateProductModalComponent from './UpdateProductModalComponent.vue';
 import TooltipBox from '../tooltip/TooltipBox.vue';
 import { getProductPage, getStatusProduct } from '@/api/productApi';
 import Button from '../buttons/button.vue';
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import { formatDay } from '@/utils/currencyUtils'
 import { loadImage } from '@/services/imageService.js';
@@ -129,6 +129,7 @@ export default {
     },
     data() {
         return {
+            isLoading: true,
             isSupplier: null,
             keyword: null,
             productSeleted: null,
@@ -196,7 +197,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters("loading", ["isLoading"]),
+        // ...mapGetters("loading", ["isLoading"]),
         formatData() {
             return this.products.map(item => {
                 return {
@@ -222,6 +223,7 @@ export default {
                 const res = await getProductPage(reqData);
                 this.products = res.data.content;
                 this.pagination = res.data;
+                this.isLoading = false;
             } catch (error) {
                 console.error(error);
             }

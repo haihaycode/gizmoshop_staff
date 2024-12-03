@@ -117,7 +117,6 @@
 <script>
 import { getAllStatusOrder, getListAllOrder } from '@/api/orderApi';
 import TableComponent from '../table/TableComponent.vue';
-import { mapGetters } from 'vuex';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import Pagination from '../pagination/Pagination.vue';
 import orderSupplierDetailComponent from './orderSupplierDetailComponent.vue';
@@ -133,6 +132,7 @@ export default {
     },
     data() {
         return {
+            isLoading: true,
             keysearch: null,
             orderSelected: null,
             isOpenDetail: false,
@@ -152,9 +152,6 @@ export default {
     async mounted() {
         await this.getListStatus();
         this.getListAll();
-    },
-    computed: {
-        ...mapGetters("loading", ["isLoading"]),
     },
     methods: {
         formatCurrencyVN,
@@ -195,6 +192,7 @@ export default {
                 this.listOrder = res.data.content;
                 this.pagination = res.data;
                 console.log(this.listOrder);
+                this.isLoading = false;
             } catch (error) {
                 console.error(error);
             }

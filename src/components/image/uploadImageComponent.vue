@@ -19,7 +19,7 @@
 
 
 
-            <span @click="removeImage(index)"
+            <span v-if="!isDisabled" @click="removeImage(index)"
               class="absolute top-1 right-1 bg-red-400 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer">
               X
             </span>
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       viewImageSelected: '',
-      images: [{ isAddButton: true }], 
+      images: [{ isAddButton: true }],
       showAlert: false
     };
   },
@@ -56,15 +56,23 @@ export default {
     listImages: {
       type: Array,
       default: () => []
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
 
     selectImages() {
+      if (this.isDisabled) {
+        return;
+      }
       this.$refs.fileInput.click();
     },
 
     handleFileSelect(event) {
+
       const files = Array.from(event.target.files);
       const maxImages = 7;
       if (this.images.length - 1 + files.length > maxImages) {
