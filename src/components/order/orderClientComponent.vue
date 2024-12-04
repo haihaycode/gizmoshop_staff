@@ -137,7 +137,8 @@
         </orderDetailComponent>
 
 
-        <ModalBox :footerIsActive="true" :isOpen="isOpenModelUpdate" :closeModal="handleCloseModal">
+        <ModalBox :loading="isLoading" :footerIsActive="true" :isOpen="isOpenModelUpdate"
+            :closeModal="handleCloseModal">
             <template #header>
                 <h2 class="text-xl font-semibold text-gray-800 border-b pb-2">{{ dataModale.header }}</h2>
             </template>
@@ -274,7 +275,9 @@ export default {
                 console.log('Dữ liệu gửi lên:', data.res);
                 await updateOrder(dataOrder.data.id, data.res);
                 this.getListAll();
+                this.isLoading = false;
                 this.handleCloseModal();
+
                 notificationService.success("Cập nhật thành công");
             } catch (error) {
                 notificationService.success("Cập nhật thất bại");

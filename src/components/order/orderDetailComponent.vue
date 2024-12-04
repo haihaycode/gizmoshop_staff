@@ -132,7 +132,7 @@ export default {
                         ? (this.dataOrder.vouchers[0].voucher.discountPercent
                             ? Math.min(
                                 (this.dataOrder.vouchers[0].voucher.discountPercent / 100) * this.dataOrder.totalPrice,
-                                this.dataOrder.vouchers[0].voucher.maxDiscountAmount // Giới hạn mức giảm tối đa
+                                this.dataOrder.vouchers[0].voucher.maxDiscountAmount 
                             )
                             : this.dataOrder.vouchers[0].voucher.discountAmount)
                         : 0;
