@@ -248,41 +248,37 @@ export default {
         },
 
         async updateOrderSelected(dataOrder, text) {
-            console.log(dataOrder.data.note + "||" + dataOrder.note)
             try {
+                console.log('dataOrder:', dataOrder);
                 let data = {};
                 if (text === 'Xác nhận đơn') {
                     data = {
-                        orderStatus: {
-                            id: 6,
-                            note: dataOrder.data.note + "||" + dataOrder.note,
+                        res: {
+                            orderStatus: { id: 6 },
+                            note: `${dataOrder.data.note}||${dataOrder.note}`,
                         },
                     };
-                    console.log(data.orderStatus.note)
-                }
-                else if (text === 'Hủy bỏ') {
+                } else if (text === 'Hủy bỏ') {
                     this.handleCloseModal();
-                    console.log(dataOrder)
+                    console.log('Hủy bỏ đơn hàng:', dataOrder);
                     return;
-                }
-                else {
+                } else {
                     data = {
                         res: {
-                            orderStatus: {
-                                id: 17,
-
-                            },
-                            note: dataOrder.data.note + "||" + dataOrder.note,
+                            orderStatus: { id: 17 },
+                            note: `${dataOrder.data.note}||${dataOrder.note}`,
                         },
                     };
                 }
-                console.log("id status: " + data.res)
+
+                console.log('Dữ liệu gửi lên:', data.res);
                 await updateOrder(dataOrder.data.id, data.res);
-                this.getListAll()
-                this.handleCloseModal()
+                this.getListAll();
+                this.handleCloseModal();
                 notificationService.success("Cập nhật thành công");
             } catch (error) {
-                console.error('Lỗi khi cập nhật đơn hàng:', error);
+                notificationService.success("Cập nhật thất bại");
+                console.error(error);
             }
         },
 
@@ -314,7 +310,7 @@ export default {
         openModalUpdate(item, noteStatus) {
             if (noteStatus) {
                 this.dataModale = {
-                    header: `Đơn hàng của khách hàng ${item.account?.fullName}`,
+                    header: `Đơn hàng của khách hàng ${item.account?.fullname}`,
                     title: "Ghi chú của nhân viên cho đơn hàng",
                     data: item,
                     noteStatus: noteStatus,

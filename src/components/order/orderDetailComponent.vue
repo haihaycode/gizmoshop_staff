@@ -14,9 +14,13 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Số
                             lượng</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Giá
+                            gốc
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Giá
+                            mua
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">Tổng
-                            tiền</th>
+                            tiền sản phẩm</th>
                     </template>
                     <template #body>
                         <tr v-for="(item, index) in orderDetails" :key="index">
@@ -33,7 +37,11 @@
                                 {{ formatCurrencyVN(item.price) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ formatCurrencyVN(item.total) }}
+                                {{ formatCurrencyVN(item.price * (1 - (item.product?.discountProduct || 0) / 100)) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ formatCurrencyVN(item.quantity * item.price * (1 - (item.product?.discountProduct ||
+                                0) / 100)) }}
                             </td>
                         </tr>
                     </template>
@@ -46,7 +54,7 @@
                         <p class="text-gray-600 text-sm">{{ dataOrder.note || 'Không có ghi chú' }}</p>
                     </div>
                     <div>
-                        <span>Tổng đã tiền giảm là: </span>
+                        <span>Giảm giá của Voucher: </span>
                         <input readonly :value="formatCurrencyVN(discount)" type="text"
                             class="border-2 border-gray-300 rounded-md px-2 py-1" />
                     </div>
@@ -122,9 +130,13 @@ export default {
                 this.orderDetails = this.dataOrder?.orderDetails || [],
                     this.discount = this.dataOrder.vouchers?.[0]?.voucher
                         ? (this.dataOrder.vouchers[0].voucher.discountPercent
-                            ? (this.dataOrder.vouchers[0].voucher.discountPercent / 100) * this.dataOrder.totalPrice
+                            ? Math.min(
+                                (this.dataOrder.vouchers[0].voucher.discountPercent / 100) * this.dataOrder.totalPrice,
+                                this.dataOrder.vouchers[0].voucher.maxDiscountAmount // Giới hạn mức giảm tối đa
+                            )
                             : this.dataOrder.vouchers[0].voucher.discountAmount)
                         : 0;
+
 
                 console.log("dataOrder sau khi gán: ", this.orderDetails);
             },
