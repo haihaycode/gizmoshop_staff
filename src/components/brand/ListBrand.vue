@@ -35,18 +35,18 @@
             {{ item.name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ truncate(item.description, {
-              length: 30
-            }) }}
+            {{ truncate(item.description, { length: 30 }) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
+            <toggleButton @click.stop :isToggled="!item.deleted" @update:isToggled="handleActive(item.id)">
+            </toggleButton>
           </td>
           <td>
             <ExportButtonComponent @click.stop :nameExport="'brand'" :idExport="item.id">
             </ExportButtonComponent>
           </td>
         </tr>
+
       </template>
 
       <template #footer>
@@ -112,12 +112,10 @@ export default {
   },
   watch: {
     nameProp(newName) {
-      console.log("nameProp changed:", newName);
       this.name = newName;
       this.handleGetBrand();
     },
     deletedProp(newDeleted) {
-      console.log("deletedProp changed:", newDeleted);
       this.deleted = newDeleted;
       this.handleGetBrand();
     },

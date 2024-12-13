@@ -201,7 +201,7 @@
                                 </td>
                                 <!-- Nút Xóa -->
                                 <td class="px-4 py-2 border-b border-gray-300 text-center">
-                                    <Button @click="removeSpecification(index)"
+                                    <Button type="button" @click="removeSpecification(index)"
                                         class="text-red-500 hover:text-red-700 font-bold" :text="'X'"></Button>
                                 </td>
                             </tr>
@@ -301,7 +301,7 @@ export default {
                 productHeight: 0,
                 productLength: 0,
                 inventoryId: '',
-                productQuantity: '',
+                productQuantity: 0,
                 selectedImages: [],
                 productStatusResponse: {
                     id: '',
@@ -522,7 +522,8 @@ export default {
                     inventoryId: this.form.productInventoryResponse?.id,
                     quantity: this.form.productQuantity,
                     productStatusResponseId: this.form.productStatusResponse?.id,
-                    width: this.form.productWidth
+                    width: this.form.productWidth,
+                   
                 }
                 const res = await updateProduct(this.form.id, data)
                 if (this.form.selectedImages && this.form.selectedImages.length > 0) {
@@ -533,6 +534,7 @@ export default {
                     console.log("Data gửi vào addImageProduct:", dataUpdateImage);
                     await this.addImageProduct(dataUpdateImage);
                 }
+                this.closeModal();
                 this.$emit('update-product')
                 notificationService.success("Cập nhật sản phẩm thành công thành công");
 
@@ -599,7 +601,7 @@ export default {
                     productWidth: newProduct.productWidth || '0',
                     productHeight: newProduct.productHeight || '0',
                     productLength: newProduct.productLength || '0',
-                    productQuantity: newProduct.productQuantity || '0',
+                    productQuantity: newProduct.quantityBr || '0',
                     productShortDescription: cleanedDescription,
                 };
 

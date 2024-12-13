@@ -17,8 +17,8 @@
 
                 <!-- Modal Header -->
                 <div class="flex justify-between mb-2">
-                    <h3 class="text-lg font-bold">{{ header }}</h3>
-                    <button @click="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <h3 class="text-lg font-bold" v-html="header"></h3>
+                    <button v-if="isShow" @click="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl">
                         &times;
                     </button>
                 </div>
@@ -46,6 +46,10 @@ export default {
         ButtonR
     },
     props: {
+        isShow: {
+            type: Boolean,
+            default: true,
+        },
         isOpen: {
             type: Boolean,
             default: false,

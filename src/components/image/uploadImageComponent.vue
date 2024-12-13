@@ -14,7 +14,7 @@
           </div>
           <div v-else class="relative">
 
-            <img :src="element.preview" @click="viewImage(element.preview)"
+            <img @error="handleImageError" :src="element.preview" @click="viewImage(element.preview)"
               class="w-full border border-gray-300 h-32 md:h-48 object-cover rounded-lg shadow-md" />
 
 
@@ -63,7 +63,9 @@ export default {
     }
   },
   methods: {
-
+    handleImageError(event) {
+      event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+    },
     selectImages() {
       if (this.isDisabled) {
         return;

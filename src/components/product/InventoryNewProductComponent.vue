@@ -30,7 +30,7 @@
 <script>
 import { listInventory } from '@/api/inventoryApi';
 import CardGridComponent from '../card/CardGridComponent.vue';
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 import Pagination from '../pagination/Pagination.vue';
 import BreadcrumbComponent from '../breadcrumb/BreadcrumbComponent.vue';
 import AddnewProductModalComponent from './AddnewProductModalComponent.vue';
@@ -59,6 +59,7 @@ export default {
                 latitude: 'Vĩ độ',
                 longitude: 'Kinh độ'
             },
+            isLoading: true,
             data: null,
             pagination: [],
             sortField: 'id',
@@ -70,9 +71,9 @@ export default {
 
         }
     },
-    computed: {
-        ...mapGetters("loading", ["isLoading"]),
-    },
+    // computed: {
+    //     ...mapGetters("loading", ["isLoading"]),
+    // },
     mounted() {
         this.loadInventory();
     },
@@ -86,7 +87,7 @@ export default {
                     const { createdAt, updatedAt, productInventories, ...filteredItem } = item;
                     return filteredItem;
                 });
-
+                this.isLoading = false;
                 console.log(this.data)
             } catch (error) {
                 console.error('Error loading inventory list:', error);

@@ -36,11 +36,11 @@
                         {{ item.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <img v-if="item?.image" :src="loadImage(item?.image, `category`)" alt="Profile Image"
-                            class="w-12 h-12 rounded-sm object-cover" />
+                        <img  :src="loadImage(item?.image, `category`)" alt="Profile Image"
+                            @error="handleImageError" class="w-12 h-12 rounded-sm object-cover" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <toggleButton :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
+                        <toggleButton @click.stop :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
                         </toggleButton>
 
                     </td>
@@ -111,6 +111,9 @@ export default {
     },
     methods: {
         loadImage,
+        handleImageError(event) {
+            event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+        },
         async handlesListCategories(keyword) {
             try {
                 const param = {

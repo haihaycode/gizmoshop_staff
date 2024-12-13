@@ -163,6 +163,48 @@
                         <p class="lg:text-sm text-red-500">{{ errors.productShortDescription }}</p>
                     </div>
 
+                    <table v-if="isTableVisible" class="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 text-left text-gray-800">STT</th>
+                                <th class="px-4 py-2 text-left text-gray-800">Tên thông số</th>
+                                <th class="px-4 py-2 text-left text-gray-800">Giá trị thông số</th>
+                                <th class="px-4 py-2 text-left text-gray-800"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(spec, index) in specifications" :key="index">
+                                <!-- STT -->
+                                <td class="px-4 py-2 border-b border-gray-300">{{ index + 1 }}</td>
+                                <!-- Tên thông số -->
+                                <td class="px-4 py-2 border-b border-gray-300">
+                                    <input v-model="spec.name"
+                                        class="w-full mt-1 rounded-md border-2 border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out py-2 px-3 text-gray-700 leading-tight"
+                                        :id="'specName' + index" placeholder="Nhập tên thông số" />
+                                </td>
+                                <!-- Giá trị thông số -->
+                                <td class="px-4 py-2 border-b border-gray-300">
+                                    <input v-model="spec.value"
+                                        class="w-full mt-1 rounded-md border-2 border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out py-2 px-3 text-gray-700 leading-tight"
+                                        :id="'specValue' + index" placeholder="Nhập giá trị thông số" />
+                                </td>
+                                <!-- Nút Xóa -->
+                                <td class="px-4 py-2 border-b border-gray-300 text-center">
+                                    <Button type="button" @click="removeSpecification(index)"
+                                        class="text-red-500 hover:text-red-700 font-bold" :text="'X'"></Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                    <div class="mb-4">
+                        <Button @click="addSpecifications" :text="'thêm thông số kỹ thuật'" type="button"></Button>
+                    </div>
+
+
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="productLongDescription">Mô tả dài
                             *</label>
@@ -228,12 +270,14 @@ export default {
     emits: ['create-success', 'close'],
     data() {
         return {
+            isTableVisible: false,
             modalSelectCategoryComponentIsOpen: false,
             modalSelectBrandComponentIsOpen: false,
             messageType: '',
             message: '',
             resProductData: {},
             listStatus: [],
+            specifications: [],
             form: {
                 productName: '',
                 productPrice: 0,
@@ -289,6 +333,14 @@ export default {
         formatCurrencyVN,
         closeModal() {
             this.$emit('close');
+        },
+
+        addSpecifications() {
+            this.specifications.push({ name: '', value: '' });
+            this.isTableVisible = true;
+        },
+        removeSpecification(index) {
+            this.specifications.splice(index, 1);
         },
         onEditorChange(event, editor) {
             this.form.productLongDescription = editor.getData();
@@ -388,7 +440,23 @@ export default {
         },
 
         async addNewProduct(data) {
+
             try {
+
+
+                const specificationsData = this.specifications.reduce((acc, spec) => {
+                    if (spec.name && spec.value) {
+                        acc[spec.name] = spec.value;
+                    }
+                    return acc;
+                }, {});
+
+                // Chuyển `specificationsData` sang JSON
+                const specificationsJson = specificationsData && Object.keys(specificationsData).length > 0
+                    ? `\n[[[\n${JSON.stringify(specificationsData, null, 2)}\n]]]`
+                    : "";
+
+
                 const productNew = {
                     productName: data.productName,
                     thumbnail: data.thumbnail,
@@ -405,22 +473,19 @@ export default {
                     inventoryId: this.inventory?.id,
                     quantity: data.productQuantity,
                     productStatusResponseId: data.productStatus.id,
-                    width: data.productWidth
+                    width: data.productWidth,
+                    productShortDescription: `${this.form.productShortDescription}\n${specificationsJson}`,
                 };
                 const res = await createProduct(productNew);
-                // Kiểm tra kết quả trả về từ createProduct
-                console.log("createProduct response:", res);
-
                 if (data.selectedImages && data.selectedImages.length > 0) {
-                    console.log("có dữ liệu ảnh")
                     const dataUpdateImage = {
                         productId: res.data.id,
                         files: data.selectedImages
                     };
 
-                    console.log("Data gửi vào addImageProduct:", dataUpdateImage);
                     await this.addImageProduct(dataUpdateImage);
                 }
+                this.closeModal();
             } catch (error) {
                 console.error(error)
             }
@@ -433,10 +498,7 @@ export default {
                 data.files.forEach(file => {
                     formData.append("files", file);
                 });
-
-                const res = await updataImage(formData);
-
-                console.log("gửi thành công", res);
+                await updataImage(formData);
             } catch (error) {
                 console.error(error);
             }

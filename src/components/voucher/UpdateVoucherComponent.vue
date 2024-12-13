@@ -129,16 +129,10 @@
                         :class="form.image ? 'border-red-500' : ''" />
                 </div>
 
-                <div v-if="hasError">
 
-                    <p class="mt-2 text-gray-500"> <i class='bx bxs-error bx-flashing bx-flip-horizontal'></i> &nbsp;
-                        Không tìm
-                        thấy ảnh</p>
-                </div>
 
-                <div v-else class="mt-4 w-full text-center">
-                    <img :src="previewImage" @error="handleImageError" alt="không tìm thấy ảnh"
-                        class="object-cover rounded-sm">
+                <div class="mt-4 w-full text-center">
+                    <img :src="previewImage" @error="handleImageError" class="object-cover rounded-sm">
                 </div>
 
                 <!-- <img v-if="item?.image" :src="loadImageCategory(item?.image)" alt="Profile Image"
@@ -218,8 +212,8 @@ export default {
     },
     methods: {
         loadImage,
-        handleImageError() {
-            this.hasError = true;
+        handleImageError(event) {
+            event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
         },
         closeModal() {
             this.$emit('close');

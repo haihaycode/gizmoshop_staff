@@ -89,7 +89,6 @@ export default {
     name: "updateTransactionComponent",
     data() {
         return {
-            fallbackImageUrl: require('@/assets/image/error.jpg'),
             isOpenQrCode: false,
             qrCodeImageUrl: null,
             dataqrCode: {},
@@ -114,7 +113,7 @@ export default {
     },
     methods: {
         handleImageError(event) {
-            event.target.src = this.fallbackImageUrl; 
+            event.target.src = "https://me-qr.com/static/pages/qr-code-checking-img/il1.png";
         },
         formatCurrencyVN,
         closeModal() {
@@ -150,7 +149,13 @@ export default {
         },
         handleImageQR(data) {
             console.log('Dữ liệu trả về từ API:', data);
-            this.qrCodeImageUrl = data
+            if (data == 'calling') {
+                this.qrCodeImageUrl = 'https://tiengdong123.com/wp-content/uploads/2024/03/hinh-anh-dang-loading-facebook-troll-gif.gif'
+            } else if (data == 'error') {
+                this.qrCodeImageUrl = "https://me-qr.com/static/pages/qr-code-checking-img/il1.png";
+            } else {
+                this.qrCodeImageUrl = data;
+            }
         },
     },
     watch: {

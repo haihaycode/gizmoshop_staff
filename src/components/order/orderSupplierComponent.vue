@@ -12,10 +12,10 @@
             <!-- Tìm theo tên người nhận -->
             <div class="w-full lg:w-1/6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="receiverName">Tìm theo trạng thái</label>
-                <select v-model="statusFilter" id="receiverName"
+                <select @change="getListAll" v-model="idProcessing" id="receiverName"
                     class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="true">Đang cần xử lý</option>
-                    <option value="false">Tất cả</option>
+                    <option value="false">Đang cần xử lý</option>
+                    <option value="true">Tất cả</option>
                 </select>
             </div>
 
@@ -132,6 +132,7 @@ export default {
     },
     data() {
         return {
+            idProcessing: true,
             isLoading: true,
             keysearch: null,
             orderSelected: null,
@@ -182,6 +183,7 @@ export default {
         async getListAll() {
             try {
                 const data = {
+                    idProcessing: this.idProcessing,
                     orderCode: this.keysearch,
                     idRoleStatus: this.idRoleStatus,
                     page: this.page,

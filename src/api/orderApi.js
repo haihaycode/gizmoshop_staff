@@ -11,6 +11,7 @@ export const getListAllOrder = async (params) => {
         throw new Error(`${error}`);
     }
 };
+
 export const getAllStatusOrder = async (type) => {
     try {
         const response = await Axios.get(`${HOST}/api/public/orders/status`, {
@@ -34,3 +35,29 @@ export const updateOrder = async (idOrder, data) => {
         throw new Error(`${error}`);
     }
 };
+
+
+
+// export const orderNotification = async (data) => {
+//     try {
+//         const response = await Axios.get(`${HOST}/api/admin/supplier/orders`,null, {
+//             params: data,
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw new Error(`${error}`);
+//     }
+// };
+
+
+export const orderNotification = async (params) => {
+    try {
+        const response = await Axios.get(`${HOST}/api/admin/supplier/orders`, {
+            params: params,
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};
+

@@ -3,9 +3,8 @@
     <h1 class="text-2xl font-bold mb-6">Thông tin của tôi</h1>
 
     <div class="flex flex-col md:flex-row items-center mb-6">
-      <img v-if="infoAccount?.image" :src="loadImage(infoAccount?.image, 'account')" alt="Profile Image"
+      <img @error="handleImageError" v-if="infoAccount?.image" :src="loadImage(infoAccount?.image, 'account')" alt="Profile Image"
         class="w-24 h-24 rounded-full object-cover" />
-      <img v-else :src="imageNotFound" class="w-24 h-24 rounded-full object-cover" />
 
       <div class="mt-4 md:mt-0 md:ml-4 text-center md:text-left">
         <h2 class="text-xl font-semibold">{{ infoAccount?.fullname }}</h2>
@@ -146,11 +145,13 @@ export default {
   },
   methods: {
     loadImage,
+    handleImageError(event) {
+      event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+    },
     async info() {
       try {
         const response = await getinfo();
         this.infoAccount = response.data;
-        console.log(this.infoAccount);
         return this.infoAccount;
       } catch (error) {
         console.error(error);

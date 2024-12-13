@@ -144,7 +144,7 @@ export default {
                 content: ''
             },
             page: 0,
-            size: 10,
+            size: 5,
             pagination: null,
             deleted: null,
             sortField: "id",
@@ -211,6 +211,7 @@ export default {
         truncate,
         loadImage,
         async getDataProduct() {
+            console.log("chạy để load dữ liệu product");
             try {
                 const reqData = {
                     productName: this.keyword,

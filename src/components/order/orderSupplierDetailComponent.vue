@@ -76,7 +76,7 @@
                                     orderDetail.product?.productName }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     <img :src="loadImage(orderDetail.product?.thumbnail, 'product')" alt=""
-                                        @error="this.src = 'fallback-image-url.jpg'" class="w-16 h-16">
+                                        @error="handleImageError" class="w-16 h-16">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     formatCurrencyVN(orderDetail.product?.productPrice || 0) }}</td>
@@ -198,6 +198,9 @@ export default {
         formatDay,
         loadImage,
         formatCurrencyVN,
+        handleImageError(event) {
+            event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+        },
         closeModal() {
             this.$emit('closeModal');
         },
