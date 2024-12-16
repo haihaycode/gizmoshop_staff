@@ -26,6 +26,7 @@ export default {
     methods: {
         async fetchBankDetails() {
             try {
+                this.$emit('succes', 'calling');
                 const response = await createQRBank(this.dataQrCode);
                 console.log(response);
                 this.$emit('succes', response.data);

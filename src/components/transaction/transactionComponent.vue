@@ -64,6 +64,7 @@ export default {
             isOpenModalUpdata: false,
             auth: "CUSTOMER",
             status: "PENDING",
+            idTransaction: null,
             pagination: null,
             listdata: [],
             page: 0,
@@ -91,9 +92,10 @@ export default {
     },
     methods: {
         formatDay, formatCurrencyVN,
-        async getlist() {
+        async getlist(idTransaction) {
             try {
                 const data = {
+                    idTransaction: idTransaction,
                     page: this.page,
                     limit: this.limit,
                     sort: `${this.sortField},${this.sortDirection}`,
@@ -138,6 +140,7 @@ export default {
             console.log('New Code:', newCode);
             this.auth = newCode.auth;
             this.status = newCode.status;
+            this.idTransaction = newCode.id;
             this.getlist();
         },
     },

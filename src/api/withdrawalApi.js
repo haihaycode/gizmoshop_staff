@@ -26,3 +26,14 @@ export const updateStatusTransaction = async (idTransaction, data) => {
         throw new Error(`${error}`);
     }
 };
+
+export const transactionNotification = async (params) => {
+    try {
+        const response = await Axios.get(`${HOST}/api/public/withdrawalhistory/withdrawals/pending`, {
+          params: params,
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+};

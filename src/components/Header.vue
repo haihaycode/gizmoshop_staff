@@ -31,7 +31,7 @@
                         <i v-if="isOpen" class="bx bx-bell text-3xl bx-tada bx-rotate-90">
                             <span
                                 class="absolute bottom-4 left-4 text-xs font-semibold text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
-                                {{ count }}
+                                {{ totalCount }}
                             </span>
                         </i>
 
@@ -49,7 +49,8 @@
                             <div @click="toggleOrders" class="mb-6 cursor-pointer">
                                 <div
                                     class="flex items-center justify-between bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300">
-                                    <span class="font-semibold text-lg text-blue-800">Đơn hàng cần xử lý</span>
+                                    <span class="font-semibold text-lg text-blue-800">Đơn hàng cần xử lý: {{ countOrder
+                                        }}</span>
                                     <i v-if="!showOrders" class='bx bx-caret-down-circle bx-flashing'></i>
                                 </div>
                                 <div v-if="showOrders" class="ml-4 mt-4 space-y-4">
@@ -67,7 +68,8 @@
                                                 tải...</span></p>
                                     </div>
 
-                                    <div v-else v-for="(order, index) in orderNotication" :key="index"
+                                    <div @click.stop="seachOrder(order)" v-else
+                                        v-for="(order, index) in orderNotification" :key="index"
                                         class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
                                         <p class="text-base text-blue-800">Mã đơn hàng: <span class="font-semibold">{{
                                             order.orderCode }}</span></p>
@@ -81,34 +83,45 @@
                                             formatDay(order.createDateOrder) }}</span></p>
                                     </div>
 
-                                    <button v-if="count > limit" type="button" @click="handleLoadNotification(true)"
+                                    <button v-if="countOrder > limitOrder" type="button"
+                                        @click="handleLoadOrderNotification(true)"
                                         class="px-4 py-2 border border-red-600 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition duration-300 ease-in-out">Xem
                                         thêm</button>
                                 </div>
                             </div>
 
                             <!-- Giao dịch -->
-                            <!-- <div @click="toggleTransactions" class="cursor-pointer">
+                            <div @click="toggleTransactions" class="cursor-pointer">
                                 <div
                                     class="flex items-center justify-between bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300">
-                                    <span class="font-semibold text-lg text-blue-800">Giao dịch cần xử lý</span>
+                                    <span class="font-semibold text-lg text-blue-800">Giao dịch cần xử lý: {{
+                                        countTransaction }}</span>
                                     <i class='bx bx-caret-down-circle bx-flashing'></i>
                                 </div>
                                 <div v-if="showTransactions" class="ml-4 mt-4 space-y-4">
-                                    <div v-for="(wishList, index) in wishListNotication" :key="index"
+                                    <div @click.stop="seachTransaction(wishList.id)"
+                                        v-for="(wishList, index) in transactionNotifications" :key="index"
                                         class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
-                                        <p class="text-base text-blue-800">Mã giao dịch: <span class="font-semibold">{{
-                                            wishList.id_transaction }}</span></p>
-                                        <p class="text-sm text-gray-700">Trạng thái:
+                                        <p class="text-base text-blue-800">Tổng tiền: <span class="font-semibold">{{
+                                            wishList.amount }}</span></p>
+                                        <p class="text-sm text-gray-700">Người tạo:
                                             <span
-                                                :class="wishList.isSupplier === 'Không phải nhà cung cấp' ? 'text-yellow-600' : 'text-green-600'">{{
-                                                    wishList.isSupplier }}</span>
+                                                :class="wishList.auth === 'SUPPLIER' ? 'text-yellow-600' : 'text-green-600'">
+                                                {{ wishList.auth === 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách hàng'
+                                                }}</span>
                                         </p>
                                         <p class="text-sm text-gray-600">Thời gian tạo: <span class="font-medium">{{
-                                            wishList.createAt }}</span></p>
+                                            formatDay(wishList.createAt) }}</span></p>
                                     </div>
+
+                                    <button v-if="countTransaction > limitTransaction" type="button"
+                                        @click="handleLoadTransactionNotification(true)"
+                                        class="px-4 py-2 border border-red-600 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition duration-300 ease-in-out">Xem
+                                        thêm</button>
                                 </div>
-                            </div> -->
+                            </div>
+
+
                         </template>
                     </CornerModal>
 
@@ -198,13 +211,16 @@ import CornerModal from './modal/CornerModal.vue';
 import { loadImage } from '@/services/imageService';
 import { formatBirthDay, translatedRoles, formatDay } from '@/utils/currencyUtils';
 import { orderNotification } from '@/api/orderApi';
+import { transactionNotification } from '@/api/withdrawalApi';
 // import ActiveTimeTrackerComponent from './time/ActiveTimeTrackerComponent.vue';
 export default {
     name: 'HeaderComponent',
     data() {
         return {
             isloading: false,
-            count: 0,
+            countOrder: 0,
+            countTransaction: 0,
+            totalCount: 0,
             isOpen: true,
             modalNotificationIsOpen: false,
             modalInfoIsOpen: false,
@@ -212,11 +228,13 @@ export default {
             showTransactions: false,
             showOrders: false,
             page: 0,
-            limit: 2,
+            limitOrder: 2,
+            limitTransaction: 2,
             type: 0,
-            sortField: "id",
+            sortField: "createOderTime",
             sortDirection: "desc",
-            orderNotication: [],
+            orderNotification: [],
+            transactionNotifications: [],
             wishListNotication: []
 
         }
@@ -226,7 +244,7 @@ export default {
     },
     async mounted() {
         await this.handleGetInfoAccount();
-        this.handleLoadNotification();
+        await this.getTotal();
     },
 
     computed: {
@@ -242,20 +260,27 @@ export default {
         ...mapActions('leftMenu', ['toggleLeftMenu']),
         ...mapActions('auth', ['logout']),
 
-        async handleLoadNotification(addlimit) {
+        async getTotal() {
+            await this.handleLoadOrderNotification();
+            await this.handleLoadTransactionNotification();
+            this.totalCount = this.countOrder + this.countTransaction;
+        },
+
+
+        async handleLoadOrderNotification(addlimit) {
             try {
                 if (addlimit) {
-                    this.limit += 2;
+                    this.limitOrder += 2;
                 }
                 const data = {
                     page: this.page,
-                    limit: this.limit,
-                    sort: null,
+                    limit: this.limitOrder,
+                    sort: `createOderTime,${this.sortDirection}`,
                 }
                 const res = await orderNotification(data);
-                this.orderNotication = res.data.content
-                if (this.orderNotication.length > 0) {
-                    this.count = res.data.totalElements;
+                this.orderNotification = res.data.content
+                if (this.orderNotification.length > 0) {
+                    this.countOrder = res.data.totalElements;
                     this.isOpen = true;
                 } else {
                     this.isOpen = false;
@@ -264,6 +289,45 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+
+        async handleLoadTransactionNotification(addlimit) {
+
+            try {
+                if (addlimit) {
+                    this.limitTransaction += 2;
+                }
+                const data = {
+                    page: this.page,
+                    limit: this.limitTransaction,
+                    // sort: `${this.sortField},${this.sortDirection}`,
+                }
+                const res = await transactionNotification(data);
+                this.transactionNotifications = res.data.content
+                if (this.transactionNotifications.length > 0) {
+                    this.countTransaction = res.data.totalElements;
+                    this.isOpen = true;
+                } else {
+                    this.isOpen = false;
+                }
+                this.isloading = false;
+            } catch (error) {
+                console.error(error);
+            }
+
+        },
+
+
+        seachOrder(orderCoder) {
+            if (orderCoder.supplier) {
+                this.$router.replace({ name: 'orderpartner', params: { codeOrder: orderCoder.orderCode } });
+            } else {
+                this.$router.replace({ name: 'orderclient', params: { codeOrder: orderCoder.orderCode } });
+            }
+        },
+        seachTransaction(id) {
+            console.log(id);
+            this.$router.replace({ name: 'transactions', params: { idTransaction: id } });
         },
 
         async handleGetInfoAccount() {

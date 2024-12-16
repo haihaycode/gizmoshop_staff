@@ -157,7 +157,8 @@ const dashboardRoutes = [
         },
       },
     ],
-  }, {
+  }, 
+  {
     path: "/ordersupplier",
     component: useComponent("admin"),
     children: [
@@ -174,9 +175,11 @@ const dashboardRoutes = [
           footer: Footer,
           sideBar: sideBar,
         },
+        props: true
       }
     ],
-  }, {
+  },
+   {
     path: "/ordersupplier-pending",
     component: useComponent("admin"),
     children: [

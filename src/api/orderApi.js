@@ -37,19 +37,6 @@ export const updateOrder = async (idOrder, data) => {
 };
 
 
-
-// export const orderNotification = async (data) => {
-//     try {
-//         const response = await Axios.get(`${HOST}/api/admin/supplier/orders`,null, {
-//             params: data,
-//         });
-//         return response.data;
-//     } catch (error) {
-//         throw new Error(`${error}`);
-//     }
-// };
-
-
 export const orderNotification = async (params) => {
     try {
         const response = await Axios.get(`${HOST}/api/admin/supplier/orders`, {

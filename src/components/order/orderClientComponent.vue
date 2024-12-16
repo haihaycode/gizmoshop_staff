@@ -1,6 +1,6 @@
 <template>
     <div class="p-4 bg-white shadow-md rounded mb-4">
-        <form @submit.prevent="getListAll" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
+        <form @submit.prevent="getListAll()" class="space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
             <!-- Tìm theo mã đơn hàng -->
             <div class="w-full lg:w-1/3">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="orderCode">Tìm theo mã đơn hàng</label>
@@ -12,7 +12,7 @@
             <!-- Tìm theo tên người nhận -->
             <div class="w-full lg:w-1/6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="receiverName">Tìm theo trạng thái</label>
-                <select @change="getListAll"  v-model="idProcessing" id="receiverName"
+                <select @change="getListAll()" v-model="idProcessing" id="receiverName"
                     class="border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option value="true">Đang cần xử lý</option>
                     <option value="false">Tất cả</option>
@@ -231,8 +231,11 @@ export default {
                 console.error(error);
             }
         },
-        async getListAll() {
+        async getListAll(orderCoder) {
             try {
+                if (orderCoder) {
+                    this.keysearch = orderCoder;
+                }
                 const data = {
                     orderCode: this.keysearch,
                     idRoleStatus: this.idRoleStatus,

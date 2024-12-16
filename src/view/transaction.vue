@@ -2,7 +2,7 @@
     <div class="bg-gray-200 bg-opacity-30 shadow-md shadow-black/5 z-30 lg:m-2 md:m-0 p-2">
         <BreadcrumbComponent :items="breadcrumbItems"></BreadcrumbComponent>
         <findStatusTransactionComponent @search="handleKeySearch"></findStatusTransactionComponent>
-        <transactionComponent :queryParams="dataSearch"></transactionComponent>
+        <transactionComponent ref="transactionComponent" :queryParams="dataSearch"></transactionComponent>
 
     </div>
 </template>
@@ -22,7 +22,8 @@ export default {
             dataSearch: {
                 auth: '',
                 status: ''
-            }
+            },
+            idTransaction: '',
         }
     },
     components: {
@@ -33,8 +34,18 @@ export default {
     methods: {
         handleKeySearch(data) {
             this.dataSearch = data
+        },
+        emitSearch() {
+        this.$refs.transactionComponent.getlist(this.idTransaction);
         }
-
+    },
+    watch: {
+        '$route.params.idTransaction': function (newCode, oldCode) {
+            if (newCode !== oldCode) {
+                this.idTransaction = newCode;
+                this.emitSearch();
+            }
+        }
     }
 
 }
