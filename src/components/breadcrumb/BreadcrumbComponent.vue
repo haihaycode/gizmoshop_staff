@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-sm my-2 bg-gray-100 p-2">
+    <div class="text-2xl font-semibold border-l-4 border-blue-500 rounded-sm my-2 bg-gray-100 p-2">
         <ol class="flex space-x-2">
             <li v-for="(item, index) in items" :key="index" class="flex items-center">
                 <router-link v-if="item.name" :to="{ name: item.name }" class="text-blue-600 hover:underline">

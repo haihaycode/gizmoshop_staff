@@ -1,10 +1,10 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold mb-6">Thông tin của tôi</h1>
+    <h1 class="  text-2xl font-semibold border-l-4 border-blue-500 mb-6">&nbsp; Thông tin của tôi</h1>
 
     <div class="flex flex-col md:flex-row items-center mb-6">
-      <img @error="handleImageError" v-if="infoAccount?.image" :src="loadImage(infoAccount?.image, 'account')" alt="Profile Image"
-        class="w-24 h-24 rounded-full object-cover" />
+      <img @error="handleImageError" v-if="infoAccount?.image" :src="loadImage(infoAccount?.image, 'account')"
+        alt="Profile Image" class="w-24 h-24 rounded-full object-cover" />
 
       <div class="mt-4 md:mt-0 md:ml-4 text-center md:text-left">
         <h2 class="text-xl font-semibold">{{ infoAccount?.fullname }}</h2>
