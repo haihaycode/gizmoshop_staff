@@ -74,7 +74,7 @@
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.description }}
+            {{ truncate(item.description, { length: 25 }) }}
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -116,7 +116,7 @@
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <toggleButton :is-toggled="item.status" @update:isToggled="handleChangeStatusVoucher(item.id)">
+            <toggleButton @click.stop :is-toggled="item.status" @update:isToggled="handleChangeStatusVoucher(item.id)">
             </toggleButton>
           </td>
         </tr>
@@ -135,8 +135,9 @@
       </template>
     </TableComponent>
     <!-- update -->
-    <UpdateVoucherComponent v-if="voucherUpdateSelected" @close="voucherUpdateSelected = null"
-      :isOpen="voucherUpdateSelected" :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
+    <UpdateVoucherComponent v-if="voucherUpdateSelected"
+      @close="modalUpdateVoucherIsOpen = false, voucherUpdateSelected = null" :isOpen="modalUpdateVoucherIsOpen"
+      :voucher="voucherUpdateSelected" @update-success="handlegetVouchers">
     </UpdateVoucherComponent>
   </div>
 </template>
@@ -149,6 +150,7 @@ import { mapGetters } from "vuex";
 import UpdateVoucherComponent from "./UpdateVoucherComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import notificationService from "@/services/notificationService";
+import { truncate } from 'lodash';
 export default {
   name: "listVoucherComponent",
   data() {
@@ -165,6 +167,7 @@ export default {
       status: null,
     };
   },
+  emits: ['succes'],
   props: {
     codeProp: {
       type: String,
@@ -190,6 +193,7 @@ export default {
     UpdateVoucherComponent,
     Pagination,
     toggleButton,
+
   },
   computed: {
     ...mapGetters("loading", ["isLoading"]),
@@ -198,6 +202,7 @@ export default {
     this.handlegetVouchers();
   },
   methods: {
+    truncate,
     formatCurrencyVN,
     async handlegetVouchers() {
       try {
@@ -215,15 +220,18 @@ export default {
         console.error(error);
       }
     },
+
     async handleChangeStatusVoucher(idVoucher) {
       try {
         const response = await changeStatusVoucher(idVoucher);
         notificationService.success(response.message);
         this.handlegetVouchers();
+        this.$emit('succes')
       } catch (error) {
         console.error(error);
       }
     },
+
     handlePageChange(newPage) {
       this.page = newPage - 1;
       this.handlegetVouchers();
@@ -253,6 +261,7 @@ export default {
     },
     handleUpdateVoucherSelected(item) {
       this.voucherUpdateSelected = item;
+      this.modalUpdateVoucherIsOpen = !this.modalUpdateVoucherIsOpen;
     },
   },
 };

@@ -19,6 +19,9 @@
           class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
           TRẠNG THÁI <span v-html="getSortIcon('deleted')"></span>
         </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+          XUẤT
+        </th>
       </template>
 
       <!-- Body Slot -->
@@ -32,12 +35,18 @@
             {{ item.name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.description }}
+            {{ truncate(item.description, { length: 30 }) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <toggleButton :is-toggled="!item.deleted" @update:isToggled="handleActive(item.id)" @click.stop />
+            <toggleButton @click.stop :isToggled="!item.deleted" @update:isToggled="handleActive(item.id)">
+            </toggleButton>
+          </td>
+          <td>
+            <ExportButtonComponent @click.stop :nameExport="'brand'" :idExport="item.id">
+            </ExportButtonComponent>
           </td>
         </tr>
+
       </template>
 
       <template #footer>
@@ -62,12 +71,14 @@
 
 <script>
 import TableComponent from "../table/TableComponent.vue";
-import { getBrand, changeActive } from "@/api/brandApi.js";
+import { getListBrand, changeActive } from "@/api/brandApi.js";
 import Pagination from "../pagination/Pagination.vue";
 import UpdateBrandComponent from "./UpdateBrandComponent.vue";
 import toggleButton from "../buttons/toggleButton.vue";
 import NotificationModal from "../modal/NotificationModal.vue";
 import { mapGetters } from "vuex";
+import ExportButtonComponent from "../fileTransfer/ExportButtonComponent.vue";
+import { truncate } from 'lodash';
 
 export default {
   name: "listBrand",
@@ -88,6 +99,7 @@ export default {
       messageType: "",
     };
   },
+  emits: ['handleStatus'],
   props: {
     nameProp: {
       type: String,
@@ -100,12 +112,10 @@ export default {
   },
   watch: {
     nameProp(newName) {
-      console.log("nameProp changed:", newName);
       this.name = newName;
       this.handleGetBrand();
     },
     deletedProp(newDeleted) {
-      console.log("deletedProp changed:", newDeleted);
       this.deleted = newDeleted;
       this.handleGetBrand();
     },
@@ -116,6 +126,7 @@ export default {
     toggleButton,
     Pagination,
     NotificationModal,
+    ExportButtonComponent
   },
   mounted() {
     this.handleGetBrand();
@@ -124,6 +135,7 @@ export default {
     ...mapGetters("loading", ["isLoading"]),
   },
   methods: {
+    truncate,
     async handleGetBrand() {
       try {
         const param = {
@@ -133,7 +145,7 @@ export default {
           limit: this.limit,
           sort: `${this.sortField},${this.sortDirection}`,
         };
-        const response = await getBrand(param);
+        const response = await getListBrand(param);
         this.pagination = response.data;
         this.listBrandData = response.data.content;
       } catch (error) {
@@ -183,10 +195,11 @@ export default {
     async handleActive(id) {
       try {
         const res = await changeActive(id);
-        this.message = res.data?.message || "Thương hiệu đã được cập nhật"; // Thông báo mặc định
+        this.message = res.data?.message || "Thương hiệu đã được cập nhật";
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
         this.$emit("create-success");
+        this.$emit('handleStatus')
         this.handleGetBrand();
       } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái thương hiệu:", error);

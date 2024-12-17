@@ -1,71 +1,39 @@
 // services/notificationService.js
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
+import Toast, { useToast } from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 
-// Khởi tạo Notyf với các tùy chọn thiết kế
-const notyf = new Notyf({
-    duration: 3000,
-    position: { x: 'right', y: 'top' },
-    dismissible: true,
-    ripple: true,
-    types: [
-        { type: 'success', background: '#d1e7dd' },
-        { type: 'error', background: '#ffcccc' },
-        { type: 'info', background: '#dbeafe' },
-        { type: 'warning', background: '#fff4cd' }
-    ]
-});
+const options = {
+    position: "top-right",
+    timeout: 2000,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true
+};
 
-
-function createNotification({ type, message, background, iconClass }) {
-    const notification = notyf.open({
-        type,
-        message,
-        background,
-    });
-
-    const icon = document.createElement('i');
-    icon.className = iconClass;
-    icon.style.marginRight = '10px';
-    icon.style.fontSize = '20px';
-    icon.style.verticalAlign = 'middle';
-    notification.target.prepend(icon);
+// Hàm khởi tạo vue-toastification, 
+//sử dụng khi khởi tạo ứng dụng trong main.js
+export function initializeToast(app) {
+    app.use(Toast, options);
 }
+
+const toast = useToast();
 
 export default {
     success(message = 'Thành công!') {
-        createNotification({
-            type: 'success',
-            message,
-            background: '#10b981',
-            iconClass: 'bx bxs-check-circle'
-        });
+        toast.success(message);
     },
-
     error(message = 'Có lỗi xảy ra!') {
-        createNotification({
-            type: 'error',
-            message,
-            background: '#ff4c4c',
-            iconClass: 'bx bxs-error'
-        });
+        toast.error(message);
     },
-
     info(message = 'Thông tin!') {
-        createNotification({
-            type: 'info',
-            message,
-            background: '#3b82f6',
-            iconClass: 'bx bxs-info-circle'
-        });
+        toast.info(message);
     },
-
     warning(message = 'Cảnh báo!') {
-        createNotification({
-            type: 'warning',
-            message,
-            background: '#f59e0b',
-            iconClass: 'bx bxs-bug'
-        });
+        toast.warning(message);
     }
 };

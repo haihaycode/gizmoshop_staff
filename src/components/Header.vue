@@ -1,12 +1,16 @@
 <template>
     <div>
-        <div class="py-2 px-6 bg-[#09081f] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+        <div class="py-2 px-6 bg-[#113254] flex items-center shadow-lg shadow-black/5 sticky top-0 left-0 z-30">
             <button @click="toggleLeftMenu" type="button"
                 class="text-lg text-white font-semibold sidebar-toggle block md:hidden ">
                 <i class='bx bx-menu'></i>
             </button>
             <ul class="ml-auto flex items-center">
-                <li class="mr-1 dropdown">
+                <!-- <li class="mr-1 ">
+                    <ActiveTimeTrackerComponent />
+                </li> -->
+                <!-- tìm kiếm  -->
+                <!-- <li class="mr-1 ">
                     <button type="button"
                         class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center  hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -17,179 +21,118 @@
                             </path>
                         </svg>
                     </button>
-                    <div
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden max-w-xs w-full bg-white rounded-md border border-gray-100">
-                        <form action="" class="p-4 border-b border-b-gray-100">
-                            <div class="relative w-full">
-                                <input type="text"
-                                    class="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                                    placeholder="Search...">
-                                <i class="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-900"></i>
-                            </div>
-                        </form>
-                    </div>
-                </li>
+
+                </li> -->
                 <!-- thông báo -->
-                <li class="dropdown">
+                <li class="ml-3">
+                    <button @click="modalNotificationIsOpen = !modalNotificationIsOpen" type="button"
+                        class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center0">
 
-                    <button type="button"
-                        class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center  hover:text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            class="hover:bg-gray-100 hover:bg-opacity-15 rounded-full" viewBox="0 0 24 24"
-                            style="fill: white;">
-                            <path
-                                d="M19 13.586V10c0-3.217-2.185-5.927-5.145-6.742C13.562 2.52 12.846 2 12 2s-1.562.52-1.855 1.258C7.185 4.074 5 6.783 5 10v3.586l-1.707 1.707A.996.996 0 0 0 3 16v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L19 13.586zM19 17H5v-.586l1.707-1.707A.996.996 0 0 0 7 14v-4c0-2.757 2.243-5 5-5s5 2.243 5 5v4c0 .266.105.52.293.707L19 16.414V17zm-7 5a2.98 2.98 0 0 0 2.818-2H9.182A2.98 2.98 0 0 0 12 22z">
-                            </path>
-                        </svg>
+                        <i v-if="isOpen" class="bx bx-bell text-3xl bx-tada bx-rotate-90">
+                            <span
+                                class="absolute bottom-4 left-4 text-xs font-semibold text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                                {{ totalCount }}
+                            </span>
+                        </i>
+
+                        <i v-else class="bx bx-bell text-3xl bx-flip-horizontal"></i>
+
                     </button>
-                    <div
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden max-w-xs w-full bg-white rounded-md border border-gray-100">
-                        <div class="flex items-center px-4 pt-4 border-b border-b-gray-100 notification-tab">
-                            <button type="button" data-tab="notification" data-tab-page="notifications"
-                                class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1 active">Notifications</button>
-                            <button type="button" data-tab="notification" data-tab-page="messages"
-                                class="text-gray-400 font-medium text-[13px] hover:text-gray-600 border-b-2 border-b-transparent mr-4 pb-1">Messages</button>
-                        </div>
-                        <div class="my-2">
-                            <ul class="max-h-64 overflow-y-auto" data-tab-for="notification" data-page="notifications">
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                New order</div>
-                                            <div class="text-[11px] text-gray-400">from a user</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                New order</div>
-                                            <div class="text-[11px] text-gray-400">from a user</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                New order</div>
-                                            <div class="text-[11px] text-gray-400">from a user</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                New order</div>
-                                            <div class="text-[11px] text-gray-400">from a user</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                New order</div>
-                                            <div class="text-[11px] text-gray-400">from a user</div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="max-h-64 overflow-y-auto hidden" data-tab-for="notification"
-                                data-page="messages">
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                John Doe</div>
-                                            <div class="text-[11px] text-gray-400">Hello there!</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                John Doe</div>
-                                            <div class="text-[11px] text-gray-400">Hello there!</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                John Doe</div>
-                                            <div class="text-[11px] text-gray-400">Hello there!</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                John Doe</div>
-                                            <div class="text-[11px] text-gray-400">Hello there!</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt=""
-                                            class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">
-                                                John Doe</div>
-                                            <div class="text-[11px] text-gray-400">Hello there!</div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <!-- <button id="fullscreen-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-gray-100 rounded-full" viewBox="0 0 24 24" style="fill: gray;"><path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path></svg>
-                    </button> -->
+                    <CornerModal class="custom-margin-left" :isShow="false"
+                        :closeModal="() => (modalNotificationIsOpen = !modalNotificationIsOpen)"
+                        :isOpen="modalNotificationIsOpen" :position="'top-left'" :header="`
+                            <div class='flex items-center justify-center p-4 rounded-lg '>
+                                <span class='uppercase font-bold text-lg text-red-300 text-center w-full'>Các dịch vụ cần xử lý</span>
+                            </div>`">
+                        <template #body>
+                            <!-- Đơn hàng -->
+                            <div @click="toggleOrders" class="mb-6 cursor-pointer">
+                                <div
+                                    class="flex items-center justify-between bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300">
+                                    <span class="font-semibold text-lg text-blue-800">Đơn hàng cần xử lý: {{ countOrder
+                                        }}</span>
+                                    <i v-if="!showOrders" class='bx bx-caret-down-circle bx-flashing'></i>
+                                </div>
+                                <div v-if="showOrders" class="ml-4 mt-4 space-y-4">
 
-                <li class="dropdown ml-3">
-                    <button type="button" class="dropdown-toggle flex items-center">
+                                    <div v-if="isloading"
+                                        class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
+                                        <p class="text-base text-blue-800">Mã đơn hàng: <span class="font-semibold">Đang
+                                                tải...</span></p>
+                                        <p class="text-sm text-gray-700">Người tạo:
+                                            <span class="text-yellow-600">
+                                                Đang tải...
+                                            </span>
+                                        </p>
+                                        <p class="text-sm text-gray-600">Thời gian tạo: <span class="font-medium">Đang
+                                                tải...</span></p>
+                                    </div>
+
+                                    <div @click.stop="seachOrder(order)" v-else
+                                        v-for="(order, index) in orderNotification" :key="index"
+                                        class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
+                                        <p class="text-base text-blue-800">Mã đơn hàng: <span class="font-semibold">{{
+                                            order.orderCode }}</span></p>
+                                        <p class="text-sm text-gray-700">Người tạo:
+                                            <span class="text-yellow-600">
+                                                {{ order.supplier ? 'Nhà cung cấp' : 'Khách hàng' }}
+                                            </span>
+
+                                        </p>
+                                        <p class="text-sm text-gray-600">Thời gian tạo: <span class="font-medium">{{
+                                            formatDay(order.createDateOrder) }}</span></p>
+                                    </div>
+
+                                    <button v-if="countOrder > limitOrder" type="button"
+                                        @click="handleLoadOrderNotification(true)"
+                                        class="px-4 py-2 border border-red-600 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition duration-300 ease-in-out">Xem
+                                        thêm</button>
+                                </div>
+                            </div>
+
+                            <!-- Giao dịch -->
+                            <div @click="toggleTransactions" class="cursor-pointer">
+                                <div
+                                    class="flex items-center justify-between bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300">
+                                    <span class="font-semibold text-lg text-blue-800">Giao dịch cần xử lý: {{
+                                        countTransaction }}</span>
+                                    <i class='bx bx-caret-down-circle bx-flashing'></i>
+                                </div>
+                                <div v-if="showTransactions" class="ml-4 mt-4 space-y-4">
+                                    <div @click.stop="seachTransaction(wishList.id)"
+                                        v-for="(wishList, index) in transactionNotifications" :key="index"
+                                        class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
+                                        <p class="text-base text-blue-800">Tổng tiền: <span class="font-semibold">{{
+                                            wishList.amount }}</span></p>
+                                        <p class="text-sm text-gray-700">Người tạo:
+                                            <span
+                                                :class="wishList.auth === 'SUPPLIER' ? 'text-yellow-600' : 'text-green-600'">
+                                                {{ wishList.auth === 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách hàng'
+                                                }}</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600">Thời gian tạo: <span class="font-medium">{{
+                                            formatDay(wishList.createAt) }}</span></p>
+                                    </div>
+
+                                    <button v-if="countTransaction > limitTransaction" type="button"
+                                        @click="handleLoadTransactionNotification(true)"
+                                        class="px-4 py-2 border border-red-600 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition duration-300 ease-in-out">Xem
+                                        thêm</button>
+                                </div>
+                            </div>
+
+
+                        </template>
+                    </CornerModal>
+
+                </li>
+
+                <!-- thông tin cá nhân  -->
+                <li class=" ml-3">
+                    <button @click="modalInfoIsOpen = !modalInfoIsOpen" type="button" class=" flex items-center">
                         <div class="flex-shrink-0 w-10 h-10 relative">
                             <div class="p-1 bg-white rounded-full focus:outline-none focus:ring">
-                                <img class="w-8 h-8 rounded-full"
-                                    :src="require('@/assets/image/Gizmo.png')"
-                                    alt="" />
+                                <img class="w-8 h-8 rounded-full" :src="require('@/assets/image/Gizmo.png')" alt="" />
                                 <div
                                     class="top-0 left-7 absolute w-3 h-3 bg-lime-400 border-2 border-white rounded-full animate-ping">
                                 </div>
@@ -204,46 +147,238 @@
                             <p class="text-xs text-white opacity-45">Nhân viên quản lý</p>
                         </div>
                     </button>
-                    <ul
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
-                        <li>
-                            <a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Profile</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Settings</a>
-                        </li>
-                        <li>
-                            <form method="POST" action="">
-                                <a role="menuitem"
-                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
-                                    onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                                    Log Out
-                                </a>
-                            </form>
-                        </li>
-                    </ul>
+                    <CornerModal class="mr-2" :closeModal="() => (modalInfoIsOpen = !modalInfoIsOpen)"
+                        :isOpen="modalInfoIsOpen" :offset="10" :position="'top-right'" :header="'Thông tin cá nhân'">
+                        <template #body>
+                            <div>
+                                <div class="p-4">
+                                    <div class="mb-4 flex flex-col items-center justify-center">
+                                        <!-- Change to flex-col for vertical stacking -->
+                                        <div class="flex-shrink-0">
+                                            <img class="w-16 h-16 rounded-full" :src="loadImage(user.image, 'account')"
+                                                alt="User Avatar" />
+                                        </div>
+                                        <div class="text-center mt-2"> <!-- Added mt-2 for some spacing -->
+                                            <h3 class="font-bold text-lg">{{ user.fullname }}</h3>
+                                            <p class="text-sm text-gray-600">{{ user.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h4 class="font-semibold">THÔNG TIN CÁ NHÂN</h4>
+                                        <p><strong>Điện thoại :</strong> {{ user.sdt }}</p>
+                                        <p><strong>Ngày sinh:</strong> {{ formatBirthDay(user.birthday) }}</p>
+                                        <p><strong>Tiểu sử :</strong> {{ user.extraInfo }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h4 class="font-semibold">QUYỀN HẠN</h4>
+                                        <p class="text-gray-700">
+                                            <span v-for="(role, index) in translatedRoles" :key="index"
+                                                :style="{ color: role.color }" class="inline">
+                                                {{ role.name }}<span v-if="index < translatedRoles.length - 1">, </span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold mb-4">THÔNG TIN KHÁC</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-1 gap-2"> <!-- Using grid layout -->
+                                            <router-link :to="{ name: 'info' }"
+                                                @click="modalInfoIsOpen = !modalInfoIsOpen"
+                                                class="px-4 text-center py-2 border border-blue-600 text-blue-600 rounded-sm hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out">
+                                                Quản lý thông tin
+                                            </router-link>
+                                            <button @click="logout"
+                                                class="px-4 py-2 border border-red-600 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition duration-300 ease-in-out">
+                                                Đăng xuất
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </CornerModal>
                 </li>
-
             </ul>
         </div>
     </div>
+    <!-- modal thông tin cá nhân -->
 
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { getinfo } from '@/api/auth/meApi';
+import CornerModal from './modal/CornerModal.vue';
+import { loadImage } from '@/services/imageService';
+import { formatBirthDay, translatedRoles, formatDay } from '@/utils/currencyUtils';
+import { orderNotification } from '@/api/orderApi';
+import { transactionNotification } from '@/api/withdrawalApi';
+// import ActiveTimeTrackerComponent from './time/ActiveTimeTrackerComponent.vue';
 export default {
     name: 'HeaderComponent',
+    data() {
+        return {
+            isloading: false,
+            countOrder: 0,
+            countTransaction: 0,
+            totalCount: 0,
+            isOpen: true,
+            modalNotificationIsOpen: false,
+            modalInfoIsOpen: false,
+            user: {},
+            showTransactions: false,
+            showOrders: false,
+            page: 0,
+            limitOrder: 2,
+            limitTransaction: 2,
+            type: 0,
+            sortField: "createOderTime",
+            sortDirection: "desc",
+            orderNotification: [],
+            transactionNotifications: [],
+            wishListNotication: []
+
+        }
+    },
+    components: {
+        CornerModal,
+    },
+    async mounted() {
+        await this.handleGetInfoAccount();
+        await this.getTotal();
+    },
+
     computed: {
+        translatedRoles() {
+            return translatedRoles(this.user.roles || []);
+        },
         ...mapGetters('auth', ['name'])
     },
     methods: {
+        formatDay,
+        formatBirthDay,
+        loadImage,
         ...mapActions('leftMenu', ['toggleLeftMenu']),
+        ...mapActions('auth', ['logout']),
+
+        async getTotal() {
+            await this.handleLoadOrderNotification();
+            await this.handleLoadTransactionNotification();
+            this.totalCount = this.countOrder + this.countTransaction;
+        },
+
+
+        async handleLoadOrderNotification(addlimit) {
+            try {
+                if (addlimit) {
+                    this.limitOrder += 2;
+                }
+                const data = {
+                    page: this.page,
+                    limit: this.limitOrder,
+                    sort: `createOderTime,${this.sortDirection}`,
+                }
+                const res = await orderNotification(data);
+                this.orderNotification = res.data.content
+                if (this.orderNotification.length > 0) {
+                    this.countOrder = res.data.totalElements;
+                    this.isOpen = true;
+                } else {
+                    this.isOpen = false;
+                }
+                this.isloading = false;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async handleLoadTransactionNotification(addlimit) {
+
+            try {
+                if (addlimit) {
+                    this.limitTransaction += 2;
+                }
+                const data = {
+                    page: this.page,
+                    limit: this.limitTransaction,
+                    // sort: `${this.sortField},${this.sortDirection}`,
+                }
+                const res = await transactionNotification(data);
+                this.transactionNotifications = res.data.content
+                if (this.transactionNotifications.length > 0) {
+                    this.countTransaction = res.data.totalElements;
+                    this.isOpen = true;
+                } else {
+                    this.isOpen = false;
+                }
+                this.isloading = false;
+            } catch (error) {
+                console.error(error);
+            }
+
+        },
+
+
+        seachOrder(orderCoder) {
+            if (orderCoder.supplier) {
+                this.$router.replace({ name: 'orderpartner', params: { codeOrder: orderCoder.orderCode } });
+            } else {
+                this.$router.replace({ name: 'orderclient', params: { codeOrder: orderCoder.orderCode } });
+            }
+        },
+        seachTransaction(id) {
+            console.log(id);
+            this.$router.replace({ name: 'transactions', params: { idTransaction: id } });
+        },
+
+        async handleGetInfoAccount() {
+            try {
+                this.user = await getinfo().then(res => res.data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        toggleOrders() {
+            console.log(this.showOrders);
+            this.showOrders = !this.showOrders;
+        },
+        toggleTransactions() {
+            this.showTransactions = !this.showTransactions;
+        }
     }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom-margin-left {
+    margin-left: -13rem;
+}
+
+/* Thêm một số phong cách để làm cho giao diện đẹp hơn */
+.bg-gray-100 {
+    background-color: #f7fafc;
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-blue-500 {
+    color: #3b82f6;
+}
+
+.text-yellow-500 {
+    color: #f59e0b;
+}
+
+.text-green-500 {
+    color: #10b981;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.cursor-pointer:hover {
+    cursor: pointer;
+}
+</style>

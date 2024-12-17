@@ -1,19 +1,10 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold mb-6">Thông tin của tôi</h1>
+    <h1 class="  text-2xl font-semibold border-l-4 border-blue-500 mb-6">&nbsp; Thông tin của tôi</h1>
 
     <div class="flex flex-col md:flex-row items-center mb-6">
-      <img
-        v-if="infoAccount?.image"
-        :src="loadImage(infoAccount?.image, 'account')"
-        alt="Profile Image"
-        class="w-24 h-24 rounded-full object-cover"
-      />
-      <img
-        v-else
-        :src="imageNotFound"
-        class="w-24 h-24 rounded-full object-cover"
-      />
+      <img @error="handleImageError" v-if="infoAccount?.image" :src="loadImage(infoAccount?.image, 'account')"
+        alt="Profile Image" class="w-24 h-24 rounded-full object-cover" />
 
       <div class="mt-4 md:mt-0 md:ml-4 text-center md:text-left">
         <h2 class="text-xl font-semibold">{{ infoAccount?.fullname }}</h2>
@@ -32,11 +23,7 @@
             <span class="font-semibold">Email</span>
             <p>
               {{ infoAccount?.email
-              }}<a
-                @click="changeEmailModal()"
-                class="text-blue-500 cursor-pointer"
-                >&nbsp;Change</a
-              >
+              }}<a @click="changeEmailModal()" class="text-blue-500 cursor-pointer">&nbsp;Change</a>
             </p>
           </div>
           <div>
@@ -59,7 +46,11 @@
           </div>
           <div>
             <span class="font-semibold">Quyền</span>
-            <p>{{ formattedRoles }}</p>
+            <p class="text-gray-700">
+              <span v-for="(role, index) in translatedRoles" :key="index" :style="{ color: role.color }" class="inline">
+                {{ role.name }}<span v-if="index < translatedRoles.length - 1">, </span>
+              </span>
+            </p>
           </div>
           <div>
             <span class="font-semibold">Thời gian tạo tài khoản</span>
@@ -76,23 +67,13 @@
     </div>
 
     <div class="flex justify-end">
-      <Button
-        @click="updateMeModal()"
-        :isLoading="isLoading"
-        :text="'Cập nhật thông tin'"
-        type="button"
-        class="px-4 py-2 mt-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600"
-      >
+      <Button @click="updateMeModal()" :isLoading="isLoading" :text="'Cập nhật thông tin'" type="button"
+        class="px-4 py-2 mt-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600">
       </Button>
     </div>
-    <updateAvatar
-      :isOpen="ModalUpdateImageIsOpen"
-      @close="updateImageModal"
-      :getInfo="info"
-      @update-success="info"
-    >
+    <updateAvatar :isOpen="ModalUpdateImageIsOpen" @close="updateImageModal" :getInfo="info" @update-success="info">
     </updateAvatar>
-     <changeEmail :isOpen="ModalChangeEmailIsOpen" @close="changeEmailModal" @update-success="info">
+    <changeEmail :isOpen="ModalChangeEmailIsOpen" @close="changeEmailModal" @update-success="info">
     </changeEmail>
     <updateInfoMe :isOpen="ModalUpdateMeIsOpen" @close="updateMeModal" :getInfo="info" @update-success="info">
     </updateInfoMe>
@@ -108,6 +89,7 @@ import updateAvatar from "../yourAccount/updateAvatar.vue";
 import changeEmail from "../yourAccount/changeEmail.vue";
 import updateInfoMe from "../yourAccount/updateInfoMe.vue";
 import { mapGetters } from "vuex";
+import { translatedRoles } from "@/utils/currencyUtils";
 
 export default {
   name: "infoMeComponent",
@@ -154,17 +136,22 @@ export default {
         ? dayjs(this.infoAccount.createAt).format("DD/MM/YYYY HH:mm")
         : "No creation date available";
     },
+    translatedRoles() {
+      return translatedRoles(this.infoAccount.roles || []);
+    },
   },
   mounted() {
     this.info();
   },
   methods: {
     loadImage,
+    handleImageError(event) {
+      event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+    },
     async info() {
       try {
         const response = await getinfo();
         this.infoAccount = response.data;
-        console.log(this.infoAccount);
         return this.infoAccount;
       } catch (error) {
         console.error(error);

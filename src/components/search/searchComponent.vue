@@ -4,7 +4,7 @@
     <div class="flex">
       <input type="text" v-model="searchQuery" placeholder="Nhập từ khóa để tìm kiếm..."
         class="mr-2 flex-1 pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-      <Button @click="performSearch" :is-loading="isLoading" :text="'Tìm kiếm'"></Button>
+      <Button @click="performSearch"  :text="'Tìm kiếm'"></Button>
     </div>
 
   </div>
@@ -12,7 +12,7 @@
 
 <script>
 import Button from '../buttons/button.vue';
-import { mapGetters } from 'vuex';
+// import { mapGetters } from 'vuex';
 export default {
   name: 'searchComponent',
   data() {
@@ -20,9 +20,9 @@ export default {
       searchQuery: '',
     };
   },
-  computed: {
-    ...mapGetters('loading', ['isLoading'])
-  },
+  // computed: {
+  //   ...mapGetters('loading', ['isLoading'])
+  // },
   components: {
     Button
   },

@@ -83,7 +83,7 @@ export default {
                     clearInterval(interval);
                     current = targetNumber;
                 }
-                this[property] = Math.floor(current); // Update the specific property (animatedCount, activeCount, inactiveCount)
+                this[property] = Math.floor(current);
             }, 10);
         }
     }

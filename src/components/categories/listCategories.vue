@@ -1,6 +1,6 @@
 <template>
     <div>
-        <searchComponent @search="handlesListCategories"></searchComponent>
+
         <TableComponent :items="listCategories" :loading="isLoading">
             <!-- Header Slot -->
             <template #header>
@@ -21,6 +21,9 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                     TRẠNG THÁI<span v-html="getSortIcon('active')"></span>
                 </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                    THAO TÁC
+                </th>
             </template>
             <!-- Body Slot -->
             <template #body>
@@ -33,13 +36,17 @@
                         {{ item.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <img v-if="item?.image" :src="loadImage(item?.image, `category`)" alt="Profile Image"
-                            class="w-12 h-12 rounded-full object-cover" />
+                        <img  :src="loadImage(item?.image, `category`)" alt="Profile Image"
+                            @error="handleImageError" class="w-12 h-12 rounded-sm object-cover" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <toggleButton :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
+                        <toggleButton @click.stop :is-toggled="item.active" @update:isToggled="handleActive(item.id)">
                         </toggleButton>
 
+                    </td>
+                    <td>
+                        <ExportButtonComponent @click.stop :nameExport="'categories'" :idExport="item.id">
+                        </ExportButtonComponent>
                     </td>
                 </tr>
             </template>
@@ -57,21 +64,22 @@
             </template>
         </TableComponent>
         <!-- update -->
-        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen" @close="isOpen = false"
-            @update-success="handlesListCategories">
+        <updataCategories v-if="idSelected" :idSelected="idSelected" :isOpen="isOpen"
+            @close="isOpen = false, idSelected = null" @update-success="handlesListCategories">
         </updataCategories>
     </div>
 </template>
 
 <script>
 import TableComponent from '../table/TableComponent.vue';
-import searchComponent from '@/components/categories/searchComponent.vue';
+
 import updataCategories from './updataCategories.vue';
 import toggleButton from '../buttons/toggleButton.vue';
 import { getCategories, changeActive } from '@/api/categoriesApi';
 import { mapGetters } from 'vuex';
 import { loadImage } from '@/services/imageService.js';
 import Pagination from '../pagination/Pagination.vue';
+import ExportButtonComponent from '../fileTransfer/ExportButtonComponent.vue';
 export default {
     name: 'lisCategoriesComponent',
     data() {
@@ -92,8 +100,8 @@ export default {
         TableComponent,
         toggleButton,
         Pagination,
-        searchComponent,
-        updataCategories
+        updataCategories,
+        ExportButtonComponent
     },
     mounted() {
         this.handlesListCategories()
@@ -103,6 +111,9 @@ export default {
     },
     methods: {
         loadImage,
+        handleImageError(event) {
+            event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+        },
         async handlesListCategories(keyword) {
             try {
                 const param = {
@@ -149,7 +160,7 @@ export default {
         async handleActive(id) {
             try {
                 await changeActive(id)
-                this.handlesListCategories
+                this.handlesListCategories()
                 this.$emit('handleStatus')
             } catch (error) {
                 console.log(error)

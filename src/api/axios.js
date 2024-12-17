@@ -2,6 +2,7 @@ import axios from 'axios';
 import { MAX_TIME_OUT, HOST, SUCCESS_CODE } from '@/api/config';
 import store from '@/store';
 import notificationService from '@/services/notificationService';
+import router from '@/router';
 
 // Tạo instance Axios với cấu hình cơ bản
 const Axios = axios.create({
@@ -67,12 +68,16 @@ Axios.interceptors.response.use(
 
         if (error.message === 'Network Error') {
             notificationService.error('Không thể kết nối mạng. Vui lòng kiểm tra kết nối internet của bạn.'); // Notify the user
+            //chuyển hướng đến trang lỗi
+            router.push({ name: 'ServerError' });
             return Promise.reject(error);
         }
 
         // Kiểm tra xem có phải lỗi do timeout không
         if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
             notificationService.error('Yêu cầu đã quá thời gian chờ. Vui lòng thử lại.'); // Hiển thị thông báo lỗi timeout
+            //chuyển hướng đến trang lỗi
+            router.push({ name: 'ServerError' });
             return Promise.reject(error); // Từ chối lỗi timeout
         }
 

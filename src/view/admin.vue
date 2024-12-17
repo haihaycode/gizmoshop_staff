@@ -14,12 +14,14 @@
         <router-view></router-view>
       </section>
       <!-- End Content -->
+      <ScrollToTopComponent />
     </main>
   </div>
 </template>
 
 <script>
 import LoadingComponent from '@/components/loading/LoadingComponent.vue';
+import ScrollToTopComponent from '@/components/scroll/ScrollToTopComponent.vue';
 import { mapGetters } from 'vuex';
 
 
@@ -27,11 +29,12 @@ export default {
   name: "AdminLayout",
   components: {
     LoadingComponent,
+    ScrollToTopComponent
   },
   computed: {
     ...mapGetters('loading', ['isLoading']),
   },
-  
-  
+
+
 };
 </script>

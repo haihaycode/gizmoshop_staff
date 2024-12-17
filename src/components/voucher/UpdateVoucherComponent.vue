@@ -128,8 +128,11 @@
                         class="shadow-none border-b-2 border-gray-300 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
                         :class="form.image ? 'border-red-500' : ''" />
                 </div>
-                <div v-if="previewImage" class="mt-4 w-full">
-                    <img :src="previewImage" alt="Image Preview" class=" object-cover rounded-sm">
+
+
+
+                <div class="mt-4 w-full text-center">
+                    <img :src="previewImage" @error="handleImageError" class="object-cover rounded-sm">
                 </div>
 
                 <!-- <img v-if="item?.image" :src="loadImageCategory(item?.image)" alt="Profile Image"
@@ -177,12 +180,13 @@ export default {
     },
     data() {
         return {
+            hasError: false,
             NotificationModalIsOpen: false,
             messageType: '',
             message: '',
             previewImage: null,
             form: {
-                ...this.voucher,  // Load voucher data into the form
+                ...this.voucher,
             },
             errors: {
                 code: '',
@@ -199,14 +203,18 @@ export default {
             }
         };
     },
+    emits: ['close', 'update-success'],
     computed: {
         ...mapGetters('loading', ['isLoading']),
     },
     mounted() {
-        this.previewImage =  loadImage(this.form.image, `voucher`);
+        this.previewImage = loadImage(this.form.image, `voucher`);
     },
     methods: {
         loadImage,
+        handleImageError(event) {
+            event.target.src = "https://demofree.sirv.com/nope-not-here.jpg";
+        },
         closeModal() {
             this.$emit('close');
         },

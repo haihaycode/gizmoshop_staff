@@ -135,7 +135,7 @@ export default {
       this.$emit("close");
     },
     async validateForm() {
-      this.errors = { name: "", description: "", deleted: "" }; // Reset errors
+      this.errors = { name: "", description: "", deleted: "" }; 
       const schema = Yup.object().shape({
         name: Yup.string().required("Tên thương hiệu là bắt buộc"),
         description: Yup.string().required("Mô tả là bắt buộc"),
@@ -143,9 +143,9 @@ export default {
       });
       try {
         await schema.validate(this.form, { abortEarly: false });
-        await this.updateBrand(); // Gọi hàm updateBrand nếu xác thực thành công
+        await this.updateBrand(); 
       } catch (err) {
-        // Lưu trữ tất cả lỗi
+ 
         err.inner.forEach((validationError) => {
           this.errors[validationError.path] = validationError.message;
         });
@@ -157,12 +157,12 @@ export default {
       try {
         const brandUpdate = { ...this.form, id: this.brand.id };
         const res = await updateBrand(brandUpdate);
-        this.message = res.message || "Cập nhật thương hiệu thành công!"; // Hiển thị thông báo từ server hoặc thông báo mặc định
-        console.log(this.message); // Log thông báo thành công
+        this.message = res.message || "Cập nhật thương hiệu thành công!"; 
+        console.log(this.message);
         this.messageType = "success";
         this.NotificationModalIsOpen = true;
-        this.$emit("update-success"); // Emit event cho cập nhật thành công
-        this.closeModal(); // Đóng modal
+        this.$emit("update-success");
+        this.closeModal(); 
       } catch (error) {
         this.message = error.message || "Có lỗi xảy ra!";
         this.messageType = "error";
@@ -176,5 +176,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styles here if needed */
+
 </style>
