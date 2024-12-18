@@ -465,15 +465,15 @@ export default {
                     discountProduct: data.discountProduct,
                     productLongDescription: data.productLongDescription,
                     productWeight: data.productWeight,
-                    productArea: data.productArea,
-                    productVolume: data.productVolume,
+                    productArea: data.productLength*data.productWidth,
+                    productVolume: (data.productLength*data.productWidth*data.productHeight)/1000000,
                     productHeight: data.productHeight,
                     productLength: data.productLength,
                     productBrandId: data.productBrand.id,
                     inventoryId: this.inventory?.id,
                     quantity: data.productQuantity,
                     productStatusResponseId: data.productStatus.id,
-                    width: data.productWidth,
+                    Width: data.productWidth,
                     productShortDescription: `${this.form.productShortDescription}\n${specificationsJson}`,
                 };
                 const res = await createProduct(productNew);
@@ -485,6 +485,7 @@ export default {
 
                     await this.addImageProduct(dataUpdateImage);
                 }
+
                 this.closeModal();
             } catch (error) {
                 console.error(error)

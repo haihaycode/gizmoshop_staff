@@ -137,9 +137,8 @@ export default {
                 this.NotificationModalIsOpen = true;
                 this.$emit('create-success');
             } catch (error) {
-                this.message = error.message;
-                this.messageType = 'error';
-                this.NotificationModalIsOpen = true;
+                console.log(error)
+
             }
         },
         async handleUpdateImageCategory(id) {
