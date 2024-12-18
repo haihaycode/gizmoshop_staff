@@ -24,15 +24,13 @@ export const getBrand = async () => {
 
 export const createBrand = async (brandNew) => {
   try {
-    const response = await Axios.post(
-      `${HOST}/api/public/brand/create`,
-      brandNew
-    );
+    const response = await Axios.post(`${HOST}/api/public/brand/create`, brandNew);
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(`${error}`);
   }
 };
+
 export const updateBrand = async (brandUpdate) => {
   try {
     const response = await Axios.put(

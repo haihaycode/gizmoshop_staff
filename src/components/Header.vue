@@ -24,7 +24,12 @@
 
                 </li> -->
                 <!-- thông báo -->
+                <i @click="getTotal" v-if="!isReturnNotfication" class='bx bx-refresh text-2xl bx-flip-horizontal' style='color:#ffffff'></i>
+
+                <i v-if="isReturnNotfication" class='bx bx-refresh text-4xl bx-spin bx-flip-horizontal' style='color:#ffffff'></i>
+                
                 <li class="ml-3">
+
                     <button @click="modalNotificationIsOpen = !modalNotificationIsOpen" type="button"
                         class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center0">
 
@@ -217,6 +222,7 @@ export default {
     name: 'HeaderComponent',
     data() {
         return {
+            isReturnNotfication: false,
             isloading: false,
             countOrder: 0,
             countTransaction: 0,
@@ -261,9 +267,11 @@ export default {
         ...mapActions('auth', ['logout']),
 
         async getTotal() {
+            this.isReturnNotfication = true;
             await this.handleLoadOrderNotification();
             await this.handleLoadTransactionNotification();
             this.totalCount = this.countOrder + this.countTransaction;
+            this.isReturnNotfication = false;
         },
 
 

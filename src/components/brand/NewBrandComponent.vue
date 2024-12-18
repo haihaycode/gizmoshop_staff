@@ -137,11 +137,7 @@ export default {
             this.errors[err.path] = err.message;
           });
         } else {
-
           console.error("Lỗi khi thêm thương hiệu:", error);
-          this.message = error.message || "Có lỗi xảy ra";
-          this.messageType = "error";
-          this.NotificationModalIsOpen = true;
         }
       }
     },

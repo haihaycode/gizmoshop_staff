@@ -433,7 +433,7 @@ export default {
                     productWidth: newProduct.productWidth || '0',
                     productHeight: newProduct.productHeight || '0',
                     productLength: newProduct.productLength || '0',
-                    productQuantity: newProduct.productQuantity || '0',
+                    productQuantity: newProduct.productInventoryResponse?.quantity|| '0',
                     productShortDescription: cleanedDescription,
                 };
 

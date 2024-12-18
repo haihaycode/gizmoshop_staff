@@ -105,14 +105,18 @@
 
                         </template>
                     </TableComponent>
+
                     <div class="flex gap-4" v-if="isButtonVisible">
-                        <Button @click="handleButtonClick(true)"
+                        <Button @click="handleButtonClick(true)" :isLoading="isLoading"
+                            v-if="disabled === 'confirm' || disabled === null"
                             class="mt-2 BG-BLUE-500 TEXT-WHITE PX-4 PY-2 ROUNDED HOVER:BG-BLUE-600"
                             :text="'Xác Nhận'"></Button>
 
-                        <Button class="mt-2 BG-BLUE-500 TEXT-WHITE PX-4 PY-2 ROUNDED HOVER:BG-BLUE-600"
+                        <Button :isLoading="isLoading" v-if="disabled === 'cancel' || disabled === null"
+                            class="mt-2 BG-BLUE-500 TEXT-WHITE PX-4 PY-2 ROUNDED HOVER:BG-BLUE-600"
                             @click="handleButtonClick(false)" :text="'Từ chối'"></Button>
                     </div>
+
                 </div>
 
                 <!-- Voucher -->
@@ -158,6 +162,7 @@ import { loadImage } from '@/services/imageService';
 import Button from '../buttons/button.vue';
 import { approveOrder, approveorderfinal } from '@/api/supplierApi';
 import notificationService from '@/services/notificationService';
+import { mapGetters } from 'vuex';
 
 
 export default {
@@ -181,6 +186,7 @@ export default {
     emits: ['closeModal', 'loadOrder'],
     data() {
         return {
+            disabled: null,
             productSeleted: {},
             isOpenDetailProductModel: false,
             isOpenButton: false,
@@ -189,6 +195,10 @@ export default {
             isButtonVisible: false,
             order: {}
         };
+    },
+
+    computed: {
+        ...mapGetters('loading', ['isLoading']),
     },
     mounted() {
         this.order = { ...this.orderdata };
@@ -220,7 +230,6 @@ export default {
             if (this.isCheckboxVisible) {
                 this.confirmSelection(status);
             } else {
-
                 this.finalOrderSupplier(status);
             }
         },
@@ -231,6 +240,11 @@ export default {
                 return;
             }
 
+            if (status == true) {
+                this.disabled = 'confirm';
+            } else {
+                this.disabled = 'cancel';
+            }
             console.log('Selected IDs:', selectedIds);
             try {
                 const data = {
@@ -241,6 +255,7 @@ export default {
                 console.log(res.data);
                 this.$emit('loadOrder')
                 notificationService.success('Xác nhận đơn hàng thành công');
+                this.disabled = null;
             } catch (error) {
                 notificationService.error('Xác nhận đơn hàng thất bại');
                 console.error(error)
@@ -248,6 +263,13 @@ export default {
         },
         async finalOrderSupplier(status) {
             try {
+
+                if (status == true) {
+                    this.disabled = 'confirm';
+                } else {
+                    this.disabled = 'cancel';
+                }
+
                 const data = {
                     accept: status,
                 }
@@ -255,6 +277,7 @@ export default {
                 console.log(res.data);
                 this.$emit('loadOrder')
                 notificationService.success('Xác nhận đơn hàng thành công');
+                this.disabled = null;
             } catch (error) {
                 notificationService.error('Xác nhận đơn hàng thất bại');
                 console.error(error)

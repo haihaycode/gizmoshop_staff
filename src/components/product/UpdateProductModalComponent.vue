@@ -367,6 +367,7 @@ export default {
         removeSpecification(index) {
             this.specifications.splice(index, 1);
         },
+
         async processImages(imageMappings) {
             const promises = imageMappings.flatMap(mapping => {
                 if (!mapping.image) return [];
@@ -385,6 +386,7 @@ export default {
             });
             await Promise.all(promises);
         },
+        
 
         closeModal() {
             this.$emit('close');
@@ -514,17 +516,20 @@ export default {
                     productShortDescription: `${this.form.productShortDescription}\n${specificationsJson}`,
                     productLongDescription: this.form.productLongDescription,
                     productWeight: this.form.productWeight,
-                    productArea: this.form.productArea,
-                    productVolume: this.form.productVolume,
+
+                    productArea: this.form.productLength*this.form.productWidth,
+                    productVolume: (this.form.productLength*this.form.productWidth*this.form.productHeight)/1000000,
+
                     productHeight: this.form.productHeight,
                     productLength: this.form.productLength,
                     productBrandId: this.form.productBrand?.id,
                     inventoryId: this.form.productInventoryResponse?.id,
                     quantity: this.form.productQuantity,
                     productStatusResponseId: this.form.productStatusResponse?.id,
-                    width: this.form.productWidth,
+                    Width: this.form.productWidth,
                    
                 }
+                console.log("Data gửi vào updateProduct:", data);
                 const res = await updateProduct(this.form.id, data)
                 if (this.form.selectedImages && this.form.selectedImages.length > 0) {
                     const dataUpdateImage = {
