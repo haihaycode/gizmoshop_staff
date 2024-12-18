@@ -405,9 +405,8 @@ export default {
 
                             notificationService.warning(validationError.message);
                         } else {
-                            // Xử lý lỗi cho các trường khác
-                            this.errors[validationError.path] = validationError.message;
-                            notificationService.warning(validationError.message);
+                            this.errors[validationError.path] = "nhập sai định dạng";
+                            notificationService.warning("nhập sai định dạng");
                         }
 
                     });

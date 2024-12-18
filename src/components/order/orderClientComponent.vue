@@ -21,10 +21,10 @@
 
             <!-- Nút tìm kiếm -->
             <div class="w-full lg:w-auto flex justify-end items-end space-x-2">
-                <button type="submit"
+                <Button type="submit" :text="'Tìm kiếm'"
                     class="bg-[#0e0b36] hover:bg-[#2a2eaed7] text-white font-bold py-2 px-4 rounded transition-all duration-300">
-                    Tìm kiếm
-                </button>
+
+                </Button>
             </div>
         </form>
     </div>
@@ -101,14 +101,14 @@
                             </div>
 
                             <div v-if="item.orderStatus.id === 1" class="flex flex-col space-y-2">
-                                <button @click.stop="openModalUpdate(item, true)"
+                                <Button :text="'Duyệt Đơn'" @click.stop="openModalUpdate(item, true)"
                                     class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    Duyệt Đơn
-                                </button>
-                                <button @click.stop="openModalUpdate(item, false)"
+
+                                </Button>
+                                <Button :text="'Hủy Đơn'" @click.stop="openModalUpdate(item, false)"
                                     class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    Hủy Đơn
-                                </button>
+
+                                </Button>
                             </div>
                         </div>
                     </td>
@@ -152,12 +152,11 @@
             </template>
             <template #footer>
                 <div class="flex justify-end space-x-4">
-                    <button
+                    <Button :text="text" :isLoading="isLoading"
                         class="bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         v-for="(text, index) in dataModale.textbutton" :key="index"
                         @click="updateOrderSelected(dataModale, text)">
-                        {{ text }}
-                    </button>
+                    </Button>
                 </div>
             </template>
         </ModalBox>
@@ -168,19 +167,19 @@
 </template>
 
 <script>
-// import Button from '../buttons/button.vue';
+import Button from '../buttons/button.vue';
 import ModalBox from '../modal/ModalBox.vue';
 import orderDetailComponent from '../order/orderDetailComponent.vue';
 import { getAllStatusOrder, getListAllOrder, updateOrder } from '@/api/orderApi';
 import TableComponent from '../table/TableComponent.vue';
-// import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { formatCurrencyVN, formatDay } from '@/utils/currencyUtils';
 import Pagination from '../pagination/Pagination.vue';
 import notificationService from '@/services/notificationService';
 export default {
     name: "orderClientComponent",
     components: {
-        // Button,
+        Button,
         TableComponent,
         Pagination,
         ModalBox,
@@ -189,7 +188,7 @@ export default {
     data() {
         return {
             idProcessing: false,
-            isLoading: true,
+            // isLoading: true,
             dataModale: {},
             keysearch: null,
             isOpenModalDetailOrder: false,
@@ -211,6 +210,9 @@ export default {
     async mounted() {
         await this.getListStatus();
         this.getListAll();
+    },
+    computed: {
+        ...mapGetters('loading', ['isLoading']),
     },
     methods: {
         formatCurrencyVN,
@@ -248,7 +250,7 @@ export default {
                 console.log("đầy là dữ liệu trả về:", res.data)
                 this.listOrder = res.data.content;
                 this.pagination = res.data;
-                this.isLoading = false;
+                // this.isLoading = false;
             } catch (error) {
                 console.error(error);
             }

@@ -367,6 +367,7 @@ export default {
         removeSpecification(index) {
             this.specifications.splice(index, 1);
         },
+
         async processImages(imageMappings) {
             const promises = imageMappings.flatMap(mapping => {
                 if (!mapping.image) return [];
@@ -385,6 +386,7 @@ export default {
             });
             await Promise.all(promises);
         },
+        
 
         closeModal() {
             this.$emit('close');
